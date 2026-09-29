@@ -2549,7 +2549,7 @@ const SOL2 = {
   "eco-28":"Sustainability means using a resource no faster than it can renew itself.\nTaking only what is needed, and leaving enough behind to reproduce, keeps harvesting at or below the replacement rate — so the population can continue indefinitely.\nAnswer: harvesting stays within the ecosystem's ability to replenish, so the resource lasts.\nIt does not raise the carrying capacity — the land's capacity is unchanged. Modern fisheries science reached the same principle much later, after several stock collapses."
 };
 
-/* Written-answer practice, built from the gaps in Catherine's own worksheet:
+/* Written-answer practice, built from the gaps in a class worksheet:
    explaining mechanism ("and WHY"), chain reactions, and the idea-map vocabulary. */
 
 const BANK3 = [
@@ -2682,7 +2682,7 @@ const ASK3 = {
   "eco-vocab":"This is checking the vocabulary ladder — organism, population, community, ecosystem — or the word habitat. They are easy to mix up, so read the question for whether it means one species or all of them."
 };
 
-/* Math built from Catherine's actual worksheets: cube roots (mostly blank),
+/* Math built from her class worksheets: cube roots (mostly blank),
    root notation, LCM/GCF, mode & range, and pay / gross-vs-net.
    Items her class covers that sit outside the verified Grade 7 expectation
    list are tagged "Class work" rather than given a code they don't have. */
@@ -3168,7 +3168,7 @@ FR_ITEMS.forEach(function(it){
 BANK5.push(
   {id:"fx-01", subj:"french", topic:"frreading", code:"FSL Writing", type:"write", passage:"p3",
    q:"En français, écris 2 ou 3 phrases sur TOI, comme Zoé : ton nom, ton âge et une chose que tu aimes. (Write 2–3 sentences in French about yourself.)",
-   model:"Je m'appelle Catherine. J'ai douze ans et j'habite à Hamilton. J'aime les sciences parce que j'aime les animaux.",
+   model:"Je m'appelle Léa. J'ai douze ans et j'habite à Hamilton. J'aime les sciences parce que j'aime les animaux.",
    points:["Je m'appelle + name","J'ai … ans (avoir for age, not être)","J'aime + le / la / les + thing","Bonus: parce que + a reason"],
    why:"Borrow Zoé's sentences as a pattern and swap in your own details."},
   {id:"fx-02", subj:"french", topic:"frgrammar", code:"FSL Writing", type:"write",
@@ -3464,14 +3464,230 @@ const DECKS = [
   ]}
 ];
 
+/* ---------- From her class (Classroom, late Sept 2026) ----------
+   Math: exponents + order of operations (the "Exponents Pixilated Art" practice).
+   French: duotang review pages + grammar chart (positions, classroom expressions, numbers to 1000, colours) and les prières. */
+
+/* e = expression shown, v = the same expression in JS for checking, steps = worked solution */
+const BEDMAS = [
+  ["bx-01", "4² − 3(6 − 2)", "4**2 - 3*(6-2)", ["Brackets: 6 − 2 = 4", "Exponent: 4² = 16", "Multiply: 3 × 4 = 12", "Subtract: 16 − 12 = 4"]],
+  ["bx-02", "(9 − 5)² + 18 ÷ 3", "(9-5)**2 + 18/3", ["Brackets: 9 − 5 = 4", "Exponent: 4² = 16", "Divide: 18 ÷ 3 = 6", "Add: 16 + 6 = 22"]],
+  ["bx-03", "2 × 5² − 40 ÷ 8", "2*5**2 - 40/8", ["Exponent first: 5² = 25", "Multiply: 2 × 25 = 50", "Divide: 40 ÷ 8 = 5", "Subtract: 50 − 5 = 45"]],
+  ["bx-04", "3³ − 4 × (2 + 3)", "3**3 - 4*(2+3)", ["Brackets: 2 + 3 = 5", "Exponent: 3³ = 3 × 3 × 3 = 27", "Multiply: 4 × 5 = 20", "Subtract: 27 − 20 = 7"]],
+  ["bx-05", "(12 − 2 × 3)² ÷ 4", "(12-2*3)**2 / 4", ["Inside the brackets, multiply first: 2 × 3 = 6", "Then 12 − 6 = 6", "Exponent: 6² = 36", "Divide: 36 ÷ 4 = 9"]],
+  ["bx-06", "50 − 2³ × 5", "50 - 2**3*5", ["Exponent: 2³ = 8", "Multiply: 8 × 5 = 40", "Subtract: 50 − 40 = 10"]],
+  ["bx-07", "[(8 + 4) ÷ 3]² − 7", "((8+4)/3)**2 - 7", ["Inner brackets: 8 + 4 = 12", "Square brackets: 12 ÷ 3 = 4", "Exponent: 4² = 16", "Subtract: 16 − 7 = 9"]],
+  ["bx-08", "6 + 2 × (3² − 5)", "6 + 2*(3**2 - 5)", ["Inside the brackets, exponent first: 3² = 9", "Then 9 − 5 = 4", "Multiply: 2 × 4 = 8", "Add: 6 + 8 = 14"]],
+  ["bx-09", "10² ÷ (2 × 5) + 3", "10**2 / (2*5) + 3", ["Brackets: 2 × 5 = 10", "Exponent: 10² = 100", "Divide: 100 ÷ 10 = 10", "Add: 10 + 3 = 13"]],
+  ["bx-10", "(1 − 3)² × 5 − 4²", "(1-3)**2*5 - 4**2", ["Brackets: 1 − 3 = −2", "Exponents: (−2)² = 4 and 4² = 16", "Multiply: 4 × 5 = 20", "Subtract: 20 − 16 = 4"]],
+  ["bx-11", "7 − 3²", "7 - 3**2", ["Exponent first: 3² = 9", "Subtract: 7 − 9 = −2 (the answer can be negative)"]],
+  ["bx-12", "24 ÷ (4 − 2³) + 6", "24/(4 - 2**3) + 6", ["Inside the brackets, exponent first: 2³ = 8", "Then 4 − 8 = −4", "Divide: 24 ÷ (−4) = −6", "Add: −6 + 6 = 0"]]
+];
+
+const BANK6 = [], FAM6 = {}, SOL6 = {};
+BEDMAS.forEach(function(r){
+  const val = Function('"use strict"; return (' + r[2] + ');')();
+  BANK6.push({id:r[0], subj:"math", topic:"bedmas", code:"B2.1", type:"num",
+    q:"Simplify using the order of operations: <b>" + r[1] + "</b>", a:val,
+    why:"Brackets → Exponents → × and ÷ (left to right) → + and − (left to right). " + r[3].join(". ") + "."});
+  FAM6[r[0]] = "bedmas";
+  SOL6[r[0]] = r[3].map(function(s, i){ return (i + 1) + ". " + s; }).concat([(r[3].length + 1) + ". Answer: " + val]).join("\n");
+});
+
+const CLASS_ITEMS = [
+  /* math, multiple choice */
+  {id:"bx-13", subj:"math", topic:"bedmas", code:"B2.1", fam:"bedmas",
+   q:"In <b>5 + 3 × (4 − 1)²</b>, what do you do first?",
+   choices:["Work out (4 − 1)","Multiply 3 × 4","Add 5 + 3","Square the 1"], a:0,
+   why:"Brackets always come first: (4 − 1) = 3. Then square it, then multiply, then add.",
+   sol:"1. B — Brackets: (4 − 1) = 3\n2. E — Exponent: 3² = 9\n3. M — Multiply: 3 × 9 = 27\n4. A — Add: 5 + 27 = 32"},
+  {id:"bx-14", subj:"math", topic:"bedmas", code:"B2.1", fam:"bedmas",
+   q:"What is <b>(−3)²</b>?",
+   choices:["9","−9","−6","6"], a:0,
+   why:"(−3)² means (−3) × (−3). A negative times a negative is positive, so it's 9.",
+   sol:"1. The brackets mean the whole −3 is squared.\n2. (−3) × (−3) = 9 (negative × negative = positive).\n3. Careful: −3² without brackets means −(3²) = −9. The brackets make the difference."},
+  {id:"bx-15", subj:"math", topic:"bedmas", code:"B2.1", fam:"bedmas",
+   q:"Mia says <b>2 + 3² = 25</b>. What did she do wrong?",
+   choices:["She added before squaring","She squared the 2","She multiplied 3 × 2","Nothing — 25 is right"], a:0,
+   why:"Exponents come before adding: 3² = 9, then 2 + 9 = 11. Mia did (2 + 3)² = 25.",
+   sol:"1. Exponents come before addition.\n2. 3² = 9.\n3. 2 + 9 = 11 — Mia's 25 came from adding first: (2 + 3)² = 5² = 25."},
+  {id:"bx-16", subj:"math", topic:"bedmas", code:"B2.1", fam:"bedmas", type:"num",
+   q:"Write <b>5 × 5 × 5 × 5</b> as a power, then give its value.", a:625,
+   why:"Four 5s multiplied together is 5⁴ = 625.",
+   sol:"1. Count the 5s: there are four, so it's 5⁴ (base 5, exponent 4).\n2. 5 × 5 = 25, 25 × 5 = 125, 125 × 5 = 625.\n3. Answer: 625"},
+  /* French: positions (grammar chart) */
+  {id:"fp-01", subj:"french", topic:"frgrammar", code:"FSL Writing", fam:"fr-positions",
+   q:"Complete: <span class=\"fr\">« Le chat est ___ la table. »</span> (on)", choices:["sur","sous","dans","devant"], a:0,
+   why:"sur = on. Le chat est sur la table.",
+   sol:"1. The clue is 'on'.\n2. From the chart: sur = on, sous = under, dans = in, devant = in front of.\n3. Le chat est sur la table."},
+  {id:"fp-02", subj:"french", topic:"frgrammar", code:"FSL Writing", fam:"fr-positions",
+   q:"Complete: <span class=\"fr\">« Mon sac est ___ le pupitre. »</span> (under)", choices:["sous","sur","derrière","après"], a:0,
+   why:"sous = under. Mon sac est sous le pupitre.",
+   sol:"1. The clue is 'under'.\n2. sous = under (sur = on — they look alike, so watch the spelling).\n3. Mon sac est sous le pupitre."},
+  {id:"fp-03", subj:"french", topic:"frgrammar", code:"FSL Writing", fam:"fr-positions",
+   q:"Complete: <span class=\"fr\">« Les crayons sont ___ le sac. »</span> (in)", choices:["dans","devant","sur","avant"], a:0,
+   why:"dans = in. Les crayons sont dans le sac.",
+   sol:"1. The clue is 'in'.\n2. dans = in.\n3. Les crayons sont dans le sac."},
+  {id:"fp-04", subj:"french", topic:"frgrammar", code:"FSL Writing", fam:"fr-positions",
+   q:"Complete: <span class=\"fr\">« Le ballon est ___ la porte. »</span> (behind)", choices:["derrière","devant","à côté de","sous"], a:0,
+   why:"derrière = behind. Le ballon est derrière la porte.",
+   sol:"1. The clue is 'behind'.\n2. derrière = behind; devant = in front of — they're opposites.\n3. Le ballon est derrière la porte."},
+  {id:"fp-05", subj:"french", topic:"frgrammar", code:"FSL Writing", fam:"fr-positions",
+   q:"Complete: <span class=\"fr\">« Mon amie est assise ___ moi. »</span> (beside)", choices:["à côté de","devant","dans","après"], a:0,
+   why:"à côté de = beside. Mon amie est assise à côté de moi.",
+   sol:"1. The clue is 'beside'.\n2. à côté de = beside (three words together).\n3. Mon amie est assise à côté de moi."},
+  {id:"fp-06", subj:"french", topic:"frgrammar", code:"FSL Writing", fam:"fr-positions",
+   q:"Complete: <span class=\"fr\">« Je joue au hockey ___ l'école. »</span> (after)", choices:["après","avant","sous","devant"], a:0,
+   why:"après = after. Je joue au hockey après l'école.",
+   sol:"1. The clue is 'after'.\n2. après = after, avant = before.\n3. Je joue au hockey après l'école."},
+  /* French: classroom expressions (duotang) */
+  {id:"fe-01", subj:"french", topic:"frvocab", code:"FSL Vocabulary", fam:"fr-vocab",
+   q:"How do you ask <b>May I use the washroom?</b>", choices:["Puis-je aller aux toilettes ?","Puis-je aller boire ?","J'ai une question.","Quelle page ?"], a:0,
+   why:"Puis-je aller aux toilettes ? — Puis-je = may I.",
+   sol:"1. Puis-je… ? = May I… ?\n2. aller aux toilettes = go to the washroom.\n3. Puis-je aller boire ? is 'May I go get a drink?'"},
+  {id:"fe-02", subj:"french", topic:"frvocab", code:"FSL Vocabulary", fam:"fr-vocab",
+   q:"What does <span class=\"fr\">« Je ne comprends pas. »</span> mean?", choices:["I don't understand.","I don't know.","Don't talk!","I have a question."], a:0,
+   why:"comprendre = to understand; ne…pas makes it 'don't'.",
+   sol:"1. comprends comes from comprendre = to understand.\n2. ne … pas around the verb = not.\n3. So: I don't understand. (Je ne sais pas = I don't know.)"},
+  {id:"fe-03", subj:"french", topic:"frvocab", code:"FSL Vocabulary", fam:"fr-vocab",
+   q:"Your teacher says <span class=\"fr\">« Levez-vous ! »</span> What do you do?", choices:["Stand up","Sit down","Listen","Close the door"], a:0,
+   why:"Levez-vous ! = Stand up! (Asseyez-vous ! = Sit down!)",
+   sol:"1. Levez-vous ! = Stand up!\n2. Asseyez-vous ! = Sit down!\n3. Écoutez ! = Listen!  Fermez la porte. = Close the door."},
+  {id:"fe-04", subj:"french", topic:"frvocab", code:"FSL Vocabulary", fam:"fr-vocab",
+   q:"How do you ask <b>How do you say 'pencil' in French?</b>", choices:["Comment dit-on « pencil » en français ?","Comment ça va ?","Quelle page ?","Répétez, s'il vous plaît."], a:0,
+   why:"Comment dit-on … en français ? = How do you say … in French?",
+   sol:"1. Comment = how, dit-on = does one say.\n2. en français = in French.\n3. Handy whenever you're stuck on a word!"},
+  {id:"fe-05", subj:"french", topic:"frvocab", code:"FSL Vocabulary", fam:"fr-vocab",
+   q:"What does <span class=\"fr\">« Ouvrez le cahier. »</span> mean?", choices:["Open the notebook.","Close the notebook.","Which page?","Open the door."], a:0,
+   why:"ouvrez = open, le cahier = the notebook.",
+   sol:"1. Ouvrez = open (fermez = close).\n2. le cahier = the notebook.\n3. Ouvrez le cahier = Open the notebook."},
+  /* French: numbers to 1000 (duotang) */
+  {id:"fn-01", subj:"french", topic:"frvocab", code:"FSL Vocabulary", fam:"fr-numbers",
+   q:"What number is <span class=\"fr\">« soixante et onze »</span>?", choices:["71","61","81","17"], a:0,
+   why:"soixante (60) + onze (11) = 71.",
+   sol:"1. soixante = 60.\n2. et onze = and 11.\n3. 60 + 11 = 71 — French counts 70s as 'sixty-ten, sixty-eleven…'."},
+  {id:"fn-02", subj:"french", topic:"frvocab", code:"FSL Vocabulary", fam:"fr-numbers",
+   q:"What number is <span class=\"fr\">« quatre-vingt-quatorze »</span>?", choices:["94","84","74","104"], a:0,
+   why:"quatre-vingts (80) + quatorze (14) = 94.",
+   sol:"1. quatre-vingt = four twenties = 80.\n2. quatorze = 14.\n3. 80 + 14 = 94."},
+  {id:"fn-03", subj:"french", topic:"frvocab", code:"FSL Vocabulary", fam:"fr-numbers",
+   q:"How do you write <b>81</b> in French?", choices:["quatre-vingt-un","quatre-vingts et un","huitante-un","soixante-vingt-un"], a:0,
+   why:"81 = quatre-vingt-un (no 'et', and no 's' on vingt).",
+   sol:"1. 80 = quatre-vingts.\n2. When another number follows, vingt loses its 's': quatre-vingt-un.\n3. Unlike 21, 31… (vingt et un), 81 has no 'et'."},
+  {id:"fn-04", subj:"french", topic:"frvocab", code:"FSL Vocabulary", fam:"fr-numbers",
+   q:"What is <span class=\"fr\">« mille »</span>?", choices:["1000","100","1 000 000","10"], a:0,
+   why:"mille = 1000 (cent = 100).",
+   sol:"1. cent = 100.\n2. mille = 1000.\n3. deux cents = 200, deux mille = 2000."}
+];
+CLASS_ITEMS.forEach(function(it){
+  const q = {id:it.id, subj:it.subj, topic:it.topic, code:it.code, type:it.type || "mc", q:it.q, why:it.why, a:it.a};
+  if(q.type === "mc") q.choices = it.choices;
+  BANK6.push(q); FAM6[it.id] = it.fam; SOL6[it.id] = it.sol;
+});
+
+const HELP6 = {
+  "bedmas":{title:"Order of operations (BEDMAS)", steps:[
+    "B — Brackets first, innermost first.",
+    "E — Exponents next (3² = 3 × 3, 2³ = 2 × 2 × 2).",
+    "D/M — Divide and multiply, working left to right.",
+    "A/S — Add and subtract, working left to right."],
+    ex:"8 + 2 × (5 − 3)³\n= 8 + 2 × 2³     (brackets)\n= 8 + 2 × 8      (exponent)\n= 8 + 16         (multiply)\n= 24             (add)"},
+  "fr-positions":{title:"Les positions — where things are", steps:[
+    "Find the English clue word.",
+    "Match it: sur = on, sous = under, dans = in, devant = in front of, derrière = behind, à côté de = beside.",
+    "For time: avant = before, après = after."],
+    ex:"Le livre est sur le pupitre. (on)\nLe chien est sous la table. (under)\nJe mange avant l'école. (before)"},
+  "fr-numbers":{title:"Big French numbers", steps:[
+    "Up to 69, numbers work like English: soixante-deux = 62.",
+    "70–79 are 'sixty-ten…': soixante-dix = 70, soixante et onze = 71.",
+    "80 = quatre-vingts (four twenties); 90–99 = quatre-vingt-dix… (80 + 10…).",
+    "cent = 100, deux cents = 200, mille = 1000."],
+    ex:"76 = soixante-seize (60 + 16)\n85 = quatre-vingt-cinq (80 + 5)\n97 = quatre-vingt-dix-sept (80 + 17)"}
+};
+const ASK6 = {
+  "bedmas":"It wants one number. Don't go left to right — do brackets first, then exponents, then × and ÷, then + and −.",
+  "fr-positions":"It's asking which little position word fits. Look at the English clue in brackets and match it to the chart from class.",
+  "fr-numbers":"It's a French number. Split it into its parts (like 60 + 11, or 80 + 14) and add them up."
+};
+
+/* ---------- class flashcard decks ---------- */
+DECKS.push(
+  {id:"fr-cls-expr", subj:"french", topic:"frvocab", name:"From class: expressions utiles", lang:"fr", cards:[
+    {f:"Bonjour ! Au revoir !", b:"Hello! Goodbye!"},
+    {f:"Asseyez-vous !", b:"Sit down!"},
+    {f:"Levez-vous !", b:"Stand up!"},
+    {f:"Ne parlez pas !", b:"Don't talk!"},
+    {f:"Écoutez !", b:"Listen!"},
+    {f:"Répétez, s'il vous plaît.", b:"Repeat, please."},
+    {f:"Comment dit-on ___ en français ?", b:"How do you say ___ in French?"},
+    {f:"Puis-je aller aux toilettes ?", b:"May I use the washroom?"},
+    {f:"Puis-je aller boire ?", b:"May I go get a drink?"},
+    {f:"Je ne sais pas.", b:"I don't know."},
+    {f:"Je ne comprends pas.", b:"I don't understand."},
+    {f:"J'ai une question.", b:"I have a question."},
+    {f:"Ouvrez le cahier.", b:"Open the notebook."},
+    {f:"Fermez la porte.", b:"Close the door."},
+    {f:"Quelle page ?", b:"Which page?"}
+  ]},
+  {id:"fr-cls-desk", subj:"french", topic:"frvocab", name:"From class: dans mon pupitre", lang:"fr", cards:[
+    {f:"un livre", b:"a book"}, {f:"un cahier", b:"a notebook"}, {f:"un crayon", b:"a pencil"}, {f:"un stylo", b:"a pen"},
+    {f:"une règle", b:"a ruler"}, {f:"une gomme", b:"an eraser"}, {f:"des ciseaux", b:"scissors"}, {f:"des papiers", b:"papers"},
+    {f:"des marqueurs", b:"markers"}, {f:"des crayons de couleur", b:"pencil crayons"}
+  ]},
+  {id:"fr-cls-pos", subj:"french", topic:"frgrammar", name:"From class: les positions", lang:"fr", cards:[
+    {f:"sur", b:"on"}, {f:"sous", b:"under"}, {f:"dans", b:"in"}, {f:"devant", b:"in front of"},
+    {f:"derrière", b:"behind"}, {f:"à côté de", b:"beside"}, {f:"avant", b:"before"}, {f:"après", b:"after"}
+  ]},
+  {id:"fr-cls-num", subj:"french", topic:"frvocab", name:"From class: nombres jusqu'à 1000", lang:"fr", cards:[
+    {f:"vingt et un", b:"21"}, {f:"cinquante et un", b:"51"}, {f:"soixante et un", b:"61"}, {f:"soixante-dix", b:"70"},
+    {f:"soixante et onze", b:"71"}, {f:"soixante-dix-sept", b:"77"}, {f:"quatre-vingts", b:"80"}, {f:"quatre-vingt-un", b:"81"},
+    {f:"quatre-vingt-dix", b:"90"}, {f:"quatre-vingt-onze", b:"91"}, {f:"quatre-vingt-dix-neuf", b:"99"}, {f:"cent", b:"100"},
+    {f:"deux cents", b:"200"}, {f:"deux cent un", b:"201"}, {f:"mille", b:"1000"}, {f:"deux mille", b:"2000"}
+  ]},
+  {id:"fr-cls-col", subj:"french", topic:"frvocab", name:"From class: les couleurs", lang:"fr", cards:[
+    {f:"rouge", b:"red"}, {f:"orange", b:"orange"}, {f:"jaune", b:"yellow"}, {f:"vert", b:"green"}, {f:"bleu", b:"blue"},
+    {f:"violet", b:"purple"}, {f:"rose", b:"pink"}, {f:"blanc", b:"white"}, {f:"brun", b:"brown"}, {f:"noir", b:"black"},
+    {f:"gris", b:"grey"}, {f:"foncé", b:"dark (bleu foncé = dark blue)"}, {f:"clair / pâle", b:"light (vert clair = light green)"}
+  ]},
+  {id:"fr-cls-alpha", subj:"french", topic:"frvocab", name:"From class: l'alphabet", lang:"fr", cards:[
+    {f:"A", b:"ah"}, {f:"B", b:"bay"}, {f:"C", b:"say"}, {f:"D", b:"day"}, {f:"E", b:"euh"}, {f:"F", b:"eff"}, {f:"G", b:"jay"},
+    {f:"H", b:"ash"}, {f:"I", b:"ee"}, {f:"J", b:"jee"}, {f:"K", b:"kah"}, {f:"L", b:"el"}, {f:"M", b:"em"}, {f:"N", b:"en"},
+    {f:"O", b:"oh"}, {f:"P", b:"pay"}, {f:"Q", b:"kü (like 'queue')"}, {f:"R", b:"err"}, {f:"S", b:"ess"}, {f:"T", b:"tay"},
+    {f:"U", b:"oo (lips round)"}, {f:"V", b:"vay"}, {f:"W", b:"doo-bluh-vay"}, {f:"X", b:"eeks"}, {f:"Y", b:"ee-grek"}, {f:"Z", b:"zed"}
+  ]},
+  {id:"fr-prayers", subj:"french", topic:"frreading", name:"From class: les prières (what comes next?)", lang:"fr", backLang:"fr", recite:true, cards:[
+    {f:"Notre Père, qui est aux cieux,", b:"que ton nom soit sanctifié,"},
+    {f:"que ton nom soit sanctifié,", b:"que ton règne vienne,"},
+    {f:"que ton règne vienne,", b:"que ta volonté soit faite,"},
+    {f:"que ta volonté soit faite,", b:"sur la terre comme au ciel."},
+    {f:"sur la terre comme au ciel.", b:"Donne-nous aujourd'hui notre pain de ce jour,"},
+    {f:"Donne-nous aujourd'hui notre pain de ce jour,", b:"pardonne-nous nos offenses,"},
+    {f:"pardonne-nous nos offenses,", b:"comme nous pardonnons aussi à ceux qui nous ont offensés,"},
+    {f:"comme nous pardonnons aussi à ceux qui nous ont offensés,", b:"et ne nous laisse pas entrer en tentation,"},
+    {f:"et ne nous laisse pas entrer en tentation,", b:"mais délivre-nous du mal. Amen."},
+    {f:"Je vous salue, Marie pleine de grâces ;", b:"le Seigneur est avec vous."},
+    {f:"le Seigneur est avec vous.", b:"Vous êtes bénie entre toutes les femmes"},
+    {f:"Vous êtes bénie entre toutes les femmes", b:"et Jésus, le fruit de vos entrailles, est béni."},
+    {f:"et Jésus, le fruit de vos entrailles, est béni.", b:"Sainte Marie, Mère de Dieu,"},
+    {f:"Sainte Marie, Mère de Dieu,", b:"priez pour nous pauvres pécheurs,"},
+    {f:"priez pour nous pauvres pécheurs,", b:"maintenant et à l'heure de notre mort. Amen."},
+    {f:"Gloire au Père, et au Fils, et au Saint-Esprit.", b:"Comme il était au commencement, maintenant et toujours,"},
+    {f:"Comme il était au commencement, maintenant et toujours,", b:"pour les siècles des siècles. Amen."},
+    {f:"Mon Dieu, bénissez-nous,", b:"ainsi que la nourriture que nous allons prendre,"},
+    {f:"ainsi que la nourriture que nous allons prendre,", b:"bénissez ceux qui l'ont préparé,"},
+    {f:"bénissez ceux qui l'ont préparé,", b:"et donnez du pain à ceux qui n'en ont pas. Amen."}
+  ]}
+);
+
 BANK.push.apply(BANK, BANK2);
 BANK.push.apply(BANK, BANK3);
 BANK.push.apply(BANK, BANK4);
 BANK.push.apply(BANK, BANK5);
-Object.assign(FAM, FAM2, FAM3, FAM4, FAM5);
-Object.assign(HELP, HELP2, HELP3, HELP4, HELP5);
-Object.assign(ASK, ASK2, ASK3, ASK4, ASK5);
-Object.assign(SOL, SOL2, SOL3, SOL4, SOL5);
+BANK.push.apply(BANK, BANK6);
+Object.assign(FAM, FAM2, FAM3, FAM4, FAM5, FAM6);
+Object.assign(HELP, HELP2, HELP3, HELP4, HELP5, HELP6);
+Object.assign(ASK, ASK2, ASK3, ASK4, ASK5, ASK6);
+Object.assign(SOL, SOL2, SOL3, SOL4, SOL5, SOL6);
 
 const SUBJECTS = {
   math:     {name:"Math",     tone:"var(--math)", soft:"var(--mathsoft)", doc:"Ontario Mathematics, 2020"},
@@ -3481,6 +3697,7 @@ const SUBJECTS = {
 };
 const TOPICS = {
   fracdec:     {subj:"math", name:"Fractions & decimals", codes:"multiplying, dividing, word problems"},
+  bedmas:      {subj:"math", name:"Exponents & order of operations", codes:"from class: BEDMAS with powers"},
   powers:      {subj:"math", name:"Powers, roots, LCM & GCF", codes:"squares, cubes, cube roots, factors"},
   number:      {subj:"math", name:"Number sense", codes:"integers, percents, square roots, rounding"},
   algebra:     {subj:"math", name:"Algebra & coding", codes:"expressions, equations, patterns, loops"},
@@ -3789,6 +4006,10 @@ function renderHome(){
       '<span class="nowmeta">' + cn + ' questions · ' + (cst.pct === null ? "not started yet" : cst.pct + "% right so far") + '</span>' +
       '</button>';
   }
+  html += '<div class="card pad stack classnew"><div><span class="nowlab" style="color:var(--brand)">New from your class</span>' +
+    '<h2 style="margin-top:4px">Practise what your teacher just posted</h2></div>' +
+    '<div class="row"><button class="primary" data-cls="bedmas">Exponents &amp; BEDMAS · ' + BANK.filter(function(q){ return q.topic === "bedmas"; }).length + '</button>' +
+    '<button class="soft" data-cls="french">French from class · ' + DECKS.filter(function(d){ return d.id.indexOf("fr-cls") === 0 || d.id === "fr-prayers"; }).length + ' decks</button></div></div>';
   const openN = openMistakeIds(store).length;
   if(openN){
     html += '<button class="fixcard" data-go="retry"><span class="fixtxt"><span class="fixname">Fix my mistakes</span>' +
@@ -3821,6 +4042,12 @@ function renderHome(){
   wireMoveCard(); wireMoveOut();
   viewEl.querySelectorAll("[data-subj]").forEach(function(b){
     b.addEventListener("click", function(){ view.screen = "subject"; view.subj = b.dataset.subj; render(); window.scrollTo({top:0,behavior:"instant"}); });
+  });
+  viewEl.querySelectorAll("[data-cls]").forEach(function(b){
+    b.addEventListener("click", function(){
+      if(b.dataset.cls === "bedmas") startQuiz({mode:"topic", topic:"bedmas"});
+      else { view.screen = "cards"; view.clsOnly = true; render(); window.scrollTo({top:0,behavior:"instant"}); }
+    });
   });
   const nowBtn = viewEl.querySelector('[data-now]');
   if(nowBtn) nowBtn.addEventListener("click", function(){ startQuiz({mode:"topic", topic:CURRENT_UNIT}); });
@@ -3899,7 +4126,7 @@ function renderQuiz(){
       '<p class="muted" style="margin-top:8px">Write it out first, even roughly — comparing is where the learning happens.</p>' +
       '</div>';
   } else {
-    html += '<div class="numrow"><input id="numin" type="text" inputmode="decimal" autocomplete="off" placeholder="Type your answer"><button class="primary" id="checkBtn">Check</button></div>';
+    html += '<div class="numrow"><input id="numin" type="text" inputmode="decimal" autocomplete="off" placeholder="Type your answer"><button class="soft" id="signBtn" type="button" aria-label="Make it negative or positive" title="Negative / positive">+/−</button><button class="primary" id="checkBtn">Check</button></div>';
   }
   html += '<div id="fbslot"></div></div></div>';
   viewEl.innerHTML = html;
@@ -3919,6 +4146,9 @@ function renderQuiz(){
     document.getElementById("revealBtn").addEventListener("click", function(){ revealWrite(q); });
   } else {
     const input = document.getElementById("numin");
+    /* iPhone number keypads have no minus key */
+    const sb = document.getElementById("signBtn");
+    if(sb) sb.addEventListener("click", function(){ const v = input.value.trim(); input.value = /^[-−]/.test(v) ? v.replace(/^[-−]\s*/, "") : "-" + v; input.focus(); });
     input.focus();
     document.getElementById("checkBtn").addEventListener("click", function(){ answer(input.value); });
     input.addEventListener("keydown", function(e){ if(e.key === "Enter") answer(input.value); });
@@ -4018,7 +4248,7 @@ function rateWrite(q, score){
 }
 
 function parseNum(raw){
-  const c = String(raw).replace(/[$,\s]/g, "").replace(/[°%]/g, "");
+  const c = String(raw).replace(/[$,\s]/g, "").replace(/[°%]/g, "").replace(/[−–]/g, "-");
   if(c === "") return NaN;
   if(/^-?\d+\/\d+$/.test(c)){ const p = c.split("/"); return parseFloat(p[0]) / parseFloat(p[1]); }
   return parseFloat(c);
@@ -4683,12 +4913,14 @@ BANK.forEach(function(q){ BANK_BY_ID[q.id] = q; });
 
 function cleanSide(t){ return String(t).replace(/\s*\((m|f)\.\)\s*/g, " ").replace(/\s+/g, " ").trim(); }
 function dirLabel(deck, dir){
+  if(deck.recite) return dir === "f2b" ? "Line → what comes next" : "Line → what came before";
   if(deck.lang === "fr") return dir === "f2b" ? "French → English" : "English → French";
   return dir === "f2b" ? "Word → meaning" : "Meaning → word";
 }
 function cardSides(deck, i, dir){
   const c = deck.cards[i];
-  return dir === "f2b" ? {front:c.f, back:c.b, frontLang:deck.lang, backLang:"en"} : {front:c.b, back:c.f, frontLang:"en", backLang:deck.lang};
+  const bl = deck.backLang || "en";
+  return dir === "f2b" ? {front:c.f, back:c.b, frontLang:deck.lang, backLang:bl} : {front:c.b, back:c.f, frontLang:bl, backLang:deck.lang};
 }
 /* flashcard answers live in the same history as quiz answers */
 function qById(id){
@@ -4790,11 +5022,13 @@ function renderDecks(){
   let html = '<div class="stack"><div class="card pad stack"><h2>Flashcards</h2>' +
     '<p class="muted">Pick a deck. <b>Learn</b> flips through the cards. <b>Test</b> checks what stuck and saves your score. ' +
     'Cards you know well show up less; tricky ones come back more.</p></div>';
-  ["french", "science", "math"].forEach(function(subj){
-    const decks = DECKS.filter(function(d){ return d.subj === subj; });
+  const isCls = function(d){ return d.id.indexOf("fr-cls") === 0 || d.id === "fr-prayers"; };
+  [["class", "From your class"], ["french", "French"], ["science", "Science"], ["math", "Math"]].forEach(function(g){
+    const subj = g[0];
+    const decks = DECKS.filter(function(d){ return subj === "class" ? isCls(d) : (d.subj === subj && !isCls(d)); });
     if(!decks.length) return;
-    const s = SUBJECTS[subj];
-    html += '<div class="deckgroup" style="--tone:' + s.tone + ';--tonesoft:' + s.soft + '"><h3 class="dgh">' + s.name + '</h3>';
+    const s = SUBJECTS[subj] || SUBJECTS.french;
+    html += '<div class="deckgroup" style="--tone:' + s.tone + ';--tonesoft:' + s.soft + '"><h3 class="dgh">' + g[1] + '</h3>';
     decks.forEach(function(d){
       const c = deckCounts(d), pk = Math.round(c.known / c.n * 100), pl = Math.round(c.learning / c.n * 100);
       html += '<button class="deckbtn" data-deck="' + d.id + '">' +
@@ -4816,7 +5050,7 @@ function renderDecks(){
 function renderDeck(){
   const d = DECK_BY_ID[view.deck], s = SUBJECTS[d.subj], c = deckCounts(d);
   const dir = fcDir[d.id] || "f2b";
-  const canType = d.lang === "fr" && dir === "b2f";
+  const canType = d.lang === "fr" && dir === "b2f" && !d.recite;
   let html = '<div class="stack" style="--tone:' + s.tone + ';--tonesoft:' + s.soft + '">' +
     '<div class="card pad stack"><div><span class="tag">' + s.name + ' · ' + d.cards.length + ' cards</span><h2 style="margin-top:8px">' + esc(d.name) + '</h2></div>' +
     '<div class="fcstats"><span><b>' + c.known + '</b> known</span><span><b>' + c.learning + '</b> learning</span><span><b>' + c.fresh + '</b> new</span></div>' +
@@ -4825,8 +5059,8 @@ function renderDeck(){
       '<button data-dir="b2f" aria-pressed="' + (dir === "b2f") + '">' + dirLabel(d, "b2f") + '</button></div>' +
     '<div class="row"><button class="primary" id="fcLearn">Learn · flip cards</button></div>' +
     '<div class="row"><button class="soft" id="fcTestPick">Test · pick the answer</button>' +
-      (d.lang === "fr" ? '<button class="soft" id="fcTestType"' + (canType ? '' : ' disabled title="Switch to English → French to type in French"') + '>Test · type it in French</button>' : '') + '</div>' +
-    (d.lang === "fr" && !canType ? '<p class="muted">Tip: switch to English → French to unlock typing tests.</p>' : '') +
+      (d.lang === "fr" && !d.recite ? '<button class="soft" id="fcTestType"' + (canType ? '' : ' disabled title="Switch to English → French to type in French"') + '>Test · type it in French</button>' : '') + '</div>' +
+    (d.lang === "fr" && !canType && !d.recite ? '<p class="muted">Tip: switch to English → French to unlock typing tests.</p>' : '') +
     '</div>' +
     '<details class="card pad cardlist"><summary>See all ' + d.cards.length + ' cards</summary><ul>' +
     d.cards.map(function(cd, i){
@@ -4963,7 +5197,7 @@ function renderFcTest(){
     '<div class="fchead"><span class="tag">Test · ' + esc(d.name) + '</span><span class="muted">' + (fc.pos + 1) + ' of ' + fc.queue.length + '</span></div>' +
     '<div class="fcprog"><i style="width:' + Math.round(fc.pos / fc.queue.length * 100) + '%"></i></div>' +
     '<div class="card pad">' +
-      '<span class="side">' + (sd.frontLang === "fr" ? "What does this mean?" : (d.lang === "fr" ? "Say it in French" : "Which word is this?")) + '</span>' +
+      '<span class="side">' + (d.recite ? (fc.dir === "f2b" ? "What comes next?" : "What came before?") : sd.frontLang === "fr" ? "What does this mean?" : (d.lang === "fr" ? "Say it in French" : "Which word is this?")) + '</span>' +
       '<div class="tword' + (sd.frontLang === "fr" ? " fr" : "") + '">' + esc(cleanSide(sd.front)) + '</div>' + sayBtn(sd.front, sd.frontLang);
   if(fc.style === "pick"){
     html += '<div class="choices">' + fc.opts.map(function(o, k){
