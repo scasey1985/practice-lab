@@ -3679,6 +3679,606 @@ DECKS.push(
   ]}
 );
 
+/* ===== BANK7 (Oct 5): fresh questions so repeats rotate out, plus new class material ===== */
+const BANK7 = [], FAM7 = {}, SOL7 = {}, HELP7 = {}, ASK7 = {};
+function add7(q, fam, sol){ BANK7.push(q); if(fam) FAM7[q.id] = fam; if(sol) SOL7[q.id] = sol; }
+
+/* ---------- math: generated so there is always a fresh one ---------- */
+(function(){
+  function gcd(a, b){ while(b){ const t = b; b = a % b; a = t; } return a; }
+  function lcm(a, b){ return a / gcd(a, b) * b; }
+  function factors(n){ const f = []; for(let i = 1; i <= n; i++) if(n % i === 0) f.push(i); return f; }
+  function multiplesUpTo(n, top){ const m = []; for(let k = n; k <= top; k += n) m.push(k); return m; }
+  function primeFactors(n){ const f = []; let d = 2; while(n > 1){ while(n % d === 0){ f.push(d); n /= d; } d++; } return f; }
+  const X = " × ";
+
+  /* cube roots */
+  [8, 9, 10, 11, 13, 14, 15].forEach(function(n){
+    add7({id:"g-cr-" + n, subj:"math", topic:"powers", code:"Class work", type:"num",
+      q:"What is the cube root of " + (n*n*n) + "?  (∛" + (n*n*n) + ")", a:n,
+      why:n + " × " + n + " × " + n + " = " + (n*n*n) + ", so ∛" + (n*n*n) + " = " + n + "."},
+      "cube-roots", "Which number, used three times, gives " + (n*n*n) + "?\n" + n + " × " + n + " = " + (n*n) + "\n" + (n*n) + " × " + n + " = " + (n*n*n) + " ✓\nAnswer: " + n + ".");
+  });
+  [2, 3, 4, 5, 6, 7, 9, 10, 12].forEach(function(n){
+    add7({id:"g-crw-" + n, subj:"math", topic:"powers", code:"Class work", type:"num",
+      q:"Which whole number, multiplied by itself three times, makes " + (n*n*n) + "?", a:n,
+      why:"That is the cube root: " + n + " × " + n + " × " + n + " = " + (n*n*n) + "."},
+      "cube-roots", "This is just ∛" + (n*n*n) + " in words.\nTry " + n + ": " + n + " × " + n + " = " + (n*n) + ", × " + n + " = " + (n*n*n) + " ✓\nAnswer: " + n + ".");
+  });
+  /* square roots */
+  [7, 8, 9, 11, 12, 13, 14, 15, 16, 20, 25].forEach(function(n){
+    add7({id:"g-sr-" + n, subj:"math", topic:"powers", code:"B1.2", type:"num",
+      q:"What is the square root of " + (n*n) + "?  (√" + (n*n) + ")", a:n,
+      why:n + " × " + n + " = " + (n*n) + ", so √" + (n*n) + " = " + n + ". A square root uses the number twice; a cube root uses it three times."},
+      "perfect-squares", "Which number times itself gives " + (n*n) + "?\n" + n + " × " + n + " = " + (n*n) + " ✓\nAnswer: " + n + ".");
+  });
+  /* cubes and squares */
+  [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15].forEach(function(n){
+    add7({id:"g-cu-" + n, subj:"math", topic:"powers", code:"B1.2", type:"num",
+      q:"Calculate: " + n + "³", a:n*n*n,
+      why:n + "³ means " + n + " × " + n + " × " + n + " = " + (n*n*n) + ". It is NOT " + n + " × 3."},
+      "powers", n + "³ = " + n + " × " + n + " × " + n + "\n" + n + " × " + n + " = " + (n*n) + "\n" + (n*n) + " × " + n + " = " + (n*n*n) + "\nAnswer: " + (n*n*n) + ".");
+  });
+  [11, 13, 14, 15, 16, 17, 18, 19].forEach(function(n){
+    add7({id:"g-sq-" + n, subj:"math", topic:"powers", code:"B1.2", type:"num",
+      q:"Calculate: " + n + "²", a:n*n,
+      why:n + "² means " + n + " × " + n + " = " + (n*n) + "."},
+      "powers", n + "² = " + n + " × " + n + " = " + (n*n) + "\nTip: " + n + " × 10 = " + (n*10) + ", plus " + n + " × " + (n-10) + " = " + (n*(n-10)) + ", total " + (n*n) + ".\nAnswer: " + (n*n) + ".");
+  });
+  /* square vs cube */
+  [3, 5, 6, 10].forEach(function(n){
+    add7({id:"g-pair-" + n, subj:"math", topic:"powers", code:"B1.2", type:"mc", q:"Which pair is correct?",
+      choices:[n + "² = " + (n*n) + " and " + n + "³ = " + (n*n*n), n + "² = " + (2*n) + " and " + n + "³ = " + (3*n),
+               n + "² = " + (n*n) + " and " + n + "³ = " + (2*n*n), n + "² = " + (2*n) + " and " + n + "³ = " + (n*n*n)], a:0,
+      why:"Squaring uses the number twice (" + n + " × " + n + " = " + (n*n) + "); cubing uses it three times (" + n + " × " + n + " × " + n + " = " + (n*n*n) + ")."},
+      "powers");
+  });
+  /* estimating cube roots */
+  [[20,2,3],[50,3,4],[70,4,5],[150,5,6],[200,5,6],[300,6,7],[400,7,8],[600,8,9],[900,9,10]].forEach(function(t){
+    const N = t[0], lo = t[1], hi = t[2];
+    const opts = [lo + " and " + hi, (lo-1) + " and " + lo, (hi) + " and " + (hi+1), Math.floor(Math.sqrt(N)) + " and " + (Math.floor(Math.sqrt(N))+1)];
+    const seen = {}; const uniq = opts.filter(function(o){ if(seen[o]) return false; seen[o] = 1; return true; });
+    if(uniq.length < 4) uniq.push((hi+2) + " and " + (hi+3));
+    add7({id:"g-est-" + N, subj:"math", topic:"powers", code:"Class work", type:"mc",
+      q:"∛" + N + " falls between which two whole numbers?", choices:uniq.slice(0,4), a:0,
+      why:lo + "³ = " + (lo*lo*lo) + " and " + hi + "³ = " + (hi*hi*hi) + ". " + N + " sits between them, so ∛" + N + " is between " + lo + " and " + hi + "."},
+      "estimate-cube-root");
+  });
+
+  /* ----- prime factors, GCF & LCM (from class: "Prime Factorization for LCM / GCF") ----- */
+  [12, 18, 20, 28, 30, 36, 40, 45, 48, 50, 54, 60, 84, 90, 96, 100].forEach(function(n){
+    const pf = primeFactors(n), right = pf.join(X);
+    const extra = pf.concat([2]).sort(function(x, y){ return x - y; }).join(X);
+    const short = pf.slice(0, -1).join(X) || "1";
+    let a1 = 2, a2 = n / 2; for(let k = 4; k < n; k++){ if(n % k === 0 && primeFactors(k).length > 1){ a1 = k; a2 = n / k; break; } }
+    const comp = a1 + X + a2;
+    const opts = [right, extra, short, comp];
+    const seen = {}; const uniq = opts.filter(function(o){ if(seen[o]) return false; seen[o] = 1; return true; });
+    if(uniq.length < 4) uniq.push("1" + X + n);
+    add7({id:"g-pf-" + n, subj:"math", topic:"primefac", code:"Class work", type:"mc",
+      q:"Which is the prime factorization of " + n + "?", choices:uniq.slice(0,4), a:0,
+      why:"Every factor must be prime, and they must multiply back to " + n + ": " + right + " = " + n + ". " + comp + " multiplies to " + n + " but isn't all primes."},
+      "prime-factors", "Split " + n + " with a factor tree until every branch ends in a prime:\n" + (function(){ let s = "", m = n; pf.forEach(function(p){ s += m + " = " + p + " × " + (m/p) + "\n"; m /= p; }); return s; })() + "Primes: " + right + "\nCheck: multiply back → " + n + " ✓");
+  });
+  [[29,27,33,39],[31,21,49,51],[17,15,27,91],[23,25,57,87],[37,35,39,111],[41,45,51,63],[43,49,55,91],[53,57,69,77]].forEach(function(s){
+    add7({id:"g-prime-" + s[0], subj:"math", topic:"primefac", code:"Class work", type:"mc",
+      q:"Which of these is a PRIME number?", choices:s.map(String), a:0,
+      why:s[0] + " can only be divided by 1 and itself. " + s.slice(1).map(function(k){ const p = primeFactors(k); return k + " = " + p[0] + " × " + (k/p[0]); }).join(", ") + "."},
+      "primes");
+  });
+  [[4,6],[6,9],[4,10],[5,6],[3,8],[10,15],[6,10],[9,12],[8,12],[12,18],[15,20],[14,21],[16,24],[5,7],[8,20],[18,24],[20,30],[6,14],[12,15],[10,25]].forEach(function(p){
+    const a = p[0], b = p[1], L = lcm(a, b), top = L;
+    add7({id:"g-lcm-" + a + "-" + b, subj:"math", topic:"primefac", code:"Class work", type:"num",
+      q:"What is the LCM (least common multiple) of " + a + " and " + b + "?", a:L,
+      why:"Count up by each number until they meet: the first shared multiple is " + L + "."},
+      "lcm", a + ": " + multiplesUpTo(a, top).join(", ") + "\n" + b + ": " + multiplesUpTo(b, top).join(", ") + "\nFirst match: " + L + "\nPrime-factor way: " + primeFactors(a).join(X) + " and " + primeFactors(b).join(X) + " → take every prime the MOST times it appears → " + L + ".\nAnswer: " + L + ".");
+  });
+  [[12,18],[16,24],[18,27],[20,30],[15,25],[28,42],[36,48],[32,40],[45,60],[54,72],[14,35],[48,72],[30,45],[21,28],[40,56],[72,90]].forEach(function(p){
+    const a = p[0], b = p[1], G = gcd(a, b);
+    add7({id:"g-gcf-" + a + "-" + b, subj:"math", topic:"primefac", code:"Class work", type:"num",
+      q:"What is the GCF (greatest common factor) of " + a + " and " + b + "?", a:G,
+      why:"The biggest number that divides into both " + a + " and " + b + " is " + G + "."},
+      "gcf", a + ": " + factors(a).join(", ") + "\n" + b + ": " + factors(b).join(", ") + "\nLargest shared: " + G + "\nPrime-factor way: " + primeFactors(a).join(X) + " and " + primeFactors(b).join(X) + " → multiply only the primes they SHARE → " + G + ".\nAnswer: " + G + ".");
+  });
+  [[12,18,30],[16,24,40],[18,27,45],[20,30,50],[14,28,42],[24,36,48]].forEach(function(p){
+    const G = gcd(gcd(p[0], p[1]), p[2]);
+    add7({id:"g-gcf3-" + p.join("-"), subj:"math", topic:"primefac", code:"Class work", type:"num",
+      q:"What is the GCF of " + p.join(", ") + "?", a:G,
+      why:G + " is the biggest number that divides evenly into all three."},
+      "gcf", "Prime factors:\n" + p.map(function(k){ return k + " = " + primeFactors(k).join(X); }).join("\n") + "\nPrimes shared by ALL three, multiplied: " + G + "\nCheck: " + p.map(function(k){ return k + " ÷ " + G + " = " + (k/G); }).join(", ") + " ✓");
+  });
+  [[2,3,4],[3,4,6],[4,5,10],[2,5,6],[3,5,6],[4,6,8]].forEach(function(p){
+    const L = lcm(lcm(p[0], p[1]), p[2]);
+    add7({id:"g-lcm3-" + p.join("-"), subj:"math", topic:"primefac", code:"Class work", type:"num",
+      q:"What is the LCM of " + p.join(", ") + "?", a:L,
+      why:L + " is the smallest number all three divide into."},
+      "lcm", "Count up by the biggest number (" + p[2] + ") and test each one:\n" + multiplesUpTo(p[2], L).map(function(m){ return m + (p.every(function(k){ return m % k === 0; }) ? " ✓ all three divide in" : ""); }).join("\n") + "\nAnswer: " + L + ".");
+  });
+  const LCMctx = [
+    function(a, b){ return "Hot dogs come in packs of " + a + " and buns in packs of " + b + ". What is the smallest number of hot dogs you can buy so there are exactly enough buns, with none left over?"; },
+    function(a, b){ return "One light blinks every " + a + " seconds and another every " + b + " seconds. They just blinked together. How many seconds until they blink together again?"; },
+    function(a, b){ return "Maya runs a lap in " + a + " minutes and Jordan in " + b + " minutes. They start together. After how many minutes are they both back at the start line at the same time?"; },
+    function(a, b){ return "Club A meets every " + a + " days and Club B every " + b + " days. Both met today. In how many days will they both meet on the same day again?"; }
+  ];
+  const GCFctx = [
+    function(a, b){ return "You split " + a + " cookies and " + b + " juice boxes into identical snack bags with nothing left over. What is the greatest number of bags you can make?"; },
+    function(a, b){ return "A coach has " + a + " girls and " + b + " boys and wants teams that are all the same, each with the same number of girls and boys. What is the greatest number of teams?"; },
+    function(a, b){ return "Two ribbons are " + a + " cm and " + b + " cm long. You cut both into pieces that are all the same length, with no ribbon left over. What is the longest each piece can be?"; },
+    function(a, b){ return "A florist has " + a + " roses and " + b + " tulips and makes identical bouquets using every flower. What is the greatest number of bouquets?"; }
+  ];
+  function uniq4(arr){ const s = {}; return arr.filter(function(o){ if(s[o]) return false; s[o] = 1; return true; }); }
+  [[8,12],[6,15],[10,12],[9,15],[12,16],[20,25],[15,18],[10,14]].forEach(function(p, i){
+    const a = p[0], b = p[1], L = lcm(a, b), G = gcd(a, b);
+    const ch = uniq4(["LCM — " + L, "GCF — " + G, "LCM — " + (a*b), "GCF — " + L, "LCM — " + (a+b)]).slice(0,4);
+    add7({id:"g-wl-" + a + "-" + b + "-" + (i%4), subj:"math", topic:"primefac", code:"Class work", type:"mc",
+      q:"LCM or GCF? " + LCMctx[i % 4](a, b), choices:ch, a:0,
+      why:"'Line up again' or 'smallest amount that works for both' means LCM. The LCM of " + a + " and " + b + " is " + L + "."},
+      "lcm-gcf-choose", "Clue: you are waiting for two cycles to match up → LCM.\n" + a + ": " + multiplesUpTo(a, L).join(", ") + "\n" + b + ": " + multiplesUpTo(b, L).join(", ") + "\nFirst match: " + L + "\nSize check: an LCM answer is bigger than both numbers ✓");
+  });
+  [[18,30],[24,40],[36,54],[42,56],[27,45],[32,48],[60,84],[45,75]].forEach(function(p, i){
+    const a = p[0], b = p[1], L = lcm(a, b), G = gcd(a, b);
+    const ch = uniq4(["GCF — " + G, "LCM — " + L, "GCF — " + (G/ (G % 2 === 0 ? 2 : 3)), "LCM — " + G, "GCF — " + (a+b)]).slice(0,4);
+    add7({id:"g-wg-" + a + "-" + b + "-" + (i%4), subj:"math", topic:"primefac", code:"Class work", type:"mc",
+      q:"LCM or GCF? " + GCFctx[i % 4](a, b), choices:ch, a:0,
+      why:"Splitting things into equal groups with nothing left over means GCF. The GCF of " + a + " and " + b + " is " + G + "."},
+      "lcm-gcf-choose", "Clue: equal groups, nothing left over → GCF.\nGCF of " + a + " and " + b + " = " + G + "\nEach group gets " + a + " ÷ " + G + " = " + (a/G) + " and " + b + " ÷ " + G + " = " + (b/G) + ".\nSize check: a GCF answer is smaller than both numbers ✓");
+  });
+})();
+
+HELP7["prime-factors"] = {title:"Prime factorization", steps:[
+  "A prime number has exactly two factors: 1 and itself (2, 3, 5, 7, 11, 13 …). 1 is NOT prime.",
+  "Make a factor tree: split the number into any two factors, then keep splitting until every branch is prime.",
+  "Write the primes multiplied together, smallest first.",
+  "Check by multiplying them back — you must get the original number."],
+  ex:"72\n72 = 8 × 9\n8 = 2 × 2 × 2,  9 = 3 × 3\nSo 72 = 2 × 2 × 2 × 3 × 3\n\nGCF: multiply the primes both numbers SHARE.\nLCM: take every prime the most times it appears in either number."};
+ASK7["prime-factors"] = "Break the number into prime numbers only that multiply back to it.";
+HELP7["primes"] = {title:"Prime numbers", steps:[
+  "Prime = only divisible by 1 and itself. Composite = has other factors.",
+  "Quick tests: even (ends in 0,2,4,6,8) → divisible by 2. Digits add to a multiple of 3 → divisible by 3. Ends in 0 or 5 → divisible by 5.",
+  "Also try 7 (49, 77, 91 are traps!).",
+  "First primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47."],
+  ex:"Is 51 prime?\n5 + 1 = 6, a multiple of 3 → 51 = 3 × 17\nSo 51 is NOT prime."};
+ASK7["primes"] = "Find the one number that nothing divides into except 1 and itself.";
+
+/* ---------- science: new versions of the questions she has already done twice ---------- */
+function mc7(id, like, fam, topic, code, q, choices, why){
+  add7({id:id, like:like, subj:"science", topic:topic, code:code, type:"mc", q:q, choices:choices, a:0, why:why}, fam);
+}
+function wr7(id, like, fam, topic, code, q, model, points, why){
+  add7({id:id, like:like, subj:"science", topic:topic, code:code, type:"write", q:q, model:model, points:points, why:why}, fam);
+}
+/* ecosystems */
+mc7("eco7-01","s-b-02","feeding-roles","ecosystems","B2.3","Mushrooms growing on an old tree stump are acting as:",
+  ["Decomposers","Producers","Primary consumers","Predators"],
+  "Mushrooms are fungi. They feed by breaking down dead wood and returning its nutrients to the soil — that is a decomposer's job.");
+mc7("eco7-02","s-b-06","succession","ecosystems","B2.6","Wind piles up new sand dunes along a lake shore. Over many years beach grass, then shrubs, then a forest grow there — and there was no soil to begin with. This is:",
+  ["Primary succession","Secondary succession","Bioaccumulation","Fragmentation"],
+  "No soil at the start means primary succession. Secondary succession only happens where soil is already there, like after a fire.");
+mc7("eco7-03","s-b-07","limiting-factors","ecosystems","B2.7","A pond has plenty of insects for frogs to eat, but very few safe spots to lay eggs. The number of egg-laying spots is acting as a:",
+  ["Limiting factor","Producer","Pioneer species","Decomposer"],
+  "Anything that caps how big a population can get is a limiting factor. Here it's space for eggs, not food.");
+mc7("eco7-04","s-b-08","agriculture-impact","ecosystems","B2.8","Fertilizer from farm fields washes into a lake and causes a huge algae bloom. What usually happens next?",
+  ["The algae die and decompose, using up oxygen, so fish can suffocate","The lake gets more oxygen and fish thrive","Nothing — algae are harmless producers","The water turns into soil"],
+  "This is eutrophication. Too many nutrients → algae explode → algae die → decomposers use up the oxygen → fish die. Buffer strips of plants beside fields help stop it.");
+mc7("eco7-05","eco-01","ecosystem-network","ecosystems","B2.1","What is the difference between a population and an ecosystem?",
+  ["A population is one species in an area; an ecosystem is all the living and non-living things there and how they interact","They mean the same thing","A population includes rocks and water; an ecosystem does not","An ecosystem is always bigger than a country"],
+  "A population is just one species (all the deer in a park). An ecosystem adds every other species, the non-living parts, and the connections between them.");
+mc7("eco7-06","eco-03","biotic-abiotic","ecosystems","B2.2","Which list contains ONLY biotic factors?",
+  ["Bacteria, ferns, a fallen feather","Rocks, ferns, bacteria","Water, salamanders, sunlight","Wind, beetles, sand"],
+  "Biotic means living or once living — a fallen feather counts. Rocks, water, sunlight, wind and sand are abiotic.");
+mc7("eco7-07","eco-04","abiotic-effects","ecosystems","B2.2","A late spring frost kills most of the blossoms in an apple orchard. What is the most likely chain of effects?",
+  ["Bees find less nectar, fewer apples grow, and animals that eat the apples have less food","The trees grow more apples to make up for it","Only the weather is affected","Decomposers stop working"],
+  "One abiotic change (frost) ripples through the living things: flowers → pollinators → fruit → the animals that depend on the fruit.");
+mc7("eco7-08","eco-05","biotic-abiotic","ecosystems","B2.2","An antler that a deer shed on the forest floor is:",
+  ["Biotic — it came from a living thing","Abiotic — it isn't alive any more","Abiotic — it is hard like a rock","Neither"],
+  "Anything that is living or was part of a living thing is biotic. Mice and porcupines even gnaw shed antlers for the minerals.");
+mc7("eco7-09","eco-06","feeding-roles","ecosystems","B2.3","In a prairie grassland, which organism is the PRODUCER?",
+  ["Prairie grass","Grasshopper","Hawk","Mouse"],
+  "Producers make their own food from sunlight. The grasshopper, mouse and hawk all have to eat something else.");
+mc7("eco7-10","eco-07","feeding-roles","ecosystems","B2.3","Earthworms and bacteria in a compost bin mainly help a garden by:",
+  ["Breaking down scraps and returning nutrients to the soil","Making food from sunlight","Eating the garden's pests","Keeping the soil cold"],
+  "They are decomposers. Compost is basically decomposers turning waste back into nutrients plants can use.");
+mc7("eco7-11","eco-08","consumer-levels","ecosystems","B2.3","In the chain seeds → mouse → snake → hawk, the SNAKE is the:",
+  ["Secondary consumer","Primary consumer","Producer","Decomposer"],
+  "Seeds are the producer, the mouse (eats seeds) is the primary consumer, the snake (eats the mouse) is secondary, and the hawk is tertiary.");
+mc7("eco7-12","eco-14","water-cycle","ecosystems","B2.5","Water vapour cooling high in the air and forming tiny droplets in clouds is called:",
+  ["Condensation","Evaporation","Transpiration","Infiltration"],
+  "Condensation is gas turning back into liquid. Evaporation is the opposite, and transpiration is water leaving through plant leaves.");
+mc7("eco7-13","eco-16","nitrogen-cycle","ecosystems","B2.5","Why do some farmers plant clover or beans to make their soil better?",
+  ["Bacteria in their roots turn nitrogen from the air into a form plants can use","Their leaves block too much sunlight","They soak up all the water","They scare away insects"],
+  "Legumes like clover and beans host nitrogen-fixing bacteria in root nodules. When the plants die, that nitrogen stays in the soil for the next crop.");
+mc7("eco7-14","eco-17","succession","ecosystems","B2.6","A farmer stops using a field. Weeds appear first, then shrubs, then young trees. This is:",
+  ["Secondary succession","Primary succession","Eutrophication","Bioaccumulation"],
+  "The soil was already there, so this is secondary succession — it is much faster than starting on bare rock.");
+mc7("eco7-15","eco-18","pioneer-species","ecosystems","B2.6","Why are lichens so important at the very start of primary succession?",
+  ["They slowly break down bare rock and help form the first soil","They provide shade for large trees","They are the top predators","They stop any other plants from growing"],
+  "Pioneer species like lichens can survive on bare rock. As they grow and die they crumble the rock and add organic matter — the first thin soil.");
+mc7("eco7-16","eco-19","climax-community","ecosystems","B2.6","A mature forest is hit by a big ice storm that knocks down many trees. What happens in the open areas?",
+  ["Succession starts again — sun-loving plants move in first","Nothing will ever grow there again","The forest instantly regrows to how it was","Only animals live there from then on"],
+  "A disturbance resets succession in that spot. Fast-growing, sun-loving plants arrive first, then the forest gradually returns.");
+mc7("eco7-17","eco-20","limiting-factors","ecosystems","B2.7","Snowshoe hares have a year with lots of food and their numbers jump. What usually happens to the lynx that hunt them?",
+  ["The lynx population rises a little later, because there is more food","The lynx population falls right away","Nothing — lynx don't depend on hares","The lynx become herbivores"],
+  "Predator numbers follow their prey. More hares → more food for lynx → more lynx survive and raise kittens, usually a year or so later.");
+mc7("eco7-18","eco-21","limiting-factors","ecosystems","B2.7","Which is a BIOTIC limiting factor for a rabbit population?",
+  ["A disease spreading among the rabbits","A cold winter","A drought","Not enough space in the field"],
+  "Disease comes from living things (bacteria or viruses), so it is biotic. Cold, drought and space are abiotic limits.");
+mc7("eco7-19","eco-24","bioaccumulation","ecosystems","B1.1","Mercury builds up in the fish of a lake. Which fish would be safest to eat often?",
+  ["A small fish that eats plankton","A large pike that eats other fish","They are all equally safe","The oldest, biggest fish"],
+  "Mercury bioaccumulates — it builds up at each step of the food chain. Small fish low on the chain carry the least; big, old predators carry the most.");
+mc7("eco7-20","eco-25","invasive-species","ecosystems","B1.1","The emerald ash borer beetle arrived in Ontario in wood packaging and has killed millions of ash trees. Why were the trees so vulnerable?",
+  ["Ontario's ash trees had no natural defences against it, and no predators kept it in check","The beetle only attacks dead trees","Ash trees are not native to Ontario","The beetle is a producer"],
+  "Invasive species succeed when the new ecosystem has nothing that evolved to resist or eat them. In its home in Asia, predators and tougher trees keep it under control.");
+mc7("eco7-21","eco-26","fragmentation","ecosystems","B1.1","A highway splits a forest in two. Which solution BEST reduces the harm to wildlife?",
+  ["Building wildlife crossings so animals can move between the two sides","Painting the highway green","Raising the speed limit so cars pass quickly","Removing the rest of the forest"],
+  "Overpasses and tunnels for animals reconnect the fragments, so populations aren't cut off. Ontario has some on Highway 69.");
+wr7("eco7-22","w-01","ecosystem-network","ecosystems","B2.1","Explain why a small pond can count as an ecosystem. Use at least one living and one non-living part in your answer.",
+  "A pond is an ecosystem because it has living things, non-living things, and they interact. For example, algae (living) use sunlight and water (non-living) to make food, and tadpoles eat the algae. If the water warmed up or dried out, the living things would be affected, which shows they are all connected.",
+  ["Names a LIVING part (algae, frogs, fish, insects…)","Names a NON-LIVING part (water, sunlight, mud, oxygen…)","Shows how they INTERACT or depend on each other"],
+  "Size doesn't matter. Living things + non-living things + interactions = ecosystem.");
+wr7("eco7-23","w-02","explain-mechanism","ecosystems","B2.2","A town paves over a wetland to build a parking lot. Describe ONE effect on the living things nearby, and explain WHY it happens.",
+  "Frogs and birds that lived in the wetland lose their habitat, so their populations drop. They had food, water and places to breed there, and the parking lot removes all three. Also, rainwater can't soak in any more, so it runs off into streams carrying oil and salt, which harms fish downstream.",
+  ["Names a specific effect on a living thing","Gives the WHY — the mechanism, with 'because' or 'so'","Links the human change to what the organism needs"],
+  "Good explanations always include the middle step: paving → no habitat / runoff → fewer frogs, sick fish.");
+wr7("eco7-24","w-03","limiting-factors","ecosystems","B2.7","Hunters remove all the wolves from a forest. Explain what happens to the deer population AND to the plants they eat.",
+  "Without wolves, fewer deer are killed, so the deer population grows. More deer eat more young trees and shrubs, so the plants get over-grazed and start to disappear. Eventually the deer run short of food, so their numbers crash from hunger.",
+  ["Deer population INCREASES at first (no predators)","Plants DECREASE because of over-grazing","Explains the chain — or that deer later drop when food runs out"],
+  "Removing a predator affects every level of the food web, not just the prey. This is what happened in Yellowstone before wolves were brought back.");
+mc7("eco7-25","w-07","eco-vocab","ecosystems","B2.1","The place where an organism lives and finds everything it needs is called its:",
+  ["Habitat","Population","Biome","Niche"],
+  "Habitat = where it lives. Niche = its role or 'job' there (what it eats, what eats it). A biome is a huge region like tundra or boreal forest.");
+wr7("eco7-26","w-09","explain-compare","ecosystems","B2.2","A bee lives in a meadow. Explain how EACH of these affects the bee: flowers, cold weather, and pesticide spraying.",
+  "Flowers are the bee's food — they give nectar and pollen — so more flowers means more food for the hive. Cold weather is abiotic: bees can't fly when it's too cold, so they can't collect food, and flowers bloom less. Pesticide spraying can poison bees directly or weaken them, so fewer bees survive and fewer flowers get pollinated.",
+  ["Flowers = food source (nectar / pollen)","Cold = abiotic factor that limits flying or blooming","Pesticides = harm or poison bees, with a consequence"],
+  "Each factor needs its own effect AND reason. One sentence each is enough.");
+mc7("eco7-27","w-10","ecosystem-network","ecosystems","B2.1","Which of these is NOT an ecosystem?",
+  ["A single robin","A puddle with algae and mosquito larvae","A city park","A coral reef"],
+  "One robin is an organism, not an ecosystem. The others all have living and non-living parts interacting.");
+/* matter */
+mc7("mat7-01","s-c-01","particle-theory","matter","C2.1","According to the particle theory, why does a balloon get bigger when it is warmed?",
+  ["The gas particles move faster and spread farther apart","Each particle grows bigger","New particles are created","The rubber particles melt"],
+  "Heat gives particles more energy, so they move faster and push farther apart. The particles themselves never change size.");
+mc7("mat7-02","s-c-02","pure-vs-mixture","matter","C2.2","Which of these is a MIXTURE?",
+  ["Granola","Pure gold","Distilled water","Table salt"],
+  "Granola has oats, nuts and fruit you can pick apart. Gold, distilled water and table salt are each one kind of particle — pure substances.");
+mc7("mat7-03","s-c-03","homo-hetero","matter","C2.3","Which mixture is HOMOGENEOUS?",
+  ["Vinegar","A chocolate chip cookie","Pizza","Sand stirred into water"],
+  "Vinegar looks the same all the way through — acetic acid dissolved in water. In the others you can see different parts.");
+mc7("mat7-04","s-c-04","dissolving-rate","matter","C2.4","Which would make hot-chocolate powder dissolve SLOWER?",
+  ["Using cold milk instead of hot","Stirring it","Using fine powder instead of lumps","Heating the milk"],
+  "Cold liquid has slower-moving particles, so dissolving slows down. Stirring, heat and smaller pieces all speed it up.");
+mc7("mat7-05","s-c-05","saturation","matter","C2.5","You keep stirring sugar into iced tea until crystals stay at the bottom no matter how much you stir. The tea is now:",
+  ["Saturated","Dilute","Unsaturated","A pure substance"],
+  "Saturated means it holds all the solute it can at that temperature. Warming it up would let more dissolve.");
+mc7("mat7-06","s-c-06","universal-solvent","matter","C2.6","Why can rainwater carry fertilizer from a farm field into a river?",
+  ["Water dissolves many substances, so the fertilizer travels in solution","Fertilizer is heavier than water","Rain is a pure substance","Rivers attract fertilizer"],
+  "Water dissolves so many things that it's called the universal solvent. That is useful for carrying nutrients — and a problem for carrying pollution.");
+mc7("mat7-07","s-c-07","separation","matter","C2.7","Which method best separates sand from water?",
+  ["Filtration","Distillation of the sand","Using a magnet","Chromatography"],
+  "Sand doesn't dissolve, so a filter catches it and lets the water through. Filtration only works for parts that are NOT dissolved.");
+mc7("mat7-08","s-c-08","separation","matter","C2.7","How could you separate the different coloured inks in a black marker?",
+  ["Chromatography","Using a magnet","Filtration","Sifting"],
+  "In chromatography the inks travel up paper at different speeds, so the black spreads out into separate colours.");
+mc7("mat7-09","s-c-09","element-compound","matter","C2.8","Which of these is an ELEMENT?",
+  ["Iron (Fe)","Water (H₂O)","Table salt (NaCl)","Carbon dioxide (CO₂)"],
+  "An element is made of only one kind of atom. The others combine two or more different elements, so they are compounds.");
+mc7("mat7-10","s-c-10","assess-impact","matter","C1.1","Which question BEST assesses the environmental impact of single-use plastic water bottles?",
+  ["What happens to the bottles after they are used — how many are recycled, landfilled or end up in water?","What colour are the labels?","How cold does the water stay?","How many fit in a fridge?"],
+  "Assessing impact means following the whole life cycle — making it, using it, and getting rid of it — and who or what is affected at each step.");
+/* structures */
+mc7("str7-01","s-d-01","structure-types","structures","D2.1","A bicycle helmet is mainly which type of structure?",
+  ["Shell structure","Solid structure","Frame structure","Mechanical structure"],
+  "A shell is a thin curved outer layer that spreads force over its surface — like an egg, a helmet or a canoe.");
+mc7("str7-02","s-d-02","centre-gravity","structures","D2.2","Why is a pyramid much harder to tip over than a tall, thin tower of the same mass?",
+  ["Its wide base and low centre of gravity make it very stable","It is made of heavier stone","Pyramids are hollow","Towers have no centre of gravity"],
+  "The lower the centre of gravity and the wider the base, the further a structure can tilt before it falls.");
+mc7("str7-03","s-d-03","describing-forces","structures","D2.3","When describing a force, 'magnitude' means:",
+  ["How strong the force is","Which way it pushes","Where it touches the structure","How long it lasts"],
+  "Magnitude = size or strength (measured in newtons). Direction, point of application and plane of application are the other three parts.");
+mc7("str7-04","s-d-04","static-dynamic","structures","D2.3","Wind pushing on a billboard is an example of a:",
+  ["Dynamic (live) load","Static (dead) load","Tension failure","Centre of gravity"],
+  "Wind changes from moment to moment, so it is a dynamic load. The billboard's own weight is the static load.");
+mc7("str7-05","s-d-05","failure","structures","D2.5","An old steel bridge beam slowly weakens as rust eats away at it. This kind of failure is caused by:",
+  ["Corrosion","Metal fatigue","Torsion","Buckling"],
+  "Corrosion is a chemical reaction (rust) that eats material away. Fatigue is different — it comes from bending back and forth many times.");
+mc7("str7-06","s-d-06","tension-compression","structures","D2.5","The chains or ropes holding up a playground swing are under:",
+  ["Tension","Compression","Torsion","Shear"],
+  "The weight pulls the chains, stretching them — that is tension. The legs of the swing set are pushed down — that is compression.");
+mc7("str7-07","s-d-07","symmetry","structures","D2.4","Why are an airplane's two wings built as mirror images of each other?",
+  ["So the forces on both sides are balanced and the plane stays stable","So they are cheaper to paint","Because it looks nicer","To make the plane heavier"],
+  "Symmetry spreads loads evenly on both sides. If one wing lifted more than the other, the plane would roll.");
+mc7("str7-08","s-d-08","material-choice","structures","D2.6","Which material is the best choice for a kayak paddle?",
+  ["Fibreglass — strong, light and waterproof","Cast iron","Cardboard","Glass"],
+  "A paddle must be strong, light enough to lift thousands of times, and not soak up water. Iron is too heavy; cardboard and glass would fail.");
+mc7("str7-09","s-d-09","maintenance","structures","D2.7","Why do cities inspect playground equipment on a regular schedule?",
+  ["To find wear, loose bolts or rust before something breaks","To change the colours","To make it taller each year","Because new kids arrive"],
+  "Regular inspection catches small problems early, before they become a failure that hurts someone.");
+mc7("str7-10","s-d-10","ergonomics","structures","D1.2","Which backpack setup is the most ergonomic?",
+  ["Two wide, padded straps worn on both shoulders, with the heaviest items close to the back","One strap over one shoulder","Straps loose so it hangs low","The heaviest items in the front pocket"],
+  "Ergonomics fits a design to the body. Two straps share the load evenly and heavy items close to the back keep your posture straight.");
+/* extra matter + structures so a full 12-question set can be all new */
+mc7("mat7-11","s-c-01","particle-theory","matter","C2.1","Why can you smell cookies baking from another room?",
+  ["Gas particles are always moving and spread out through the air","Smell particles are pushed by the oven fan only","Particles of air stand still and wait for the smell","The cookies grow bigger"],
+  "Particles are always in motion. Scent particles mix and spread through the air until they reach your nose — that's diffusion.");
+mc7("mat7-12","s-c-02","pure-vs-mixture","matter","C2.2","Which of these is a PURE SUBSTANCE?",
+  ["Sugar","Milk","Soil","Lemonade"],
+  "Sugar is one kind of particle (sucrose). Milk, soil and lemonade are all mixtures of several substances.");
+mc7("mat7-13","s-c-03","homo-hetero","matter","C2.3","A mechanical mixture is one where:",
+  ["You can see the different parts","Everything is dissolved and looks the same","There is only one kind of particle","The parts have joined into a new substance"],
+  "Mechanical (heterogeneous) mixtures show their parts — trail mix, pizza, gravel. Solutions look uniform.");
+mc7("mat7-14","s-c-04","dissolving-rate","matter","C2.4","In salt water, which part is the SOLUTE?",
+  ["The salt","The water","The container","The air above it"],
+  "The solute is what gets dissolved (salt); the solvent does the dissolving (water). Together they make the solution.");
+mc7("mat7-15","s-c-07","separation","matter","C2.7","Which method gets the salt back out of salt water?",
+  ["Evaporation — let the water dry up and the salt is left behind","Filtration","A magnet","Pouring it through a sieve"],
+  "Dissolved salt passes right through a filter. Evaporating the water leaves the salt crystals behind. (Distillation also works if you want the water back too.)");
+mc7("mat7-16","s-c-10","assess-impact","matter","C1.1","Road salt keeps winter roads safe. What is one environmental cost to weigh against that?",
+  ["Salty runoff harms plants, soil and freshwater life in nearby streams","It makes snow fall faster","It turns roads a different colour","There is no cost at all"],
+  "Assessing an impact means looking at both sides. Salt saves lives on icy roads, but the dissolved salt washes into soil and water where it harms living things.");
+mc7("str7-11","s-d-01","structure-types","structures","D2.1","A hydro tower made of connected metal beams is which type of structure?",
+  ["Frame structure","Shell structure","Solid structure","Liquid structure"],
+  "A frame is a skeleton of parts joined together. Hydro towers, bike frames and houses are frame structures.");
+mc7("str7-12","s-d-06","tension-compression","structures","D2.5","The legs of a table holding up a heavy pile of books are under:",
+  ["Compression","Tension","Torsion","Shear"],
+  "The weight pushes down on the legs, squeezing them — compression. A rope or cable that is pulled tight is in tension.");
+mc7("str7-13","s-d-06","tension-compression","structures","D2.5","Wringing out a wet towel by twisting it puts the towel under:",
+  ["Torsion","Compression","Shear","A static load"],
+  "Torsion is a twisting force. Screwdrivers, door knobs and wrung-out towels all experience torsion.");
+mc7("str7-14","s-d-04","static-dynamic","structures","D2.3","Which of these is a STATIC (dead) load on a house?",
+  ["The weight of the roof itself","People walking around inside","Snow piling up in a storm","Wind blowing against the walls"],
+  "A static load stays the same over time — the structure's own weight. People, snow and wind change, so they are dynamic loads.");
+mc7("str7-15","s-d-02","centre-gravity","structures","D2.2","Why do some tall bookcases come with a strap that attaches them to the wall?",
+  ["Their centre of gravity is high, so they can tip over easily","To make them hold more books","To keep the shelves straight","Because the wall needs support"],
+  "A tall, narrow structure has a high centre of gravity and a small base, so a small pull can tip it. The strap stops that.");
+mc7("str7-16","s-d-05","failure","structures","D2.5","A long thin pole bends sideways and collapses when too much weight presses down on top. This failure is called:",
+  ["Buckling","Corrosion","Fatigue","Torsion"],
+  "Buckling happens when a compression load makes a slender part bend out of line. Thicker or braced columns resist it.");
+
+/* ---------- French: fresh grammar/vocab + "Au centre commercial" from class ---------- */
+(function(){
+  function fr(s){ return '<span class="fr">« ' + s + ' »</span>'; }
+  function slug(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+  function mcF(id, like, fam, topic, code, q, choices, ans, why){
+    add7({id:id, like:like, subj:"french", topic:topic, code:code, type:"mc", q:q, choices:choices, a:ans, why:why}, fam);
+  }
+  /* noun list from the class vocab sheet: [noun, g (m/f/p), english] */
+  const N = [
+    ["montre","f","a watch"],["ceinture","f","a belt"],["pantalon","m","pants"],["écharpe","f","a scarf"],
+    ["magazine","m","a magazine"],["billet","m","a ticket"],["taco","m","a taco"],["dentifrice","m","toothpaste"],
+    ["brosse à dents","f","a toothbrush"],["boisson gazeuse","f","a soft drink / pop"],["ordinateur portable","m","a laptop"],
+    ["tablette de chocolat","f","a chocolate bar"],["volant de badminton","m","a badminton birdie"],["maïs soufflé","m","popcorn"],
+    ["frites","p","fries"],["écouteurs","p","earbuds / headphones"],["chaussures sport","p","running shoes"],["lunettes de soleil","p","sunglasses"]
+  ];
+  const vowel = function(w){ return /^[aeiouéèêh]/i.test(w); };
+  const fem = function(g){ return g === "f" ? "feminine" : "masculine"; };
+
+  /* le / la / l' / les */
+  N.concat([["cinéma","m","a movie theatre"],["pharmacie","f","a pharmacy"],["aire de restauration","f","a food court"],["magasin","m","a store"]]).forEach(function(n){
+    const w = n[0], g = n[1];
+    const right = g === "p" ? "les" : vowel(w) ? "l'" : g === "f" ? "la" : "le";
+    const hint = g === "p" ? " (plural)" : vowel(w) ? "" : " (" + w.split(" ")[0] + " is " + fem(g) + ")";
+    const ch = ["le","la","l'","les"];
+    mcF("g-fa-" + slug(w), "fg-01", "fr-articles", "frgrammar", "FSL Writing",
+      "Which article goes with " + fr("___ " + w) + "?" + hint, ch, ch.indexOf(right),
+      right === "les" ? "Plural nouns always take les." : right === "l'" ? w + " starts with a vowel sound, so le/la shortens to l'." : w.split(" ")[0] + " is " + fem(g) + " singular → " + right + ".");
+  });
+  /* un / une / des */
+  N.slice(0, 14).filter(function(n, i){ return i % 2 === 0; }).concat(N.slice(14)).forEach(function(n){
+    const w = n[0], g = n[1], right = g === "p" ? "des" : g === "f" ? "une" : "un";
+    const ch = ["un","une","des","de"];
+    mcF("g-fu-" + slug(w), "fg-03", "fr-articles", "frgrammar", "FSL Writing",
+      "Pick the right article: " + fr("J'achète ___ " + w + ".") + " (I'm buying " + n[2].replace(/^an? /, "a ") + ")", ch, ch.indexOf(right),
+      g === "p" ? w + " is plural, so 'some' = des." : w.split(" ")[0] + " is " + fem(g) + ", so 'a' = " + right + ".");
+  });
+  /* mon / ma / mes */
+  [["montre","f"],["pantalon","m"],["écharpe","f"],["ceinture","f"],["billet","m"],["écouteurs","p"],["chaussures sport","p"],["ordinateur portable","m"],["boisson gazeuse","f"],["lunettes de soleil","p"]].forEach(function(n){
+    const w = n[0], g = n[1];
+    const right = g === "p" ? "Mes" : (g === "m" || vowel(w)) ? "Mon" : "Ma";
+    const verb = g === "p" ? "sont" : "est";
+    const ch = ["Mon","Ma","Mes","Me"];
+    mcF("g-fm-" + slug(w), "fg-13", "fr-possess", "frgrammar", "FSL Writing",
+      "Fill in 'my': " + fr("___ " + w + " " + verb + " dans mon sac.") + (g === "p" || vowel(w) ? "" : " (" + w.split(" ")[0] + " is " + fem(g) + ")"), ch, ch.indexOf(right),
+      g === "p" ? "Plural → mes." : (g === "f" && vowel(w)) ? "Feminine, BUT it starts with a vowel, so ma becomes mon: mon " + w + "." : fem(g) + " singular → " + right.toLowerCase() + ".");
+  });
+  /* negatives: un/une/des → de */
+  [["J'ai une montre.","Je n'ai pas de montre.",["Je n'ai pas une montre.","Je n'ai une pas montre.","Je ne ai pas de montre."]],
+   ["J'ai un billet.","Je n'ai pas de billet.",["Je n'ai pas un billet.","Je ne ai pas de billet.","Je n'ai pas billet de."]],
+   ["J'ai une écharpe.","Je n'ai pas d'écharpe.",["Je n'ai pas une écharpe.","Je n'ai pas de écharpe.","Je ne ai pas d'écharpe."]],
+   ["J'achète des frites.","Je n'achète pas de frites.",["Je n'achète pas des frites.","Je ne achète pas de frites.","Je n'achète de pas frites."]],
+   ["Elle achète un magazine.","Elle n'achète pas de magazine.",["Elle n'achète pas un magazine.","Elle ne achète pas de magazine.","Elle pas achète un magazine."]],
+   ["Nous avons des écouteurs.","Nous n'avons pas d'écouteurs.",["Nous n'avons pas des écouteurs.","Nous ne avons pas d'écouteurs.","Nous avons ne pas d'écouteurs."]],
+   ["Je regarde le film.","Je ne regarde pas le film.",["Je ne regarde pas de film.","Je regarde ne pas le film.","Je ne pas regarde le film."]],
+   ["Il aime les tacos.","Il n'aime pas les tacos.",["Il n'aime pas de tacos.","Il ne aime pas les tacos.","Il n'aime les pas tacos."]]
+  ].forEach(function(t, i){
+    mcF("g-fn-" + (i+1), "fg-08", "fr-neg", "frgrammar", "FSL Writing", "Make it negative: " + fr(t[0]), [t[1]].concat(t[2]), 0,
+      i >= 6 ? "ne … pas sandwiches the verb (n' before a vowel). Only un / une / des change to de — le, la and les stay the same." :
+      "ne … pas sandwiches the verb, and after a negative un / une / des become de (d' before a vowel).");
+  });
+  /* adjective agreement */
+  [["La ceinture est ___.","black",["noir","noire","noirs","noires"],1,"ceinture is feminine singular → add -e."],
+   ["Les chaussures sont ___.","black",["noir","noire","noirs","noires"],3,"chaussures is feminine plural → add -e AND -s."],
+   ["Le pantalon est ___.","green",["vert","verte","verts","vertes"],0,"pantalon is masculine singular → the base form, vert."],
+   ["Les écouteurs sont ___.","small",["petit","petite","petits","petites"],2,"écouteurs is masculine plural → add -s."],
+   ["L'écharpe est ___.","pretty",["joli","jolie","jolis","jolies"],1,"écharpe is feminine (even with l') → jolie."],
+   ["Le magazine est ___.","expensive",["cher","chère","chers","chères"],0,"magazine is masculine singular → cher."],
+   ["Les lunettes de soleil sont ___.","expensive",["cher","chère","chers","chères"],3,"lunettes is feminine plural → chères (the e gets an accent: chère)."],
+   ["La boisson gazeuse est ___.","cold",["froid","froide","froids","froides"],1,"boisson is feminine singular → froide."],
+   ["Les frites sont ___.","hot",["chaud","chaude","chauds","chaudes"],3,"frites is feminine plural → chaudes."],
+   ["Mes amies sont ___.","funny / fun",["amusant","amusante","amusants","amusantes"],3,"amies (with -es) is feminine plural → amusantes."]
+  ].forEach(function(t, i){
+    mcF("g-fj-" + (i+1), "fg-09", "fr-agree", "frgrammar", "FSL Writing", "Choose the right adjective: " + fr(t[0]) + " (" + t[1] + ")", t[2], t[3], t[4]);
+  });
+  /* au / à la / à l' / aux and du / de la */
+  [["Je vais ___ cinéma.",["au","à la","à l'","aux"],0,"à + le cinéma → au cinéma."],
+   ["Je vais ___ pharmacie.",["au","à la","à l'","aux"],1,"pharmacie is feminine → à la (no contraction)."],
+   ["On mange ___ aire de restauration.",["au","à la","à l'","aux"],2,"aire starts with a vowel → à l'."],
+   ["Nous allons ___ magasins.",["au","à la","à l'","aux"],3,"à + les → aux."],
+   ["Elle joue ___ badminton.",["au","à la","du","de la"],0,"jouer À + a sport; à + le = au."],
+   ["Il joue ___ guitare.",["de la","du","à la","au"],0,"jouer DE + an instrument; guitare is feminine → de la."],
+   ["Tu joues ___ violon ?",["du","de la","au","des"],0,"jouer de + le violon → du."],
+   ["Le cinéma est à côté ___ marché.",["du","de la","de le","au"],0,"à côté DE + le marché → du (de + le always becomes du)."]
+  ].forEach(function(t, i){
+    mcF("g-fc-" + (i+1), "fg-16", "fr-contract", "frgrammar", "FSL Writing", "Complete: " + fr(t[0]), t[1], t[2], t[3]);
+  });
+  /* question words */
+  [["___ est-ce que je peux acheter des frites ? — À l'aire de restauration.",["Où","Quand","Qui","Combien"],0,"The answer is a place → Où (where)."],
+   ["___ coûte le billet ? — Douze dollars.",["Combien","Où","Pourquoi","Qui"],0,"The answer is a price → Combien (how much)."],
+   ["___ ouvre le centre commercial ? — À dix heures.",["Quand","Qui","Où","Comment"],0,"The answer is a time → Quand (when)."],
+   ["___ travaille à la pharmacie ? — Madame Georges.",["Qui","Où","Quand","Combien"],0,"The answer is a person → Qui (who)."],
+   ["___ tu achètes ? — Une écharpe.",["Qu'est-ce que","Où est-ce que","Qui","Combien"],0,"The answer is a thing → Qu'est-ce que (what)."],
+   ["___ vas-tu au centre commercial ? — Parce que j'ai besoin de chaussures.",["Pourquoi","Comment","Quand","Où"],0,"The answer starts with parce que → Pourquoi (why)."],
+   ["___ vas-tu au centre commercial ? — En autobus.",["Comment","Pourquoi","Qui","Combien"],0,"The answer is a way of travelling → Comment (how)."]
+  ].forEach(function(t, i){
+    mcF("g-fq-" + (i+1), "fg-19", "fr-questions", "frgrammar", "FSL Writing", "Which question word fits? " + fr(t[0]), t[1], t[2], t[3]);
+  });
+  mcF("g-fq-8", "fg-21", "fr-questions", "frgrammar", "FSL Writing", "Turn it into a yes/no question: " + fr("Tu aimes le cinéma."),
+    ["Est-ce que tu aimes le cinéma ?","Où tu aimes le cinéma ?","Tu est-ce que aimes le cinéma ?","Qu'est-ce que tu aimes le cinéma ?"], 0,
+    "Put Est-ce que in front of a statement to make a yes/no question.");
+  mcF("g-fq-9", "fg-21", "fr-questions", "frgrammar", "FSL Writing", "Turn it into a yes/no question: " + fr("Vous vendez des montres."),
+    ["Est-ce que vous vendez des montres ?","Qui vous vendez des montres ?","Vous vendez est-ce que des montres ?","Combien vous vendez des montres ?"], 0,
+    "Est-ce que + the sentence. Handy in a store: Est-ce que vous vendez… ? = Do you sell… ?");
+
+  /* verbs */
+  [["pouvoir","can","Où est-ce que je ___ acheter une ceinture ?",["peux","peut","pouvons","pouvez"],0,"je → peux. (Il/elle peut, nous pouvons, vous pouvez.) This is the question from the class dialogue!","fr-conj-irr"],
+   ["pouvoir","can","Vous ___ acheter une ceinture chez Accessoires Linda.",["pouvez","pouvons","peux","peuvent"],0,"vous → pouvez. It's the answer line from the class dialogue.","fr-conj-irr"],
+   ["être","to be","Vous ___ au centre commercial.",["êtes","sommes","sont","es"],0,"vous → êtes.","fr-conj-irr"],
+   ["être","to be","Elles ___ à la pharmacie.",["sont","est","sommes","êtes"],0,"ils / elles → sont.","fr-conj-irr"],
+   ["avoir","to have","Nous ___ besoin d'une ceinture.",["avons","avez","ont","as"],0,"nous → avons.","fr-conj-irr"],
+   ["avoir","to have","Tu ___ un billet ?",["as","a","ai","avez"],0,"tu → as.","fr-conj-irr"],
+   ["aller","to go","Je ___ au cinéma samedi.",["vais","va","vas","allons"],0,"je → vais.","fr-conj-irr"],
+   ["aller","to go","Ils ___ au marché.",["vont","vais","allez","va"],0,"ils / elles → vont.","fr-conj-irr"],
+   ["faire","to do / make","Nous ___ du magasinage.",["faisons","faites","font","fais"],0,"nous → faisons.","fr-conj-irr"],
+   ["vouloir","to want","Je ___ acheter une écharpe.",["veux","veut","voulons","voulez"],0,"je → veux.","fr-conj-irr"],
+   ["acheter","to buy","Tu ___ des frites ?",["achètes","achète","achetez","acheter"],0,"tu → achètes (the e gets an accent: è).","fr-conj-reg"],
+   ["acheter","to buy","Nous ___ des billets.",["achetons","achètons","achetez","achètent"],0,"nous → achetons — NO accent in the nous and vous forms.","fr-conj-reg"],
+   ["regarder","to watch","Vous ___ un film.",["regardez","regardons","regardent","regardes"],0,"vous → -ez: regardez.","fr-conj-reg"],
+   ["jouer","to play","Nous ___ au badminton.",["jouons","jouez","jouent","joue"],0,"nous → -ons: jouons.","fr-conj-reg"],
+   ["aimer","to like","Elle ___ les tacos.",["aime","aimes","aiment","aimons"],0,"il / elle → -e: aime.","fr-conj-reg"],
+   ["manger","to eat","Nous ___ à l'aire de restauration.",["mangeons","mangons","mangez","mangent"],0,"nous → mangeons. Verbs ending in -ger keep the e before -ons so the g stays soft.","fr-conj-reg"]
+  ].forEach(function(t, i){
+    mcF("g-fv-" + (i+1), t[6] === "fr-conj-irr" ? "fv-02" : "fv-18", t[6], "frverbs", "FSL Writing",
+      "Choose the correct form of <b>" + t[0] + "</b> (" + t[1] + "):<br>" + fr(t[2]), t[3], t[4], t[5]);
+  });
+
+  /* vocabulary */
+  [["What number is " + fr("soixante-dix-huit") + "?",["78","68","98","88"],"soixante-dix (70) + huit (8) = 78."],
+   ["What number is " + fr("quatre-vingt-quatre") + "?",["84","24","80","64"],"quatre-vingts (80) + quatre (4) = 84."],
+   ["What number is " + fr("quatre-vingt-dix-sept") + "?",["97","87","77","107"],"quatre-vingt-dix (90) + sept (7) = 97."],
+   ["What number is " + fr("soixante-douze") + "?",["72","62","92","82"],"soixante (60) + douze (12) = 72."],
+   ["Which day comes BEFORE " + fr("samedi") + "?",["vendredi","dimanche","jeudi","lundi"],"… jeudi, vendredi, samedi, dimanche → vendredi (Friday)."],
+   ["Which word means <b>the pencil sharpener</b>?",["le taille-crayon","la règle","le surligneur","la colle"],"le taille-crayon = sharpener; la règle = ruler; le surligneur = highlighter; la colle = glue."],
+   ["How do you ask <b>How old are you?</b>",["Quel âge as-tu ?","Quel âge es-tu ?","Combien ans tu as ?","Comment âge as-tu ?"],"Age uses avoir: Quel âge as-tu ? — J'ai douze ans."],
+   ["What does " + fr("timide") + " mean?",["shy","tired","funny","tall"],"timide = shy."],
+   ["What does " + fr("paresseux") + " mean?",["lazy","lucky","proud","polite"],"paresseux / paresseuse = lazy."],
+   ["What does " + fr("la librairie") + " mean?",["the bookstore","the library","the bakery","the laboratory"],"librairie = bookstore. (The library is la bibliothèque — a famous false friend!)"],
+   ["What does " + fr("De rien") + " mean?",["You're welcome","Nothing to buy","Excuse me","See you later"],"Merci ! — De rien. = Thank you! — You're welcome. It ends the class dialogue."],
+   ["What does " + fr("le centre commercial") + " mean?",["the mall","the city centre","the business office","the grocery store"],"centre commercial = shopping mall."]
+  ].forEach(function(t, i){
+    mcF("g-fw-" + (i+1), "fw-01", "fr-vocab", "frvocab", "FSL Vocabulary", t[0], t[1], 0, t[2]);
+  });
+  /* mall vocabulary: French → English */
+  N.forEach(function(n, i){
+    const pick = [n[2], N[(i+5) % N.length][2], N[(i+9) % N.length][2], N[(i+13) % N.length][2]];
+    const art = n[1] === "p" ? "des " : vowel(n[0]) ? (n[1] === "f" ? "une " : "un ") : (n[1] === "f" ? "une " : "un ");
+    mcF("g-fmv-" + slug(n[0]), "fw-09", "fr-vocab", "frmall", "FSL Vocabulary", "What does " + fr((n[0] === "maïs soufflé" || n[0] === "dentifrice" ? "du " : art) + n[0]) + " mean?", pick, 0,
+      n[0] + " = " + n[2] + ". It's on the Au centre commercial vocab sheet.");
+  });
+
+  /* where can I buy…? (stores from the class sheet) */
+  [["des chaussures sport","chez ActiSports",["à la Pharmacie Georges","au Cinéma Beaufort","au Marché frais"]],
+   ["une montre","chez Bijouterie Lalonde",["à l'aire de restauration","au Marché frais","au Cinéma Beaufort"]],
+   ["du dentifrice","chez Pharmacie Georges",["chez Bijouterie Lalonde","à Jeux galaxie","à Cadence caraïbes"]],
+   ["des fruits","au Marché frais",["chez Bijouterie Lalonde","au Salon de coiffure Bonne coupe","à Jeux galaxie"]],
+   ["un pantalon","à la Rétro-Boutique",["chez Pharmacie Georges","au Marché frais","au Cinéma Beaufort"]],
+   ["des frites","à l'aire de restauration",["chez Bijouterie Lalonde","chez Accessoires Linda","au Salon de coiffure Bonne coupe"]],
+   ["un ordinateur portable","à Jeux galaxie",["au Marché frais","chez Pharmacie Georges","à Cadence caraïbes"]],
+   ["une tablette de chocolat","à Variété plus",["chez Bijouterie Lalonde","au Salon de coiffure Bonne coupe","chez ActiSports"]],
+   ["des lunettes de soleil","chez Accessoires Linda",["au Marché frais","à l'aire de restauration","chez Pharmacie Georges"]],
+   ["une ceinture","chez Accessoires Linda",["au Cinéma Beaufort","au Marché frais","à Jeux galaxie"]],
+   ["un billet pour un film","au Cinéma Beaufort",["chez Pharmacie Georges","chez Bijouterie Lalonde","au Marché frais"]],
+   ["une brosse à dents","chez Pharmacie Georges",["à Cadence caraïbes","au Cinéma Beaufort","chez Bijouterie Lalonde"]]
+  ].forEach(function(t){
+    mcF("g-fs-" + slug(t[0]), null, "fr-mall", "frmall", "FSL Oral",
+      "Où est-ce que je peux acheter " + t[0] + " ?<br>" + fr("Vous pouvez acheter " + t[0] + " ___."), [t[1]].concat(t[2]), 0,
+      "The logical store for " + t[0] + " is " + t[1].replace(/^(chez|au|à la|à l'|à) /, "") + ". Full answer: « Vous pouvez acheter " + t[0] + " " + t[1] + ". »");
+  });
+  mcF("g-fs-coiffure", null, "fr-mall", "frmall", "FSL Oral", "Où est-ce que je peux me faire couper les cheveux ?",
+    ["au Salon de coiffure Bonne coupe","à Variété plus","au Marché frais","à Jeux galaxie"], 0, "A haircut (une coupe de cheveux) → the hair salon: au Salon de coiffure Bonne coupe.");
+  mcF("g-fs-danse", null, "fr-mall", "frmall", "FSL Oral", "Où est-ce que je peux suivre des leçons de danse ?",
+    ["à Cadence caraïbes","chez Pharmacie Georges","à l'aire de restauration","chez Bijouterie Lalonde"], 0, "Dance lessons are at Cadence caraïbes on the class sheet.");
+
+  /* where is the store? (8e année extension — prepositions of place) */
+  [["Le Cinéma Beaufort est ___ Jeux galaxie.","across from","en face de"],
+   ["Accessoires Linda est ___ Variété plus.","next to","à côté de"],
+   ["La Pharmacie Georges est ___ l'entrée.","near","près de"],
+   ["ActiSports est ___ Bijouterie Lalonde.","to the left of","à gauche de"],
+   ["Le Marché frais est ___ Cadence caraïbes.","to the right of","à droite de"],
+   ["Variété plus est ___ ActiSports et Jeux galaxie.","between","entre"],
+   ["L'aire de restauration est ___ le cinéma.","in front of","devant"],
+   ["Le Salon de coiffure est ___ la pharmacie.","behind","derrière"]
+  ].forEach(function(t, i){
+    const all = ["en face de","à côté de","près de","à gauche de","à droite de","entre","devant","derrière"];
+    const others = all.filter(function(x){ return x !== t[2]; });
+    const ch = [t[2], others[(i+1) % others.length], others[(i+3) % others.length], others[(i+5) % others.length]];
+    mcF("g-fl-" + (i+1), "fp-01", "fr-places", "frmall", "FSL Oral", "Complete: " + fr(t[0]) + " (" + t[1] + ")", ch, 0,
+      t[2] + " = " + t[1] + ". Watch out: with le, « de + le » becomes « du » (à côté du cinéma).");
+  });
+})();
+
+/* written French */
+add7({id:"fx7-01", like:"fx-02", subj:"french", topic:"frgrammar", code:"FSL Writing", type:"write",
+  q:"Écris 2 phrases au sujet du centre commercial : une chose que tu achètes et une chose que tu n'achètes pas. (Use ne…pas.)",
+  model:"J'achète des chaussures sport chez ActiSports. Je n'achète pas de frites parce que je n'ai pas faim.",
+  points:["J'achète + an item (with un / une / des)","Je n'achète pas — n' before the verb, pas after","After the negative, un / une / des → de (d')"],
+  why:"The negative sandwiches the verb, and un / une / des change to de: je n'achète pas DE frites."}, "fr-neg");
+add7({id:"fm7-01", subj:"french", topic:"frmall", code:"FSL Oral", type:"write",
+  q:"Écris un mini-dialogue au centre commercial (4–6 lignes) entre A (client) et B (employé). Inclus : bonjour, une question pour trouver un objet, un magasin logique, merci / de rien.",
+  model:"A : Bonjour !<br>B : Oui, bonjour.<br>A : Où est-ce que je peux acheter une montre, s'il vous plaît ?<br>B : Vous pouvez acheter une montre chez Bijouterie Lalonde.<br>A : Merci !<br>B : De rien.",
+  points:["Greeting (Bonjour)","Où est-ce que je peux acheter … ?","Vous pouvez acheter … chez / au / à … with a LOGICAL store","Merci / De rien"],
+  why:"This is the exact pattern from the class sheet. Swap in any item and its logical store."}, "fr-mall");
+add7({id:"fm7-02", subj:"french", topic:"frmall", code:"FSL Oral", type:"write",
+  q:"8e année / extension : Ajoute 2 lignes qui disent OÙ est le magasin dans le centre commercial. Utilise une préposition (en face de, à côté de, près de, à gauche de, à droite de).",
+  model:"A : Merci, et où est Bijouterie Lalonde ?<br>B : C'est à côté de Variété plus, ici sur la carte.<br>A : Merci beaucoup !<br>B : De rien.",
+  points:["Asks where the store is: Où est … ?","Answers with C'est + a preposition of place","Uses de correctly (à côté de, en face de …)"],
+  why:"The extension adds a location: C'est à côté de / en face de / près de + another store."}, "fr-places");
+
+HELP7["fr-mall"] = {title:"Au centre commercial", steps:[
+  "Ask: Où est-ce que je peux acheter + item, s'il vous plaît ?",
+  "Answer: Vous pouvez acheter + item + chez / au / à la / à + store.",
+  "Pick a LOGICAL store: a watch → the jewellery store, toothpaste → the pharmacy, fries → the food court.",
+  "Finish politely: Merci ! — De rien."],
+  ex:"A : Où est-ce que je peux acheter du dentifrice ?\nB : Vous pouvez acheter du dentifrice chez Pharmacie Georges.\nA : Merci !\nB : De rien."};
+ASK7["fr-mall"] = "Match the item to the store that would sell it.";
+HELP7["fr-places"] = {title:"Where is it? (prepositions of place)", steps:[
+  "en face de = across from · à côté de = next to · près de = near",
+  "à gauche de = to the left of · à droite de = to the right of",
+  "entre … et … = between · devant = in front of · derrière = behind",
+  "de + le → du, de + les → des: à côté du cinéma, en face des toilettes."],
+  ex:"Où est Accessoires Linda ?\nC'est à côté de Variété plus, ici sur la carte."};
+ASK7["fr-places"] = "Pick the French phrase that matches the English position in brackets.";
+
+DECKS.push(
+  {id:"fr-cls-mall-items", subj:"french", topic:"frmall", name:"From class: au centre commercial (les objets)", lang:"fr", cards:[
+    {f:"des chaussures sport", b:"running shoes"},{f:"une montre", b:"a watch"},{f:"du dentifrice", b:"toothpaste"},
+    {f:"une brosse à dents", b:"a toothbrush"},{f:"des fruits", b:"fruit"},{f:"un pantalon", b:"pants"},{f:"des frites", b:"fries"},
+    {f:"un ordinateur portable", b:"a laptop"},{f:"une tablette de chocolat", b:"a chocolate bar"},{f:"des lunettes de soleil", b:"sunglasses"},
+    {f:"une ceinture", b:"a belt"},{f:"une écharpe", b:"a scarf"},{f:"un magazine", b:"a magazine"},{f:"un paquet de gomme à mâcher", b:"a pack of gum"},
+    {f:"un billet", b:"a ticket"},{f:"du maïs soufflé", b:"popcorn"},{f:"une boisson gazeuse", b:"a soft drink / pop"},{f:"un taco", b:"a taco"},
+    {f:"un volant de badminton", b:"a badminton birdie"},{f:"des écouteurs", b:"earbuds / headphones"},{f:"une coupe de cheveux", b:"a haircut"},
+    {f:"des leçons de danse", b:"dance lessons"},{f:"voir un film", b:"to see a movie"}]},
+  {id:"fr-cls-mall-stores", subj:"french", topic:"frmall", name:"From class: où est-ce que je peux… ? (les magasins)", lang:"fr", backLang:"fr", cards:[
+    {f:"des chaussures sport", b:"chez ActiSports / chez Souliers confort"},{f:"une montre", b:"chez Bijouterie Lalonde"},
+    {f:"du dentifrice", b:"chez Pharmacie Georges"},{f:"des fruits", b:"au Marché frais"},{f:"des leçons de danse", b:"à Cadence caraïbes"},
+    {f:"un pantalon", b:"chez ActiSports / à la Rétro-Boutique"},{f:"des frites", b:"à l'aire de restauration"},{f:"un ordinateur portable", b:"à Jeux galaxie"},
+    {f:"une tablette de chocolat", b:"à Variété plus"},{f:"une coupe de cheveux", b:"au Salon de coiffure Bonne coupe"},
+    {f:"des lunettes de soleil", b:"chez Accessoires Linda / chez ActiSports"},{f:"voir un film", b:"au Cinéma Beaufort"}]},
+  {id:"fr-cls-mall-talk", subj:"french", topic:"frmall", name:"From class: la conversation et les positions", lang:"fr", cards:[
+    {f:"Où est-ce que je peux acheter… ?", b:"Where can I buy… ?"},{f:"Vous pouvez acheter… chez…", b:"You can buy… at…"},
+    {f:"s'il vous plaît", b:"please (polite)"},{f:"Et où est… ?", b:"And where is… ?"},{f:"C'est…", b:"It's…"},{f:"ici sur la carte", b:"here on the map"},
+    {f:"Merci beaucoup !", b:"Thanks a lot!"},{f:"De rien.", b:"You're welcome."},{f:"en face de", b:"across from"},{f:"à côté de", b:"next to"},
+    {f:"près de", b:"near"},{f:"à gauche de", b:"to the left of"},{f:"à droite de", b:"to the right of"},{f:"entre… et…", b:"between… and…"},
+    {f:"devant", b:"in front of"},{f:"derrière", b:"behind"}]}
+);
+
 BANK.push.apply(BANK, BANK2);
 BANK.push.apply(BANK, BANK3);
 BANK.push.apply(BANK, BANK4);
@@ -3688,6 +4288,9 @@ Object.assign(FAM, FAM2, FAM3, FAM4, FAM5, FAM6);
 Object.assign(HELP, HELP2, HELP3, HELP4, HELP5, HELP6);
 Object.assign(ASK, ASK2, ASK3, ASK4, ASK5, ASK6);
 Object.assign(SOL, SOL2, SOL3, SOL4, SOL5, SOL6);
+BANK.push.apply(BANK, BANK7);
+BANK7.forEach(function(q){ if(!FAM7[q.id] && q.like && FAM[q.like]) FAM7[q.id] = FAM[q.like]; });
+Object.assign(FAM, FAM7); Object.assign(HELP, HELP7); Object.assign(ASK, ASK7); Object.assign(SOL, SOL7);
 
 const SUBJECTS = {
   math:     {name:"Math",     tone:"var(--math)", soft:"var(--mathsoft)", doc:"Ontario Mathematics, 2020"},
@@ -3698,6 +4301,8 @@ const SUBJECTS = {
 const TOPICS = {
   fracdec:     {subj:"math", name:"Fractions & decimals", codes:"multiplying, dividing, word problems"},
   bedmas:      {subj:"math", name:"Exponents & order of operations", codes:"from class: BEDMAS with powers"},
+  primefac:    {subj:"math", name:"Prime factors, GCF & LCM", codes:"from class: prime factorization"},
+  frmall:      {subj:"french", name:"Au centre commercial", codes:"from class: stores, items, places"},
   powers:      {subj:"math", name:"Powers, roots, LCM & GCF", codes:"squares, cubes, cube roots, factors"},
   number:      {subj:"math", name:"Number sense", codes:"integers, percents, square roots, rounding"},
   algebra:     {subj:"math", name:"Algebra & coding", codes:"expressions, equations, patterns, loops"},
@@ -3915,11 +4520,17 @@ function prepare(q){
   }
   return item;
 }
+/* how many times she has answered each question (all devices, from the merged log) */
+function seenCounts(){ const c = {}; (store.answerLog || []).forEach(function(a){ c[a.i] = (c[a.i] || 0) + 1; }); return c; }
 function pickQuestions(filterFn, n){
+  const seen = seenCounts();
   const scored = BANK.filter(filterFn).map(function(q){
     const s = statFor(q.code, q.subj);
     const acc = s.seen ? s.correct / s.seen : 0.5;
-    return {q:q, w:(s.seen === 0 ? 0.35 : 0) + (1 - acc) * 0.5 + Math.random() * 0.55};
+    const k = seen[q.id] || 0;
+    /* never-answered questions first, then ones seen once; anything done twice or more only comes back when nothing fresher is left */
+    const fresh = k === 0 ? 4 : k === 1 ? 2 : 0;
+    return {q:q, w:fresh - Math.min(k, 10) * 0.05 + (1 - acc) * 0.5 + Math.random() * 0.55};
   });
   scored.sort(function(a, b){ return b.w - a.w; });
   return shuffle(scored.slice(0, n).map(function(x){ return x.q; })).map(prepare);
@@ -3960,6 +4571,9 @@ function swapCurrent(){
   if(!pool.length) pool = BANK.filter(function(q){ return !taken(q.id); });
   if(!pool.length){ quiz.retired = {}; pool = BANK.filter(function(q){ return quiz.filter(q) && used.indexOf(q.id) < 0; }); }
   if(!pool.length) return;
+  const sc = seenCounts(), tier = function(q){ return Math.min(sc[q.id] || 0, 2); };
+  const best = Math.min.apply(null, pool.map(tier));
+  pool = pool.filter(function(q){ return tier(q) === best; });
   quiz.qs[quiz.i] = prepare(pool[Math.floor(Math.random() * pool.length)]);
   render();
 }
@@ -4008,7 +4622,9 @@ function renderHome(){
   }
   html += '<div class="card pad stack classnew"><div><span class="nowlab" style="color:var(--brand)">New from your class</span>' +
     '<h2 style="margin-top:4px">Practise what your teacher just posted</h2></div>' +
-    '<div class="row"><button class="primary" data-cls="bedmas">Exponents &amp; BEDMAS · ' + BANK.filter(function(q){ return q.topic === "bedmas"; }).length + '</button>' +
+    '<div class="row"><button class="primary" data-cls="primefac">GCF &amp; LCM with prime factors · ' + BANK.filter(function(q){ return q.topic === "primefac"; }).length + '</button>' +
+    '<button class="primary" data-cls="frmall">Au centre commercial · ' + BANK.filter(function(q){ return q.topic === "frmall"; }).length + '</button>' +
+    '<button class="soft" data-cls="bedmas">Exponents &amp; BEDMAS · ' + BANK.filter(function(q){ return q.topic === "bedmas"; }).length + '</button>' +
     '<button class="soft" data-cls="french">French from class · ' + DECKS.filter(function(d){ return d.id.indexOf("fr-cls") === 0 || d.id === "fr-prayers"; }).length + ' decks</button></div></div>';
   const openN = openMistakeIds(store).length;
   if(openN){
@@ -4045,7 +4661,7 @@ function renderHome(){
   });
   viewEl.querySelectorAll("[data-cls]").forEach(function(b){
     b.addEventListener("click", function(){
-      if(b.dataset.cls === "bedmas") startQuiz({mode:"topic", topic:"bedmas"});
+      if(TOPICS[b.dataset.cls]) startQuiz({mode:"topic", topic:b.dataset.cls});
       else { view.screen = "cards"; view.clsOnly = true; render(); window.scrollTo({top:0,behavior:"instant"}); }
     });
   });
@@ -4151,7 +4767,7 @@ function renderQuiz(){
     if(sb) sb.addEventListener("click", function(){ const v = input.value.trim(); input.value = /^[-−]/.test(v) ? v.replace(/^[-−]\s*/, "") : "-" + v; input.focus(); });
     input.focus();
     document.getElementById("checkBtn").addEventListener("click", function(){ answer(input.value); });
-    input.addEventListener("keydown", function(e){ if(e.key === "Enter") answer(input.value); });
+    input.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); answer(input.value); } });
   }
 }
 
@@ -5229,7 +5845,7 @@ function renderFcTest(){
     } else {
       const inp = document.getElementById("fcType");
       inp.focus();
-      inp.addEventListener("keydown", function(e){ if(e.key === "Enter" && inp.value.trim()) fcAnswer(inp.value); });
+      inp.addEventListener("keydown", function(e){ if(e.key === "Enter" && inp.value.trim()){ e.preventDefault(); fcAnswer(inp.value); } });
       document.getElementById("fcCheck").addEventListener("click", function(){ if(inp.value.trim()) fcAnswer(inp.value); });
       viewEl.querySelectorAll("[data-ch]").forEach(function(b){
         b.addEventListener("click", function(){
