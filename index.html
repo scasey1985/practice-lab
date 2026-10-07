@@ -511,6 +511,7 @@
 </div>
 
 <script>
+var APP_BUILD = "2026-10-07a";   /* bump on every deploy: open copies of the app use it to update themselves */
 /*__SYNC_MODE__*/
 const PASSAGES = {
   p1: {
@@ -4437,7 +4438,7 @@ function topicTally(v){
 }
 function logAnswer(q, given, result){
   if(!store.answerLog) store.answerLog = [];
-  store.answerLog.push({i:q.id, g:String(given == null ? "" : given).slice(0, q.type === "write" ? 300 : 80), r:result, t:Date.now()});
+  store.answerLog.push({i:q.id, g:String(given == null ? "" : given).slice(0, q.type === "write" ? 300 : 80), r:result, t:Date.now(), v:APP_BUILD});
   if(store.answerLog.length > 6000) store.answerLog.splice(0, store.answerLog.length - 6000);
 }
 function logWrong(q, given, rating){
@@ -4590,6 +4591,7 @@ function ring(pct, size, tone, track){
 }
 
 function render(){
+  if(updateReady && !midActivity()){ applyUpdate(); }
   document.getElementById("navHome").hidden = (view.screen === "home");
   paintStreak();
   paintSync();
@@ -6016,6 +6018,9 @@ function paintSync(){
   if(MODE === "parent"){
     const sa = imported && imported.data && imported.data.savedAt;
     el.textContent = "Parent view · her last save reached the cloud " + (sa ? new Date(sa).toLocaleString(undefined, {weekday:"short", hour:"numeric", minute:"2-digit"}) : "— not yet") + ".";
+    const lastA = ((imported && imported.data && imported.data.answerLog) || []).slice(-1)[0];
+    if(lastA) el.textContent += lastA.v === APP_BUILD ? " Her app is up to date." :
+      " Her app was on an older version at her last answer" + (lastA.v ? " (" + lastA.v + ")" : "") + " — it updates itself next time she opens it; if not, have her pull down on the page to refresh.";
     if(bar) bar.hidden = true;
     return;
   }
@@ -6257,6 +6262,33 @@ function todayCardHtml(daily){
   html += '<p class="muted">Day-by-day history, results and mistakes are below.</p></div>';
   return html;
 }
+/* ---------- self-update: an app left open in a phone tab picks up new versions on its own ---------- */
+var updateReady = false, lastUpdateCheck = 0;
+function midActivity(){ return ["quiz", "fctest", "learn"].indexOf(view.screen) >= 0; }
+function checkForUpdate(){
+  if(!/github\.io$/.test(location.hostname)) return;
+  if(Date.now() - lastUpdateCheck < 4 * 60000) return;
+  lastUpdateCheck = Date.now();
+  fetch(location.pathname + "?build=" + Date.now(), {cache:"no-store", credentials:"omit"})
+    .then(function(r){ return r.ok ? r.text() : ""; })
+    .then(function(t){
+      const m = t.match(/var APP_BUILD = "([^"]+)"/);
+      if(m && m[1] > APP_BUILD){ updateReady = true; if(!midActivity()) applyUpdate(); }
+    }).catch(function(){});
+}
+function applyUpdate(){
+  let last = 0; try{ last = +sessionStorage.getItem("plReloadAt") || 0; sessionStorage.setItem("plReloadAt", String(Date.now())); }catch(e){}
+  if(Date.now() - last < 10 * 60000){ updateReady = false; return; }   /* never loop */
+  updateReady = false;
+  persist();
+  try{ pushNow(); }catch(e){}
+  setTimeout(function(){ location.reload(); }, 1500);
+}
+setTimeout(checkForUpdate, 5000);
+setInterval(checkForUpdate, 15 * 60000);
+document.addEventListener("visibilitychange", function(){ if(!document.hidden) checkForUpdate(); });
+window.addEventListener("pageshow", function(e){ if(e.persisted){ lastUpdateCheck = 0; checkForUpdate(); } });
+
 /* the parent view keeps itself current */
 let liveTimer = null;
 function keepLive(){
