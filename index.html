@@ -11,7 +11,7 @@
     --line:#EFE0EA; --line2:#E0CBDA;
     --brand:#B0349B; --brand2:#7A4BD0; --brandsoft:#FBE8F6;
     --math:#8B47C9; --mathsoft:#F1E6FB;
-    --sci:#118C86; --scisoft:#DDF2F0;
+    --sci:#118C86; --scisoft:#DDF2F0; --geo:#B4661A; --geosoft:#F8EADB;
     --lang:#C43C77; --langsoft:#FCE4EE;
     --fr:#2F5FD0; --frsoft:#E4ECFC;
     --ok:#12805C; --oksoft:#DCF3EA; --okline:#7FCBB0;
@@ -27,7 +27,7 @@
     --line:#DBEBEA; --line2:#C2DCDB;
     --brand:#0E7C8B; --brand2:#2A6FB0; --brandsoft:#DCF0F2;
     --math:#2A6FB0; --mathsoft:#E2EDF9;
-    --sci:#0E8A72; --scisoft:#DCF2EC;
+    --sci:#0E8A72; --scisoft:#DCF2EC; --geo:#B4661A; --geosoft:#F8EADB;
     --lang:#7A5BC4; --langsoft:#EBE6F9;
     --fr:#C0457E; --frsoft:#FBE5EF;
     --ok:#0F7A5F; --oksoft:#DBF2EA; --okline:#78C8AE;
@@ -42,7 +42,7 @@
     --line:#F3E1D5; --line2:#E6CBB8;
     --brand:#C4551E; --brand2:#B03A5B; --brandsoft:#FCE7DA;
     --math:#B03A5B; --mathsoft:#FBE3EA;
-    --sci:#12796B; --scisoft:#DBF0EC;
+    --sci:#12796B; --scisoft:#DBF0EC; --geo:#B4661A; --geosoft:#F8EADB;
     --lang:#C4551E; --langsoft:#FCE7DA;
     --fr:#2A6FB0; --frsoft:#E2EDF9;
     --ok:#12795A; --oksoft:#DBF1E8; --okline:#77C6AC;
@@ -57,7 +57,7 @@
     --line:#33284F; --line2:#463868;
     --brand:#E48AD4; --brand2:#A98CF5; --brandsoft:#33234B;
     --math:#B49BF7; --mathsoft:#2C2350;
-    --sci:#5FCFC0; --scisoft:#173634;
+    --sci:#5FCFC0; --scisoft:#173634; --geo:#F0B070; --geosoft:#3A2A18;
     --lang:#F08FB8; --langsoft:#3A2036; --fr:#8FB4F7; --frsoft:#1E2A48;
     --ok:#5FD3A6; --oksoft:#15332A; --okline:#2E6B55;
     --no:#F58A93; --nosoft:#361D24; --noline:#7A3A45;
@@ -72,7 +72,7 @@
       --line:#33284F; --line2:#463868;
       --brand:#E48AD4; --brand2:#A98CF5; --brandsoft:#33234B;
       --math:#B49BF7; --mathsoft:#2C2350;
-      --sci:#5FCFC0; --scisoft:#173634;
+      --sci:#5FCFC0; --scisoft:#173634; --geo:#F0B070; --geosoft:#3A2A18;
       --lang:#F08FB8; --langsoft:#3A2036; --fr:#8FB4F7; --frsoft:#1E2A48;
       --ok:#5FD3A6; --oksoft:#15332A; --okline:#2E6B55;
       --no:#F58A93; --nosoft:#361D24; --noline:#7A3A45;
@@ -495,7 +495,7 @@
     <div class="topbar">
       <div class="hello">
         <h1 id="greet">Practice Lab</h1>
-        <span class="sub" id="subline">Grade 7 · math, science, language &amp; French</span>
+        <span class="sub" id="subline">Grade 7 · math, science, geography, language &amp; French</span>
       </div>
       <div class="tools">
         <span class="streak" id="streak" hidden></span>
@@ -511,7 +511,7 @@
 </div>
 
 <script>
-var APP_BUILD = "2026-10-07a";   /* bump on every deploy: open copies of the app use it to update themselves */
+var APP_BUILD = "2026-10-07b";   /* bump on every deploy: open copies of the app use it to update themselves */
 /*__SYNC_MODE__*/
 const PASSAGES = {
   p1: {
@@ -4280,6 +4280,598 @@ DECKS.push(
     {f:"devant", b:"in front of"},{f:"derrière", b:"behind"}]}
 );
 
+/* ===== BANK8 (Oct 7): built from her class worksheets — prime factor trees, order of operations, ecosystems lessons 2–4, geography ===== */
+const BANK8 = [], FAM8 = {}, SOL8 = {}, HELP8 = {}, ASK8 = {};
+function add8(q, fam, sol){ BANK8.push(q); if(fam) FAM8[q.id] = fam; if(sol) SOL8[q.id] = sol; }
+function mc8(id, subj, topic, code, fam, q, choices, why, sol){ add8({id:id, subj:subj, topic:topic, code:code, type:"mc", q:q, choices:choices, a:0, why:why}, fam, sol); }
+function wr8(id, subj, topic, code, fam, q, model, points, why){ add8({id:id, subj:subj, topic:topic, code:code, type:"write", q:q, model:model, points:points, why:why}, fam); }
+
+/* ---------- math: prime factor trees (her worksheets show she writes "2, 3" instead of 2 × 2 × 2 × 3) ---------- */
+(function(){
+  function pf(n){ const f = []; let d = 2; while(n > 1){ while(n % d === 0){ f.push(d); n /= d; } d++; } return f; }
+  function uniq(a){ const s = {}; return a.filter(function(x){ if(s[x]) return false; s[x] = 1; return true; }); }
+  function factors(n){ const f = []; for(let i = 1; i <= n; i++) if(n % i === 0) f.push(i); return f; }
+  const X = " × ";
+  function expForm(fs){ const c = {}; fs.forEach(function(p){ c[p] = (c[p] || 0) + 1; }); const sup = {1:"",2:"²",3:"³",4:"⁴",5:"⁵",6:"⁶",7:"⁷"};
+    return Object.keys(c).map(Number).sort(function(a, b){ return a - b; }).map(function(p){ return p + sup[c[p]]; }).join(X); }
+  function treeSteps(n){ let s = "", m = n; pf(n).forEach(function(p){ if(m !== p){ s += m + " = " + p + " × " + (m / p) + "  → circle " + p + "\n"; } m /= p; }); return s; }
+
+  /* product of prime factors — the full product, every prime repeated */
+  [24, 32, 40, 64, 72, 80, 100, 126, 140, 280, 320, 400, 60, 90, 66, 68, 78, 44, 63, 108].forEach(function(n){
+    const f = pf(n), right = f.join(X), distinct = uniq(f).join(", ");
+    let comp = null; for(let k = 4; k < n; k++){ if(n % k === 0 && pf(k).length > 1){ const rest = pf(n / k); comp = [k].concat(rest).sort(function(a, b){ return a - b; }).join(X); break; } }
+    const short = uniq(f).join(X);
+    const ch = uniq([right, distinct, comp || ("1" + X + n), short]);
+    while(ch.length < 4) ch.push(f.concat([f[0]]).join(X));
+    add8({id:"pf8-" + n, subj:"math", topic:"primefac", code:"B2.6", type:"mc",
+      q:"Finish the factor tree for <b>" + n + "</b>. What is the <b>product of prime factors</b>?", choices:ch.slice(0, 4), a:0,
+      why:"Write EVERY circled prime, including repeats, joined with ×: " + right + " = " + n + ". Writing just “" + distinct + "” lists which primes appear but loses how many times — it doesn’t multiply back to " + n + "."},
+      "pf-product", treeSteps(n) + "Every branch ends in a prime. Collect them all:\n" + n + " = " + right + "\nCheck: multiply back → " + n + " ✓");
+  });
+  /* exponent form */
+  [8, 16, 32, 64, 24, 36, 72, 80, 100, 200, 400, 108].forEach(function(n){
+    const f = pf(n), right = expForm(f);
+    const c = {}; f.forEach(function(p){ c[p] = (c[p] || 0) + 1; });
+    const ps = Object.keys(c).map(Number);
+    const swapped = ps.length === 2 ? ps[0] + "^" + c[ps[1]] + X + ps[1] + "^" + c[ps[0]] : ps[0] + "^" + (c[ps[0]] + 1);
+    const sup = {"^1":"","^2":"²","^3":"³","^4":"⁴","^5":"⁵","^6":"⁶","^7":"⁷"};
+    const sw = swapped.replace(/\^\d/g, function(m){ return sup[m] || m; });
+    const ch = uniq([right, sw, uniq(f).join(X), f.length + X + uniq(f)[0]]);
+    while(ch.length < 4) ch.push(right.replace(/[²³⁴⁵⁶]/, ""));
+    add8({id:"pe8-" + n, subj:"math", topic:"primefac", code:"B2.6", type:"mc",
+      q:"Write the prime factorization of <b>" + n + "</b> using exponents.", choices:uniq(ch).slice(0, 4), a:0,
+      why:n + " = " + f.join(X) + ". Count how many times each prime appears and use that as its exponent: " + right + "."},
+      "pf-exponent", "Prime factors: " + f.join(X) + "\nCount them: " + ps.map(function(p){ return p + " appears " + c[p] + " time" + (c[p] > 1 ? "s" : ""); }).join(", ") + "\nAnswer: " + right);
+  });
+  /* how many times */
+  [[64,2],[32,2],[80,2],[400,5],[81,3],[72,3],[120,2],[250,5]].forEach(function(t){
+    const n = t[0], p = t[1], k = pf(n).filter(function(x){ return x === p; }).length;
+    add8({id:"pc8-" + n + "-" + p, subj:"math", topic:"primefac", code:"B2.6", type:"num",
+      q:"How many times does <b>" + p + "</b> appear in the prime factorization of <b>" + n + "</b>?", a:k,
+      why:n + " = " + pf(n).join(X) + ", so " + p + " appears " + k + " times."}, "pf-product");
+  });
+  /* prime, composite or neither */
+  [[1,"Neither prime nor composite","1 has only ONE factor (itself). Primes need exactly two factors, so 1 is neither."],
+   [25,"Composite","25 = 5 × 5, so it has a factor other than 1 and itself."],
+   [14,"Composite","14 = 2 × 7 — it's even, so 2 divides it."],
+   [49,"Composite","49 = 7 × 7. Odd numbers can still be composite!"],
+   [51,"Composite","5 + 1 = 6, a multiple of 3, so 3 divides it: 51 = 3 × 17."],
+   [57,"Composite","5 + 7 = 12, a multiple of 3: 57 = 3 × 19."],
+   [91,"Composite","91 = 7 × 13 — a famous trap."],
+   [87,"Composite","8 + 7 = 15, a multiple of 3: 87 = 3 × 29."],
+   [2,"Prime","2 has exactly two factors (1 and 2). It's the only even prime."],
+   [97,"Prime","Nothing from 2 to 9 divides 97, so it's prime."],
+   [89,"Prime","89 isn't divisible by 2, 3, 5 or 7, so it's prime."],
+   [73,"Prime","73 isn't divisible by 2, 3, 5 or 7, so it's prime."],
+   [67,"Prime","67 isn't divisible by 2, 3, 5 or 7, so it's prime."],
+   [43,"Prime","43 isn't divisible by 2, 3, 5 or 7, so it's prime."],
+   [27,"Composite","2 + 7 = 9, a multiple of 3: 27 = 3 × 3 × 3."],
+   [33,"Composite","33 = 3 × 11."]].forEach(function(t){
+    add8({id:"pn8-" + t[0], subj:"math", topic:"primefac", code:"B2.6", type:"mc",
+      q:"Is <b>" + t[0] + "</b> prime, composite, or neither?", choices:["Prime","Composite","Neither prime nor composite"],
+      a:["Prime","Composite","Neither prime nor composite"].indexOf(t[1]), why:t[2]}, "prime-or-not");
+  });
+  /* ALL the factors (not just one pair, and not multiples) */
+  [54, 36, 24, 30, 48, 20, 18, 42, 60, 72].forEach(function(n){
+    const all = factors(n), mid = all[Math.floor(all.length / 2)];
+    const pair = uniq([1, mid, n / mid, n]).sort(function(a, b){ return a - b; });
+    const mult = [n, 2*n, 3*n, 4*n];
+    const missing = all.filter(function(x, i){ return i !== 1; });
+    const ch = uniq([all.join(", "), pair.join(", "), mult.join(", "), missing.join(", ")]);
+    add8({id:"fl8-" + n, subj:"math", topic:"primefac", code:"B2.6", type:"mc",
+      q:"Which list shows <b>ALL</b> the factors of " + n + "?", choices:ch, a:0,
+      why:"Factors divide INTO " + n + ". Check every number from 1 up: " + all.join(", ") + ". (" + mult.join(", ") + " are multiples — they come out of " + n + ", not into it.)"},
+      "factors-list", "Test 1, 2, 3 … and write each pair:\n" + all.filter(function(x){ return x * x <= n; }).map(function(x){ return x + " × " + (n / x); }).join("\n") + "\nAll factors: " + all.join(", "));
+  });
+  /* divisibility rules */
+  [567, 21, 286, 2345, 126, 450, 1236, 945].forEach(function(n){
+    const ds = [2,3,4,5,6,9,10].filter(function(d){ return n % d === 0; });
+    const others = [2,3,4,5,6,9,10].filter(function(d){ return n % d !== 0; });
+    const plus = ds.concat([others[0]]).sort(function(a, b){ return a - b; });
+    const minus = ds.length > 1 ? ds.slice(1) : [others[1]];
+    const odd = [2,4,10].filter(function(d){ return ds.indexOf(d) < 0; }).concat(ds.filter(function(d){ return d === 5; })).sort(function(a, b){ return a - b; });
+    const fmt = function(a){ return a.length ? a.join(", ") : "none of them"; };
+    const ch = uniq([fmt(ds), fmt(plus), fmt(minus), fmt(odd)]);
+    while(ch.length < 4) ch.push(fmt([others[2] || 4]));
+    const digits = String(n).split("").reduce(function(s, x){ return s + Number(x); }, 0);
+    add8({id:"dv8-" + n, subj:"math", topic:"primefac", code:"B2.6", type:"mc",
+      q:"Which of 2, 3, 4, 5, 6, 9, 10 divide evenly into <b>" + n.toLocaleString("en-CA") + "</b>?", choices:ch.slice(0, 4), a:0,
+      why:"Digit sum is " + digits + ". Rules: 2 → even; 3 → digit sum divisible by 3; 4 → last two digits divisible by 4; 5 → ends in 0 or 5; 6 → both 2 and 3; 9 → digit sum divisible by 9; 10 → ends in 0. So: " + fmt(ds) + "."}, "divisibility");
+  });
+  /* missing number in a factor tree */
+  [[140,10],[114,6],[280,4],[126,3],[320,8],[400,4],[66,2],[51,3],[60,6],[44,4],[42,7],[90,9]].forEach(function(t){
+    add8({id:"ft8-" + t[0] + "-" + t[1], subj:"math", topic:"primefac", code:"B2.6", type:"num",
+      q:"In a factor tree, <b>" + t[0] + "</b> splits into <b>" + t[1] + "</b> and <b>?</b>", a:t[0] / t[1],
+      why:"The two branches must multiply to " + t[0] + ": " + t[0] + " ÷ " + t[1] + " = " + (t[0] / t[1]) + "."}, "factor-tree");
+  });
+})();
+mc8("pf8-w1","math","primefac","B2.6","pf-product","A student finishes the factor tree for 32 and writes “Product of prime factors: 2, 4”. What is wrong?",
+  ["4 is not prime, and the 2s must all be written: 32 = 2 × 2 × 2 × 2 × 2","Nothing — that is correct","It should be 16 × 2","It should be 4 × 4 × 2"],
+  "Every number in the answer must be prime (4 = 2 × 2 isn't), and every circled prime is written, repeats included, joined with ×.");
+mc8("pf8-w2","math","primefac","B2.6","pf-product","Which of these is the product of prime factors of 24?",
+  ["2 × 3 × 2 × 2","3 × 4 × 2","2, 3","16 × 2 + 8"],
+  "Order doesn't matter, but every factor must be prime and they must multiply to 24: 2 × 3 × 2 × 2 = 24 ✓. 3 × 4 × 2 uses 4, which isn't prime.");
+
+/* ---------- math: order of operations (her two worksheet mistakes) ---------- */
+(function(){
+  const E = [
+    ["4² − 5(3 + 2)", 16 - 25, ["Brackets: 3 + 2 = 5","Exponent: 4² = 16","Multiply: 5 × 5 = 25","Subtract IN ORDER: 16 − 25 = −9 (not 25 − 16!)"]],
+    ["6² − 8(3 + 2)", 36 - 40, ["Brackets: 3 + 2 = 5","Exponent: 6² = 36","Multiply: 8 × 5 = 40","Subtract in order: 36 − 40 = −4"]],
+    ["(9 − 6)² − 4 + 12", 9 - 4 + 12, ["Brackets: 9 − 6 = 3","Exponent: 3² = 9","Left to right: 9 − 4 = 5","Then: 5 + 12 = 17 (don't add 4 + 12 first!)"]],
+    ["(12 − 8)² − 6 + 10", 16 - 6 + 10, ["Brackets: 12 − 8 = 4","Exponent: 4² = 16","Left to right: 16 − 6 = 10","Then: 10 + 10 = 20"]],
+    ["5 · 2² − 18 ÷ 3", 20 - 6, ["Exponent: 2² = 4","Multiply: 5 × 4 = 20","Divide: 18 ÷ 3 = 6","Subtract: 20 − 6 = 14"]],
+    ["(8 + 9 ÷ 3 · 2) + (2 − 3²)", (8 + 6) + (2 - 9), ["First bracket: 9 ÷ 3 = 3, then 3 × 2 = 6, then 8 + 6 = 14","Second bracket: 3² = 9, then 2 − 9 = −7","Add: 14 + (−7) = 7"]],
+    ["2(6 − 4)³ ÷ 4 + 5", 2*8/4 + 5, ["Brackets: 6 − 4 = 2","Exponent: 2³ = 8","Left to right: 2 × 8 = 16, then 16 ÷ 4 = 4","Add: 4 + 5 = 9"]],
+    ["2³ ÷ 4 × (2(5) − 6)", 8/4*(10-6), ["Brackets: 2(5) = 10, then 10 − 6 = 4","Exponent: 2³ = 8","Left to right: 8 ÷ 4 = 2, then 2 × 4 = 8"]],
+    ["[(4 − 3 × 2) + 12 ÷ 4] + 3²", ((4-6)+3)+9, ["Inner bracket: 3 × 2 = 6, then 4 − 6 = −2","12 ÷ 4 = 3, so the square bracket is −2 + 3 = 1","Exponent: 3² = 9","Add: 1 + 9 = 10"]],
+    ["[3 × 2(7 − 5)] ÷ 2² − 8 + 4", 12/4 - 8 + 4, ["Inner bracket: 7 − 5 = 2","Square bracket: 3 × 2 × 2 = 12","Exponent: 2² = 4","12 ÷ 4 = 3, then left to right: 3 − 8 = −5, −5 + 4 = −1"]],
+    ["5 + 3² × (24 ÷ 8) − 2³ × (1 + 4)", 5 + 9*3 - 8*5, ["Brackets: 24 ÷ 8 = 3 and 1 + 4 = 5","Exponents: 3² = 9 and 2³ = 8","Multiply: 9 × 3 = 27 and 8 × 5 = 40","Left to right: 5 + 27 = 32, then 32 − 40 = −8"]],
+    ["[8 + (6 − 2)² ÷ 4] − (3 + 1) × 3", (8 + 16/4) - 12, ["Inner bracket: 6 − 2 = 4, 4² = 16, 16 ÷ 4 = 4","Square bracket: 8 + 4 = 12","(3 + 1) × 3 = 12","12 − 12 = 0"]],
+    ["20 − 3² + 4", 20 - 9 + 4, ["Exponent: 3² = 9","Left to right: 20 − 9 = 11","Then 11 + 4 = 15 (NOT 20 − 13)"]],
+    ["30 ÷ 5 × 2", 12, ["× and ÷ go left to right: 30 ÷ 5 = 6","Then 6 × 2 = 12 (not 30 ÷ 10)"]]
+  ];
+  E.forEach(function(e, i){
+    add8({id:"oo8-" + (i+1), subj:"math", topic:"bedmas", code:"B2.1", type:"num",
+      q:"Simplify using the order of operations: <b>" + e[0] + "</b>", a:e[1],
+      why:"Brackets → Exponents → × and ÷ left to right → + and − left to right. " + e[2].join(". ") + "."},
+      "bedmas", e[2].join("\n") + "\nAnswer: " + e[1] + (e[1] < 0 ? "\n(Negative answer — use the +/− key.)" : ""));
+  });
+})();
+mc8("oo8-m1","math","bedmas","B2.1","bedmas-mistake","Riley simplified 5² − 6(4 + 2) like this: 25 and 6 × 6 = 36, then 36 − 25 = 11. What went wrong?",
+  ["She subtracted backwards — it's 25 − 36 = −11","She should have added 4 + 2 last","5² is 10, not 25","Nothing — 11 is right"],
+  "The expression says 25 MINUS 36. Subtraction order matters: 25 − 36 = −11. Use the +/− key for a negative answer.");
+mc8("oo8-m2","math","bedmas","B2.1","bedmas-mistake","Riley simplified (10 − 7)² − 2 + 15 by doing 2 + 15 = 17 first, then 9 − 17 = −8. What is the right answer?",
+  ["22, because − and + go left to right: 9 − 2 = 7, then 7 + 15 = 22","−8, because addition comes before subtraction","26","4"],
+  "BEDMAS puts + and − on the SAME step — you go left to right. 9 − 2 = 7, then 7 + 15 = 22. Adding first is like subtracting the 15 too.");
+mc8("oo8-m3","math","bedmas","B2.1","bedmas-mistake","In 18 − 4 + 6, which step comes first?",
+  ["18 − 4, because + and − are done left to right","4 + 6, because addition comes first in BEDMAS","Either — you get the same answer","6 − 4"],
+  "18 − 4 + 6 = 14 + 6 = 20. Doing 4 + 6 first gives 18 − 10 = 8, which is wrong. The A and S in BEDMAS share a step.");
+
+HELP8["pf-product"] = {title:"Product of prime factors", steps:[
+  "Build the factor tree until every branch ends in a circled PRIME (2, 3, 5, 7, 11, 13 …).",
+  "Write every circled prime — including repeats — with × between them.",
+  "Never include 1 or a composite number like 4, 6, 9 in the answer.",
+  "Check: multiply your answer. It must equal the number on top of the tree."],
+  ex:"32 → 2 × 16 → 2 × 2 × 8 → … \n32 = 2 × 2 × 2 × 2 × 2  ✓\nNOT “2, 4” — 4 isn't prime, and the five 2s are all needed."};
+ASK8["pf-product"] = "Write every prime from the bottom of the tree, repeats included, multiplied together.";
+HELP8["pf-exponent"] = {title:"Prime factors with exponents", steps:[
+  "Find the prime factors with a tree.",
+  "Group the same primes together.",
+  "Use an exponent for how many times each prime appears: 2 × 2 × 2 = 2³."],
+  ex:"72 = 2 × 2 × 2 × 3 × 3\n= 2³ × 3²"};
+ASK8["pf-exponent"] = "Count each prime and write the count as its exponent.";
+HELP8["prime-or-not"] = {title:"Prime, composite or neither", steps:[
+  "Prime: exactly TWO factors — 1 and itself (2, 3, 5, 7, 11 …).",
+  "Composite: MORE than two factors (4, 6, 9, 25 …).",
+  "1 is neither — it only has one factor.",
+  "Test with 2, 3, 5 and 7. If none divide it (for numbers under 100), it's prime."],
+  ex:"25: 5 × 5 → composite\n1: only factor is 1 → neither\n29: not divisible by 2, 3, 5, 7 → prime"};
+ASK8["prime-or-not"] = "Decide whether the number has exactly two factors, more than two, or just one.";
+HELP8["factors-list"] = {title:"Listing ALL the factors", steps:[
+  "Factors divide INTO the number with no remainder. Multiples come OUT of it (5, 10, 15 are multiples of 5).",
+  "Start at 1 and test every number, writing each pair: 1 × 54, 2 × 27, 3 × 18, 6 × 9.",
+  "Stop when the pairs start repeating.",
+  "List every number from every pair, smallest to largest."],
+  ex:"54: 1×54, 2×27, 3×18, 6×9\nFactors: 1, 2, 3, 6, 9, 18, 27, 54"};
+ASK8["factors-list"] = "Find the list that has every number that divides evenly into it — not just one pair, and not multiples.";
+HELP8["divisibility"] = {title:"Divisibility rules", steps:[
+  "2: even. 5: ends in 0 or 5. 10: ends in 0.",
+  "3: digits add to a multiple of 3. 9: digits add to a multiple of 9.",
+  "4: the last two digits make a multiple of 4.",
+  "6: passes BOTH the 2 and 3 rules."],
+  ex:"567: odd (not 2, 4, 6, 10), doesn't end in 0/5 (not 5)\n5 + 6 + 7 = 18 → divisible by 3 and 9"};
+ASK8["divisibility"] = "Use the shortcut rules to test each number without dividing.";
+HELP8["factor-tree"] = {title:"Factor tree branches", steps:[
+  "The two branches under a number always multiply to that number.",
+  "So the missing branch = top number ÷ the branch you know."],
+  ex:"140 → 10 and ?\n140 ÷ 10 = 14"};
+ASK8["factor-tree"] = "Divide the top number by the branch you already have.";
+HELP8["bedmas-mistake"] = {title:"Two BEDMAS traps", steps:[
+  "Subtraction keeps its order: 25 − 36 = −11, never 36 − 25.",
+  "Addition and subtraction share ONE step — work left to right.",
+  "Multiplication and division also share one step — left to right.",
+  "A negative answer is fine. Use the +/− key."],
+  ex:"9 − 2 + 15\n= 7 + 15\n= 22   (not 9 − 17)"};
+ASK8["bedmas-mistake"] = "Spot which step was done in the wrong order.";
+
+/* ---------- science: ecosystems lessons 2–4 (levels, roles, food chains & webs, energy, cycling of matter) ---------- */
+function sc8(id, topic, code, fam, q, choices, why){ mc8(id, "science", topic, code, fam, q, choices, why); }
+/* Lesson 2 — levels of organization & roles */
+sc8("lv8-01","ecoorg","B2.1","eco-levels","All the cattails growing around one pond are a:",
+  ["Population","Organism","Community","Ecosystem"],
+  "One species, one area = a population. Add the other species and you have a community.");
+sc8("lv8-02","ecoorg","B2.1","eco-levels","Ducks, cattails, minnows and dragonflies living together in a marsh are a:",
+  ["Community","Population","Organism","Ecosystem"],
+  "Several different populations living and interacting = a community. It only becomes an ecosystem when you add the non-living parts.");
+sc8("lv8-03","ecoorg","B2.1","eco-levels","Ducks, cattails, minnows, the water, mud and sunlight in a marsh together make up a:",
+  ["Ecosystem","Community","Population","Organism"],
+  "Living things PLUS non-living things (water, mud, sunlight) interacting = an ecosystem.");
+sc8("lv8-04","ecoorg","B2.1","eco-levels","A student says “a community and an ecosystem are basically the same thing.” Which response is best?",
+  ["Disagree — a community is only the living things; an ecosystem also includes the non-living parts like water, soil and sunlight","Agree — both are just groups of animals","Agree — they are both one species","Disagree — an ecosystem has no living things"],
+  "That one difference is the whole point: ecosystem = community + abiotic factors. So the right answer is to DISAGREE and explain it.");
+sc8("lv8-05","ecoorg","B2.1","eco-levels","Which is the correct order from smallest to largest?",
+  ["Organism → population → community → ecosystem","Population → organism → community → ecosystem","Organism → community → population → ecosystem","Ecosystem → community → population → organism"],
+  "One living thing → many of the same species → many species together → add the non-living parts.");
+sc8("lv8-06","ecoorg","B2.2","biotic-abiotic","A student lists the ABIOTIC factors in a pond as “fish, rabbits, rocks, water”. Which two don't belong?",
+  ["Fish and rabbits — they are living (biotic)","Rocks and water","Water and fish","Rocks and rabbits"],
+  "Abiotic means NON-living: water, rocks, sunlight, temperature, oxygen, soil. Fish and rabbits are living, so they're biotic.");
+sc8("lv8-07","ecoorg","B2.2","biotic-abiotic","Which list contains ONLY abiotic factors for a pond?",
+  ["Water temperature, sunlight, rocks, dissolved oxygen","Algae, water, rocks, sunlight","Frogs, mud, sunlight, oxygen","Lily pads, water, fish, sand"],
+  "Algae, frogs, lily pads and fish are all living. Temperature, sunlight, rocks and oxygen are never alive.");
+sc8("lv8-08","ecoorg","B2.3","feeding-roles","A deer eats grass, leaves and twigs. It is a:",
+  ["Herbivore","Omnivore","Carnivore","Decomposer"],
+  "Deer eat only plants, so they are herbivores. An omnivore eats both plants AND animals, like a black bear or raccoon.");
+sc8("lv8-09","ecoorg","B2.3","feeding-roles","A raccoon eats berries, insects, frogs and garbage. It is a:",
+  ["Omnivore","Herbivore","Carnivore","Producer"],
+  "It eats plants (berries) and animals (insects, frogs), so it's an omnivore.");
+sc8("lv8-10","ecoorg","B2.3","feeding-roles","Which organism makes its own food using energy from sunlight?",
+  ["Algae","Mushroom","Caterpillar","Owl"],
+  "Producers like algae, grass and trees use photosynthesis. Mushrooms are decomposers — they don't make their own food.");
+sc8("lv8-11","ecoorg","B2.3","feeding-roles","Which pair are BOTH decomposers?",
+  ["Fungi and bacteria","Fungi and grass","Bacteria and hawks","Earthworms and algae"],
+  "Fungi (like mushrooms) and many bacteria break down dead organisms and waste.");
+sc8("lv8-12","ecoorg","B2.3","feeding-roles","Which animal would fit in a POND ecosystem as a herbivore?",
+  ["A tadpole eating algae","A deer","A caterpillar on an oak tree","A heron"],
+  "Pick organisms that actually live in the ecosystem. Tadpoles graze on algae. Deer and caterpillars live on land; herons eat fish (carnivore).");
+/* Lesson 3 — food chains, webs, energy flow */
+sc8("fc8-01","foodwebs","B2.3","food-chain-arrows","In the chain sun → clover → rabbit → fox, which is the FIRST consumer?",
+  ["Rabbit","Clover","Fox","Sun"],
+  "Clover is the producer. The first (primary) consumer is the first thing that EATS — the rabbit.");
+sc8("fc8-02","foodwebs","B2.3","food-chain-arrows","In sun → algae → minnow → bass → heron, what does the BASS eat?",
+  ["Minnows","Herons","Algae","The sun"],
+  "Arrows point from the food to the eater. The arrow INTO bass comes from minnow, so the bass eats minnows.");
+sc8("fc8-03","foodwebs","B2.3","food-chain-arrows","In sun → algae → minnow → bass → heron, what does the MINNOW eat?",
+  ["Algae","Bass","Heron","Nothing"],
+  "Look at the arrow pointing INTO the minnow: algae → minnow. The bass eats the minnow, not the other way round.");
+sc8("fc8-04","foodwebs","B2.3","food-chain-arrows","What do the arrows in a food chain show?",
+  ["The direction energy moves — from the organism eaten to the organism that eats it","Which animal is bigger","Which way the animals walk","Who eats first in the day"],
+  "Arrows = energy transfer. grass → rabbit means energy goes from the grass into the rabbit.");
+sc8("fc8-05","foodwebs","B2.3","food-chain-arrows","Which food chain is drawn correctly?",
+  ["seeds → mouse → owl","owl → mouse → seeds","mouse → seeds → owl","seeds → owl → mouse"],
+  "Start with the producer and point each arrow toward the eater: seeds → mouse → owl.");
+sc8("fc8-06","foodwebs","B2.3","food-chain-arrows","Which is a predator–prey pair?",
+  ["Bass and minnow","Algae and minnow","Grass and rabbit","Sun and grass"],
+  "A predator HUNTS and eats another animal (its prey). Algae and grass are plants, so eating them isn't predation.");
+sc8("fc8-07","foodwebs","B2.4","food-web","How is a food web different from a food chain?",
+  ["A web shows many connected chains — most animals eat, and are eaten by, more than one thing","A web only has plants","A web is just a longer chain in a straight line","A web has no arrows"],
+  "A food web branches. A rabbit might be eaten by a fox AND a hawk; a hawk might eat mice AND snakes.");
+sc8("fc8-08","foodwebs","B2.4","food-web","A student writes a meadow food web as one long line: grass → berry bush → grasshopper → mouse → frog → snake → fox. What's the main problem?",
+  ["Grass doesn't feed a berry bush — each arrow must go from food to eater, and a web branches","Nothing, that's a food web","The fox should be first","It needs more producers in a row"],
+  "Arrows only join an organism to something that EATS it. Plants don't eat plants. A web has arrows branching out: grass → grasshopper, grass → mouse, grasshopper → frog …");
+sc8("fc8-09","foodwebs","B2.4","food-web","In a meadow, mice are eaten by snakes, foxes and hawks. If mice suddenly disappeared, what would MOST likely happen?",
+  ["Snakes, foxes and hawks would have less food and might decline or switch to other prey","Only the hawks would be affected","The grass would disappear","Nothing — food webs don't change"],
+  "One missing link affects every organism connected to it. Predators with other food options may survive by switching prey.");
+sc8("fc8-10","foodwebs","B2.4","food-web","In a food web, grasshoppers eat grass and are eaten by frogs and birds. Grass dies in a drought. Which organisms are affected FIRST?",
+  ["The grasshoppers (and other grass eaters)","The hawks","The decomposers only","The sun"],
+  "The organisms that eat the producer feel it first. Later the frogs, birds and their predators run short too.");
+sc8("fc8-11","foodwebs","B2.4","food-web","Hawks are removed from a forest. What happens to the mice FIRST?",
+  ["Their population grows because fewer are being eaten","They all die","They become predators","Nothing"],
+  "Remove a predator and its prey increases. Then, with more mice eating seeds and plants, those plants may decline.");
+sc8("fc8-12","foodwebs","B2.4","food-web","Grass in a meadow dies from disease. What happens to the rabbits and then the foxes?",
+  ["Rabbits decline from lack of food, then foxes decline because there are fewer rabbits to eat","Both die because they both eat grass","Foxes increase","Rabbits increase"],
+  "Foxes don't eat grass — they eat rabbits. The effect passes up the chain: less grass → fewer rabbits → fewer foxes.");
+sc8("fc8-13","foodwebs","B2.4","food-web","Why is a food web a better model of a real ecosystem than a food chain?",
+  ["Most organisms eat several things and are eaten by several predators","Food webs are easier to draw","Food chains include decomposers","Food webs leave out producers"],
+  "Real animals rarely depend on one food. A web shows all those connections, so it predicts changes better.");
+sc8("fc8-14","foodwebs","B2.3","feeding-roles","Why are decomposers important even though they're often left out of food chains?",
+  ["They break down dead organisms and waste and return nutrients to the soil for producers to reuse","They get rid of non-living things","They make food from sunlight","They are top predators"],
+  "Decomposers don't just ‘get rid of’ dead things — they RECYCLE the nutrients so plants can grow again.");
+sc8("fc8-15","foodwebs","B2.4","energy-vs-matter","Where does the energy in almost every food chain originally come from?",
+  ["The Sun","The soil","Water","Decomposers"],
+  "Producers capture the Sun's energy by photosynthesis; every consumer gets it second-hand by eating.");
+/* Lesson 4 — cycling of matter */
+sc8("cy8-01","cycles","B2.5","energy-vs-matter","ENERGY or MATTER? “Can be reused again and again within an ecosystem.”",
+  ["Matter","Energy","Both equally","Neither"],
+  "Matter (water, carbon, nutrients) is recycled over and over. Energy flows through once and leaves as heat.");
+sc8("cy8-02","cycles","B2.5","energy-vs-matter","ENERGY or MATTER? “Moves between living organisms and the non-living environment.”",
+  ["Matter","Energy","Neither","Only heat"],
+  "Carbon, water and nutrients move from air and soil into living things and back again — that's matter cycling.");
+sc8("cy8-03","cycles","B2.5","energy-vs-matter","ENERGY or MATTER? “Flows through a food chain and eventually leaves as heat.”",
+  ["Energy","Matter","Both","Neither"],
+  "Energy FLOWS one way (sun → producers → consumers → heat). Matter CYCLES.");
+sc8("cy8-04","cycles","B2.5","energy-vs-matter","Which sentence is correct?",
+  ["Energy flows through ecosystems; matter cycles through them","Matter flows through ecosystems; energy cycles through them","Both energy and matter are used up","Neither moves"],
+  "A good memory hook: energy flows (one way), matter cycles (round and round).");
+sc8("cy8-05","cycles","B2.5","water-cycle","A puddle is gone two days after a rainstorm. What happened to the water?",
+  ["It evaporated — the Sun heated it and it became water vapour in the air","It melted","It condensed into the ground","It was destroyed"],
+  "Liquid → gas is evaporation. Condensation is the opposite (vapour → droplets), and melting is solid → liquid. The water still exists; it's in the air.");
+sc8("cy8-06","cycles","B2.5","water-cycle","Which is the correct order of the water cycle?",
+  ["Evaporation → condensation → precipitation → collection","Condensation → evaporation → collection → precipitation","Precipitation → evaporation → collection → condensation","Collection → condensation → evaporation → precipitation"],
+  "Water heats and rises (evaporation), cools into clouds (condensation), falls (precipitation), gathers in lakes and soil (collection) — then repeats.");
+sc8("cy8-07","cycles","B2.5","water-cycle","Water droplets form on the outside of a cold glass of lemonade on a hot day. This is:",
+  ["Condensation","Evaporation","Transpiration","Precipitation"],
+  "Water vapour in the air touches the cold glass, cools, and turns back into liquid droplets — condensation.");
+sc8("cy8-08","cycles","B2.5","water-cycle","What is the difference between evaporation and transpiration?",
+  ["Evaporation is from water surfaces like lakes; transpiration is water vapour released from plant leaves","They are the same thing","Transpiration is rain falling on plants","Evaporation only happens at night"],
+  "Both turn liquid water into vapour. Transpiration is the plant version — water travels up from the roots and leaves through the leaves.");
+sc8("cy8-09","cycles","B2.5","carbon-cycle","How does carbon from the air end up inside a rabbit?",
+  ["Plants take in CO₂ during photosynthesis, then the rabbit eats the plants","The rabbit breathes in carbon dioxide and keeps it","The rabbit drinks it in water","Carbon is made inside the rabbit"],
+  "Animals breathe OUT carbon dioxide, not in to keep. Carbon enters food chains through plants (photosynthesis) and passes to animals when they eat.");
+sc8("cy8-10","cycles","B2.5","carbon-cycle","During photosynthesis, plants take in ___ and give off ___.",
+  ["Carbon dioxide; oxygen","Oxygen; carbon dioxide","Water vapour; carbon dioxide","Nitrogen; oxygen"],
+  "Photosynthesis: CO₂ + water + sunlight → food, releasing O₂. Respiration does the reverse.");
+sc8("cy8-11","cycles","B2.5","carbon-cycle","How does respiration return carbon to the atmosphere?",
+  ["Living things break down food for energy and breathe out carbon dioxide","Plants take carbon dioxide in","Rocks release oxygen","Rain washes carbon into the air"],
+  "Plants, animals and microorganisms all respire: food + O₂ → energy, releasing CO₂ back into the air.");
+sc8("cy8-12","cycles","B2.5","carbon-cycle","Which human activity releases large amounts of stored carbon into the atmosphere?",
+  ["Burning fossil fuels like gasoline and natural gas","Planting trees","Composting","Riding a bike"],
+  "Fossil fuels hold carbon stored for millions of years. Combustion releases it quickly as CO₂.");
+sc8("cy8-13","cycles","B2.5","nutrient-cycle","Complete the nutrient cycle: plant → animal → death/waste → decomposer → ___ → plant",
+  ["Soil nutrients","Sunlight","Oxygen","Predator"],
+  "Decomposers break dead matter down into nutrients in the soil, which plants absorb through their roots.");
+sc8("cy8-14","cycles","B2.5","nutrient-cycle","If all decomposers disappeared from a forest, which TWO effects are most likely?",
+  ["Dead leaves and animals would pile up, and plants would run short of nutrients","Animals would grow faster and the sun would get brighter","Nothing would change","More oxygen would be released"],
+  "No decomposers → dead matter isn't broken down → nutrients stay locked up → plants grow poorly → the whole food web suffers.");
+wr8("cy8-15","science","cycles","B2.5","carbon-cycle","Explain how a carbon atom could travel from the air, through a plant and an animal, and back to the air.",
+  "Carbon dioxide in the air is taken in by a maple tree during photosynthesis and becomes part of its leaves. A deer eats the leaves, so the carbon is now in the deer. When the deer respires it breathes out carbon dioxide, and when it dies, decomposers break it down and release carbon dioxide back into the air.",
+  ["Plant takes in CO₂ by photosynthesis","Animal gets the carbon by EATING the plant","Carbon returns to the air by respiration or decomposition"],
+  "Carbon never enters animals by breathing in — it comes through food.");
+
+HELP8["eco-levels"] = {title:"Levels of organization", steps:[
+  "Organism: ONE living thing (one frog).",
+  "Population: all of ONE species in an area (all the frogs in the pond).",
+  "Community: all the different populations living together (frogs + fish + algae).",
+  "Ecosystem: the community PLUS the non-living parts (water, sunlight, soil, temperature)."],
+  ex:"Only living things listed, several species → community\nLiving + non-living listed → ecosystem"};
+ASK8["eco-levels"] = "Decide how big the group is, and whether non-living parts are included.";
+HELP8["food-chain-arrows"] = {title:"Reading food chain arrows", steps:[
+  "Arrows point from the food TO the eater — the direction energy moves.",
+  "The first living thing is the producer (plant or algae).",
+  "The first eater is the primary (first) consumer, then secondary, then tertiary.",
+  "To find what something eats, look at the arrow pointing INTO it."],
+  ex:"sun → algae → minnow → bass\nThe minnow eats algae. The bass eats the minnow.\nFirst consumer = minnow"};
+ASK8["food-chain-arrows"] = "Follow the arrows: they point from what gets eaten to what eats it.";
+HELP8["food-web"] = {title:"Food webs", steps:[
+  "A food web is many food chains joined together.",
+  "Each arrow goes from food to eater — plants never point to other plants.",
+  "Remove or reduce one organism and everything connected to it changes.",
+  "Prey losing a predator → prey increases. Predator losing prey → predator decreases or switches food."],
+  ex:"grass → rabbit → fox\ngrass → grasshopper → bird → fox\nFox has 2 food sources; grass feeds 2 animals."};
+ASK8["food-web"] = "Trace every arrow in and out of the organism that changed.";
+HELP8["energy-vs-matter"] = {title:"Energy flows, matter cycles", steps:[
+  "ENERGY enters from the Sun, moves up the food chain and leaves as heat. It is not reused.",
+  "MATTER (water, carbon, oxygen, nutrients) is reused over and over.",
+  "Matter moves between living things and the non-living environment."],
+  ex:"“Leaves as heat” → energy\n“Reused again and again” → matter\n“Includes carbon and nutrients” → matter"};
+ASK8["energy-vs-matter"] = "Ask: is it used once and lost as heat (energy), or recycled (matter)?";
+HELP8["carbon-cycle"] = {title:"Carbon & oxygen cycle", steps:[
+  "Photosynthesis: plants take in CO₂ and release O₂.",
+  "Carbon moves to animals when they EAT plants (or eat animals that ate plants).",
+  "Respiration: living things release CO₂ back to the air.",
+  "Decomposition and burning fuels also release CO₂."],
+  ex:"CO₂ in air → grass → rabbit → (breathes out / decomposes) → CO₂ in air"};
+ASK8["carbon-cycle"] = "Follow where the carbon goes: air → plant → animal → back to air.";
+HELP8["nutrient-cycle"] = {title:"Nutrient cycle", steps:[
+  "Plants take nutrients from the soil.",
+  "Animals get them by eating plants.",
+  "When organisms die or produce waste, decomposers break it down.",
+  "The nutrients go back into the soil for plants to use again."],
+  ex:"Plant → animal → death/waste → decomposer → soil nutrients → plant"};
+ASK8["nutrient-cycle"] = "Think about how nutrients get back into the soil.";
+
+/* ---------- geography (new subject): landforms, changes to landforms, world map ---------- */
+function ge8(id, topic, code, fam, q, choices, why){ mc8(id, "geography", topic, code, fam, q, choices, why); }
+/* landforms & spheres */
+ge8("lf8-01","landforms","Gr 7 A","landforms","A low area of land between hills or mountains is a:",
+  ["Valley","Plateau","Delta","Island"],
+  "A valley sits between higher land, often with a river running through it.");
+ge8("lf8-02","landforms","Gr 7 A","landforms","A large area of high land that is flat on top is a:",
+  ["Plateau","Valley","Volcano","Delta"],
+  "A plateau is like a raised table of land — high up but flat on top.");
+ge8("lf8-03","landforms","Gr 7 A","landforms","A triangle-shaped area of land at the mouth of a river is a:",
+  ["Delta","Island","Plateau","Valley"],
+  "A river slows down when it reaches a lake or ocean and drops (deposits) its sediment, building a delta. Named after the Greek letter Δ.");
+ge8("lf8-04","landforms","Gr 7 A","landforms","How is a delta formed?",
+  ["A river deposits sediment where it slows down at a lake or ocean","A volcano erupts underwater","Tectonic plates push land upward","Wind carves away rock"],
+  "Deltas are made by DEPOSITION — the river lays down the soil and sand it was carrying.");
+ge8("lf8-05","landforms","Gr 7 A","landforms","A piece of land completely surrounded by water is a(n):",
+  ["Island","Peninsula","Delta","Plateau"],
+  "Island = water on all sides. A peninsula has water on three sides and is still attached to land.");
+ge8("lf8-06","landforms","Gr 7 A","landforms","How are most large mountain ranges formed?",
+  ["Two tectonic plates collide and push the land upward","Rivers deposit sand","Wind piles up dust","Glaciers fill a valley"],
+  "When plates crash together, the crust crumples and is pushed up — that's how the Himalayas and Rockies formed.");
+ge8("lf8-07","landforms","Gr 7 A","landforms","A volcano is an opening in the Earth's crust where:",
+  ["Molten rock (magma, called lava once it reaches the surface) erupts","Rivers start","Glaciers melt","Sand dunes form"],
+  "Magma is molten rock underground; once it comes out of the volcano it's called lava.");
+ge8("lf8-08","landforms","Gr 7 A","landforms","What makes an area a desert?",
+  ["It gets very little precipitation","It is always hot","It has sand everywhere","It is near the equator"],
+  "Deserts are defined by how DRY they are. Some are cold — Antarctica is the largest desert on Earth.");
+ge8("lf8-09","landforms","Gr 7 A","landforms","Which of these is NOT a landform?",
+  ["A highway","A valley","A plateau","An island"],
+  "Landforms are natural features of the Earth's surface. Human-made features like highways don't count.");
+ge8("lf8-10","landforms","Gr 7 A","spheres","Which sphere of the Earth includes all the rocks, soil and landforms?",
+  ["Geosphere","Hydrosphere","Atmosphere","Biosphere"],
+  "Geo = earth/rock. Hydro = water. Atmo = air. Bio = life.");
+ge8("lf8-11","landforms","Gr 7 A","spheres","Oceans, lakes, rivers and glaciers are all part of the:",
+  ["Hydrosphere","Geosphere","Atmosphere","Biosphere"],
+  "Hydro means water — all of Earth's water, including frozen water in glaciers.");
+ge8("lf8-12","landforms","Gr 7 A","spheres","The biosphere includes:",
+  ["All living things — plants, animals and people","Only plants","Only the air","Only the oceans"],
+  "Bio = life. The biosphere is every living thing on Earth, not just plants.");
+ge8("lf8-13","landforms","Gr 7 A","spheres","Wind and rain wearing down a mountain is an example of which two spheres interacting?",
+  ["Atmosphere and geosphere","Biosphere and hydrosphere","Hydrosphere only","Biosphere and geosphere"],
+  "Wind and weather come from the atmosphere; the rock of the mountain is the geosphere. (Rain also brings in the hydrosphere.)");
+/* changes to landforms */
+ge8("lc8-01","landchange","Gr 7 A","plates","The Earth's crust is broken into large moving pieces called:",
+  ["Tectonic plates","Glaciers","Deltas","Hemispheres"],
+  "There are seven major plates and several minor ones. They float on hot, slowly moving rock beneath them.");
+ge8("lc8-02","landchange","Gr 7 A","plates","The solid outer layer of the Earth that is broken into plates is the:",
+  ["Lithosphere","Atmosphere","Hydrosphere","Biosphere"],
+  "Litho = stone. The plates of the lithosphere rest on a hotter, softer layer.");
+ge8("lc8-03","landchange","Gr 7 A","plates","When tectonic plates suddenly slip past or rub against each other, the result is often:",
+  ["An earthquake","A delta","A sand dune","Precipitation"],
+  "Plates get stuck, pressure builds, then they slip suddenly — the ground shakes.");
+ge8("lc8-04","landchange","Gr 7 A","wed","Weathering is:",
+  ["Rock being broken down or worn away in place by wind, rain, ice or temperature changes","Soil being carried to a new place","Sediment being laid down","Plates colliding"],
+  "Weathering BREAKS rock down where it is. Erosion MOVES it. Deposition DROPS it somewhere new. (W-E-D)");
+ge8("lc8-05","landchange","Gr 7 A","wed","Erosion is:",
+  ["Wind, water, ice or gravity carrying soil and rock from one place to another","Rock breaking apart in place","Material being laid down","A volcano erupting"],
+  "Erosion is about MOVEMENT — a river carrying sand, wind blowing soil, a glacier dragging rock.");
+ge8("lc8-06","landchange","Gr 7 A","wed","Deposition is:",
+  ["Material being laid down in a new place","Rock being broken apart","Soil being carried away","Plates pulling apart"],
+  "Deposition is the D in WED: the river slows down and drops its sediment. Deltas and sand dunes are made this way.");
+ge8("lc8-07","landchange","Gr 7 A","wed","Acid rain slowly dissolving a limestone statue is an example of:",
+  ["Chemical weathering","Physical weathering","Deposition","Glaciation"],
+  "Chemical weathering changes what the rock is made of (acid rain, plant acids). Physical weathering just breaks it into pieces.");
+ge8("lc8-08","landchange","Gr 7 A","wed","Water freezes in a crack in a rock, expands, and splits the rock. This is:",
+  ["Physical weathering","Chemical weathering","Deposition","Continental drift"],
+  "Ice wedging breaks rock without changing what it's made of — that's physical weathering.");
+ge8("lc8-09","landchange","Gr 7 A","wed","Sand dunes and deltas are both created mainly by:",
+  ["Deposition","Weathering","Volcanoes","Earthquakes"],
+  "Both form where wind or water drops the material it was carrying.");
+ge8("lc8-10","landchange","Gr 7 A","wed","Which is a NATURAL factor that changes landforms?",
+  ["Glaciation","Mining","Land reclamation","Building a highway"],
+  "Natural factors: tectonic forces, weathering, erosion, deposition, glaciation. Mining and land reclamation are human factors.");
+ge8("lc8-11","landchange","Gr 7 A","wed","Which is a HUMAN factor that changes landforms?",
+  ["Mining","Glaciation","Erosion","Tectonic forces"],
+  "People change land by mining, building, and land reclamation (creating new land, for example by filling in water).");
+ge8("lc8-12","landchange","Gr 7 A","drift","The theory that the continents were once one giant landmass that slowly broke apart is called:",
+  ["Continental drift","Glaciation","Deposition","Erosion"],
+  "Alfred Wegener proposed it. The giant landmass is called Pangaea.");
+ge8("lc8-13","landchange","Gr 7 A","drift","Which scientist proposed the theory of continental drift?",
+  ["Alfred Wegener","Isaac Newton","Charles Darwin","Albert Einstein"],
+  "Alfred Wegener, a German scientist, published the idea in 1912.");
+ge8("lc8-14","landchange","Gr 7 A","drift","Which is evidence for continental drift?",
+  ["The coastlines of South America and Africa look like they fit together","The continents are all different colours on maps","Oceans are salty","Mountains are tall"],
+  "Other evidence: matching mountain ranges (Appalachians and northern Europe), matching fossils on different continents, and similar rocks in Antarctica and North America.");
+ge8("lc8-15","landchange","Gr 7 A","drift","Similar mountain ranges are found in Newfoundland and northern Europe. Why does this support continental drift?",
+  ["They were once one range, split apart when the continents moved","Mountains grow wherever it's cold","People built them the same way","It's a coincidence"],
+  "Matching rocks and mountains on opposite sides of an ocean suggest the land was once joined.");
+/* world map */
+ge8("wm8-01","worldmap","Gr 7 A","map-lines","The line of latitude at 0° that divides Earth into Northern and Southern Hemispheres is the:",
+  ["Equator","Prime Meridian","Tropic of Cancer","Tropic of Capricorn"],
+  "The equator runs east–west around the middle of the Earth at 0° latitude.");
+ge8("wm8-02","worldmap","Gr 7 A","map-lines","The line of longitude at 0° that divides Earth into Eastern and Western Hemispheres is the:",
+  ["Prime Meridian","Equator","Tropic of Cancer","Arctic Circle"],
+  "The Prime Meridian runs north–south through Greenwich, England, at 0° longitude.");
+ge8("wm8-03","worldmap","Gr 7 A","map-lines","The Tropic of Cancer is found about 23.5° ___ of the equator.",
+  ["North","South","East","West"],
+  "Cancer is north (think: C for ‘ceiling’), Capricorn is south. Both are about 23.5° from the equator.");
+ge8("wm8-04","worldmap","Gr 7 A","map-lines","The Tropic of Capricorn is found about 23.5° ___ of the equator.",
+  ["South","North","East","West"],
+  "Capricorn is in the Southern Hemisphere; it passes through Australia, South America and southern Africa.");
+ge8("wm8-05","worldmap","Gr 7 A","map-lines","Lines of LATITUDE run:",
+  ["East–west, measuring how far north or south you are","North–south, measuring how far east or west you are","Only through Canada","Diagonally"],
+  "Latitude lines are flat like ‘ladder rungs’ (lat = flat). Longitude lines run long, from pole to pole.");
+ge8("wm8-06","worldmap","Gr 7 A","hemispheres","Canada is in which two hemispheres?",
+  ["Northern and Western","Northern and Eastern","Southern and Western","Southern and Eastern"],
+  "Canada is north of the equator and west of the Prime Meridian.");
+ge8("wm8-07","worldmap","Gr 7 A","hemispheres","Australia is in which two hemispheres?",
+  ["Southern and Eastern","Northern and Western","Southern and Western","Northern and Eastern"],
+  "Australia is south of the equator and east of the Prime Meridian.");
+ge8("wm8-08","worldmap","Gr 7 A","continents-oceans","How many continents are there, and which is the largest?",
+  ["Seven — Asia","Five — Africa","Seven — North America","Six — Antarctica"],
+  "The seven: North America, South America, Europe, Asia, Africa, Australia (Oceania) and Antarctica. Asia is the largest.");
+ge8("wm8-09","worldmap","Gr 7 A","continents-oceans","Which is the largest ocean?",
+  ["Pacific","Atlantic","Indian","Arctic"],
+  "The Pacific is bigger than all the land on Earth combined. The five oceans: Pacific, Atlantic, Indian, Southern (Antarctic), Arctic.");
+ge8("wm8-10","worldmap","Gr 7 A","continents-oceans","Which ocean lies between North America and Europe?",
+  ["Atlantic","Pacific","Indian","Southern"],
+  "The Atlantic separates the Americas from Europe and Africa.");
+ge8("wm8-11","worldmap","Gr 7 A","continents-oceans","Which ocean is bordered by Africa, Asia and Australia?",
+  ["Indian","Atlantic","Arctic","Pacific"],
+  "The Indian Ocean sits south of India, between Africa and Australia.");
+ge8("wm8-12","worldmap","Gr 7 A","continents-oceans","Which ocean surrounds Antarctica?",
+  ["Southern (Antarctic) Ocean","Arctic Ocean","Indian Ocean","Atlantic Ocean"],
+  "The Arctic Ocean is at the NORTH pole; the Southern (Antarctic) Ocean surrounds Antarctica at the south.");
+ge8("wm8-13","worldmap","Gr 7 A","compass","On a compass rose, which direction is halfway between North and East?",
+  ["Northeast (NE)","Southeast (SE)","Northwest (NW)","East-north (EN)"],
+  "The in-between directions are called intermediate directions: NE, SE, SW, NW. North or South is always said first.");
+ge8("wm8-14","worldmap","Gr 7 A","compass","If you travel from Ontario to Brazil, which direction are you mainly going?",
+  ["South (a little southeast)","North","West","Northeast"],
+  "Brazil is in South America, below and slightly east of Ontario.");
+ge8("wm8-15","worldmap","Gr 7 A","compass","The map in class is a Robinson projection. Why do all flat world maps have some distortion?",
+  ["The Earth is round, so flattening it onto paper stretches or squeezes some areas","Map makers make mistakes on purpose","The continents keep moving every year","Paper is too small"],
+  "You can't flatten a globe without distorting it. The Robinson projection balances size and shape so nothing is too badly stretched.");
+
+HELP8["landforms"] = {title:"Landforms", steps:[
+  "Mountain: very high land, formed when plates collide. Volcano: opening where magma/lava erupts.",
+  "Valley: low land between hills. Plateau: high land, flat on top.",
+  "Delta: triangle of land at a river mouth, built by deposition. Island: land surrounded by water.",
+  "Desert: an area with very little precipitation (can be hot OR cold)."],
+  ex:"Landforms are NATURAL. Highways, dams and buildings don't count."};
+ASK8["landforms"] = "Match the description to the natural feature.";
+HELP8["spheres"] = {title:"The four spheres of Earth", steps:[
+  "Geosphere = rock, soil, landforms.",
+  "Hydrosphere = all water (oceans, lakes, ice).",
+  "Atmosphere = air and weather.",
+  "Biosphere = all living things."],
+  ex:"A river (hydro) carving a canyon (geo)\nTrees (bio) releasing oxygen into the air (atmo)"};
+ASK8["spheres"] = "Think: rock, water, air or life?";
+HELP8["plates"] = {title:"Tectonic forces", steps:[
+  "The lithosphere (Earth's crust) is broken into 7 major and several minor plates.",
+  "They move slowly, driven by heat inside the Earth.",
+  "Colliding plates build mountains; slipping plates cause earthquakes; plates can also create volcanoes."],
+  ex:"Plates collide → mountains\nPlates rub/slip → earthquakes\nMagma escapes → volcano"};
+ASK8["plates"] = "Think about what happens when the giant pieces of crust move.";
+HELP8["wed"] = {title:"W.E.D. — weathering, erosion, deposition", steps:[
+  "Weathering breaks rock down IN PLACE (physical: ice, wind; chemical: acid rain, plant acids).",
+  "Erosion MOVES the pieces (wind, water, ice, gravity).",
+  "Deposition DROPS them in a new place (deltas, sand dunes).",
+  "Natural factors also include tectonic forces and glaciation; human factors include mining and land reclamation."],
+  ex:"Rain cracks a cliff (weathering) → river carries the sand (erosion) → sand settles at the river mouth (deposition = delta)"};
+ASK8["wed"] = "Is the rock being broken, moved, or dropped?";
+HELP8["drift"] = {title:"Continental drift", steps:[
+  "Alfred Wegener: all continents were once one landmass (Pangaea) that slowly broke apart.",
+  "Evidence: coastlines that fit (South America + Africa).",
+  "Matching mountains (Appalachians + northern Europe) and matching fossils on different continents.",
+  "Similar rocks in Antarctica and North America."],
+  ex:"Same fossil on two continents an ocean apart → they were once joined"};
+ASK8["drift"] = "Remember Wegener's idea and the clues that support it.";
+HELP8["map-lines"] = {title:"Lines on the world map", steps:[
+  "Equator: 0° latitude, splits North and South.",
+  "Prime Meridian: 0° longitude, splits East and West.",
+  "Tropic of Cancer: 23.5° N. Tropic of Capricorn: 23.5° S.",
+  "Latitude lines run east–west (flat); longitude lines run north–south (long)."],
+  ex:"Cancer = north (top), Capricorn = south (bottom)"};
+ASK8["map-lines"] = "Picture the globe: which line, and which direction from the equator?";
+HELP8["hemispheres"] = {title:"Hemispheres", steps:[
+  "North of the equator → Northern Hemisphere; south → Southern.",
+  "West of the Prime Meridian → Western; east → Eastern.",
+  "Every place is in one of each pair."],
+  ex:"Canada: Northern + Western\nAustralia: Southern + Eastern"};
+ASK8["hemispheres"] = "Check the equator (north/south) and the Prime Meridian (east/west).";
+HELP8["continents-oceans"] = {title:"Continents and oceans", steps:[
+  "7 continents: North America, South America, Europe, Asia, Africa, Australia, Antarctica.",
+  "5 oceans: Pacific (largest), Atlantic, Indian, Southern/Antarctic, Arctic.",
+  "Atlantic: between the Americas and Europe/Africa. Indian: between Africa and Australia."],
+  ex:"Biggest continent: Asia. Biggest ocean: Pacific."};
+ASK8["continents-oceans"] = "Picture the world map and where each one sits.";
+HELP8["compass"] = {title:"Compass rose & maps", steps:[
+  "Cardinal directions: N, E, S, W.",
+  "Intermediate directions: NE, SE, SW, NW — say north or south first.",
+  "Flat maps always distort the round Earth somewhere."],
+  ex:"Halfway between south and west = southwest (SW)"};
+ASK8["compass"] = "Use the compass rose to find the direction.";
+
+DECKS.push(
+  {id:"geo-landforms", subj:"geography", topic:"landforms", name:"Geography: landforms & changes", lang:"en", cards:[
+    {f:"mountain", b:"very high land, formed when tectonic plates collide"},{f:"valley", b:"low land between hills or mountains"},
+    {f:"plateau", b:"high land that is flat on top"},{f:"delta", b:"triangle of land at a river mouth, built by deposition"},
+    {f:"island", b:"land surrounded by water on all sides"},{f:"volcano", b:"opening in the crust where magma/lava erupts"},
+    {f:"desert", b:"area with very little precipitation (hot or cold)"},{f:"geosphere", b:"rock, soil and landforms"},
+    {f:"hydrosphere", b:"all of Earth's water"},{f:"atmosphere", b:"the air around Earth"},{f:"biosphere", b:"all living things"},
+    {f:"lithosphere", b:"Earth's solid outer layer, broken into plates"},{f:"weathering", b:"breaking rock down in place"},
+    {f:"erosion", b:"moving soil and rock by wind, water, ice or gravity"},{f:"deposition", b:"laying material down in a new place"},
+    {f:"glaciation", b:"glaciers carving and shaping the land"},{f:"continental drift", b:"Wegener's theory that the continents were once joined (Pangaea)"},
+    {f:"land reclamation", b:"people creating new land, e.g. by filling in water"}]},
+  {id:"geo-map", subj:"geography", topic:"worldmap", name:"Geography: world map", lang:"en", cards:[
+    {f:"Equator", b:"0° latitude — splits North and South"},{f:"Prime Meridian", b:"0° longitude — splits East and West"},
+    {f:"Tropic of Cancer", b:"23.5° N"},{f:"Tropic of Capricorn", b:"23.5° S"},{f:"latitude", b:"east–west lines; how far north or south"},
+    {f:"longitude", b:"north–south lines; how far east or west"},{f:"7 continents", b:"N. America, S. America, Europe, Asia, Africa, Australia, Antarctica"},
+    {f:"5 oceans", b:"Pacific, Atlantic, Indian, Southern (Antarctic), Arctic"},{f:"largest ocean", b:"Pacific"},{f:"largest continent", b:"Asia"},
+    {f:"Canada's hemispheres", b:"Northern and Western"},{f:"intermediate directions", b:"NE, SE, SW, NW"}]},
+  {id:"sci-foodweb", subj:"science", topic:"foodwebs", name:"Science: food chains, webs & cycles", lang:"en", cards:[
+    {f:"producer", b:"makes its own food from sunlight (plants, algae)"},{f:"consumer", b:"gets energy by eating other organisms"},
+    {f:"herbivore", b:"eats only plants"},{f:"carnivore", b:"eats other animals"},{f:"omnivore", b:"eats plants and animals"},
+    {f:"decomposer", b:"breaks down dead things and returns nutrients to the soil"},{f:"predator / prey", b:"the hunter / the one hunted"},
+    {f:"food chain arrow", b:"points from the food to the eater (energy direction)"},{f:"food web", b:"many connected food chains"},
+    {f:"population", b:"one species in one area"},{f:"community", b:"all the populations living together"},{f:"ecosystem", b:"community + non-living parts"},
+    {f:"energy", b:"flows one way and leaves as heat"},{f:"matter", b:"cycles and is reused"},{f:"evaporation", b:"liquid water → vapour"},
+    {f:"condensation", b:"vapour cools → droplets/clouds"},{f:"precipitation", b:"rain, snow, sleet, hail"},{f:"transpiration", b:"plants release water vapour from leaves"},
+    {f:"photosynthesis", b:"plants take in CO₂ and release O₂"},{f:"respiration", b:"living things release CO₂ back to the air"}]}
+);
+
 BANK.push.apply(BANK, BANK2);
 BANK.push.apply(BANK, BANK3);
 BANK.push.apply(BANK, BANK4);
@@ -4292,10 +4884,13 @@ Object.assign(SOL, SOL2, SOL3, SOL4, SOL5, SOL6);
 BANK.push.apply(BANK, BANK7);
 BANK7.forEach(function(q){ if(!FAM7[q.id] && q.like && FAM[q.like]) FAM7[q.id] = FAM[q.like]; });
 Object.assign(FAM, FAM7); Object.assign(HELP, HELP7); Object.assign(ASK, ASK7); Object.assign(SOL, SOL7);
+BANK.push.apply(BANK, BANK8);
+Object.assign(FAM, FAM8); Object.assign(HELP, HELP8); Object.assign(ASK, ASK8); Object.assign(SOL, SOL8);
 
 const SUBJECTS = {
   math:     {name:"Math",     tone:"var(--math)", soft:"var(--mathsoft)", doc:"Ontario Mathematics, 2020"},
   science:  {name:"Science",  tone:"var(--sci)",  soft:"var(--scisoft)",  doc:"Ontario Science & Technology, 2022"},
+  geography:{name:"Geography", tone:"var(--geo)", soft:"var(--geosoft)", doc:"Ontario Social Studies, History & Geography, 2023"},
   language: {name:"Language", tone:"var(--lang)", soft:"var(--langsoft)", doc:"Ontario Language, 2023"},
   french:   {name:"French",   tone:"var(--fr)",   soft:"var(--frsoft)",   doc:"Ontario FSL: Core French, Grades 4–8, 2013"}
 };
@@ -4303,6 +4898,12 @@ const TOPICS = {
   fracdec:     {subj:"math", name:"Fractions & decimals", codes:"multiplying, dividing, word problems"},
   bedmas:      {subj:"math", name:"Exponents & order of operations", codes:"from class: BEDMAS with powers"},
   primefac:    {subj:"math", name:"Prime factors, GCF & LCM", codes:"from class: prime factorization"},
+  ecoorg:      {subj:"science", name:"Levels & roles in an ecosystem", codes:"from class: lesson 2"},
+  foodwebs:    {subj:"science", name:"Food chains, food webs & energy", codes:"from class: lesson 3"},
+  cycles:      {subj:"science", name:"Cycling of matter", codes:"from class: lesson 4 — water, carbon, nutrients"},
+  landforms:   {subj:"geography", name:"Landforms & Earth's spheres", codes:"from class"},
+  landchange:  {subj:"geography", name:"Changes to landforms", codes:"plates, W.E.D., continental drift"},
+  worldmap:    {subj:"geography", name:"World map", codes:"oceans, continents, lines, hemispheres"},
   frmall:      {subj:"french", name:"Au centre commercial", codes:"from class: stores, items, places"},
   powers:      {subj:"math", name:"Powers, roots, LCM & GCF", codes:"squares, cubes, cube roots, factors"},
   number:      {subj:"math", name:"Number sense", codes:"integers, percents, square roots, rounding"},
@@ -4330,7 +4931,7 @@ const SKINS = [
 ];
 const NICE = ["Nailed it.","Exactly right.","That's the one.","Yes — well spotted.","Correct.","Perfect.","Got it."];
 /* the unit she is working on in class — shown first on the home screen */
-const CURRENT_UNIT = "ecosystems";
+const CURRENT_UNIT = "cycles";
 /* where the app lives now (Google); the old Claude link points here */
 const MOVE_URL = "https://scasey1985.github.io/practice-lab/";
 
@@ -4624,9 +5225,8 @@ function renderHome(){
   }
   html += '<div class="card pad stack classnew"><div><span class="nowlab" style="color:var(--brand)">New from your class</span>' +
     '<h2 style="margin-top:4px">Practise what your teacher just posted</h2></div>' +
-    '<div class="row"><button class="primary" data-cls="primefac">GCF &amp; LCM with prime factors · ' + BANK.filter(function(q){ return q.topic === "primefac"; }).length + '</button>' +
-    '<button class="primary" data-cls="frmall">Au centre commercial · ' + BANK.filter(function(q){ return q.topic === "frmall"; }).length + '</button>' +
-    '<button class="soft" data-cls="bedmas">Exponents &amp; BEDMAS · ' + BANK.filter(function(q){ return q.topic === "bedmas"; }).length + '</button>' +
+    '<div class="row">' + [["primefac","Prime factor trees"],["bedmas","Order of operations"],["foodwebs","Food chains &amp; webs"],["cycles","Cycling of matter"],["ecoorg","Levels &amp; roles"],["landforms","Landforms"],["landchange","Changes to landforms"],["worldmap","World map"],["frmall","Au centre commercial"]].map(function(t, i){
+      return '<button class="' + (i < 2 ? 'primary' : 'soft') + '" data-cls="' + t[0] + '">' + t[1] + ' · ' + BANK.filter(function(q){ return q.topic === t[0]; }).length + '</button>'; }).join("") +
     '<button class="soft" data-cls="french">French from class · ' + DECKS.filter(function(d){ return d.id.indexOf("fr-cls") === 0 || d.id === "fr-prayers"; }).length + ' decks</button></div></div>';
   const openN = openMistakeIds(store).length;
   if(openN){
@@ -5324,7 +5924,7 @@ function renderWrongDb(src){
   html += '<div class="row">' + [["open","To fix"],["fixed","Fixed"],["all","All"]].map(function(f){
     return '<button class="filt stat' + (wrongStatus === f[0] ? ' on' : '') + '" data-s="' + f[0] + '">' + f[1] + '</button>';
   }).join("") + '</div>';
-  html += '<div class="row">' + ["all","math","science","language"].map(function(f){
+  html += '<div class="row">' + ["all","math","science","language","french","geography"].map(function(f){
     const n = f === "all" ? byStatus.length : byStatus.filter(function(r){ return r.subj === f; }).length;
     return '<button class="filt' + (wrongFilter === f ? ' on' : '') + '" data-f="' + f + '">' + (f === "all" ? "Every subject" : SUBJECTS[f].name) + ' · ' + n + '</button>';
   }).join("") + '</div>';
@@ -5641,7 +6241,7 @@ function renderDecks(){
     '<p class="muted">Pick a deck. <b>Learn</b> flips through the cards. <b>Test</b> checks what stuck and saves your score. ' +
     'Cards you know well show up less; tricky ones come back more.</p></div>';
   const isCls = function(d){ return d.id.indexOf("fr-cls") === 0 || d.id === "fr-prayers"; };
-  [["class", "From your class"], ["french", "French"], ["science", "Science"], ["math", "Math"]].forEach(function(g){
+  [["class", "From your class"], ["french", "French"], ["science", "Science"], ["geography", "Geography"], ["math", "Math"]].forEach(function(g){
     const subj = g[0];
     const decks = DECKS.filter(function(d){ return subj === "class" ? isCls(d) : (d.subj === subj && !isCls(d)); });
     if(!decks.length) return;
