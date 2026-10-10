@@ -299,6 +299,8 @@
 
   /* ---------- progress ---------- */
   .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pace{display:inline-block;font-size:.9rem;font-weight:600;padding:6px 10px;border-radius:10px}
+  .pace.low{background:#FDE3E3;color:#A32121}.pace.mid{background:#FFF1D6;color:#8A5A00}.pace.good{background:#DFF3E6;color:#1E6B3A}
   .stat{background:var(--card2);border:1.5px solid var(--line);border-radius:16px;padding:13px 15px}
   .stat .n{font-family:"Baloo 2",sans-serif;font-size:1.5rem;font-weight:800;color:var(--brand);line-height:1.1}
   .stat .l{font-size:.8rem;color:var(--muted);font-weight:700}
@@ -495,7 +497,7 @@
     <div class="topbar">
       <div class="hello">
         <h1 id="greet">Practice Lab</h1>
-        <span class="sub" id="subline">Grade 7 · math, science, geography, language &amp; French</span>
+        <span class="sub" id="subline">Grade 7 · math · science · geography · language · French</span>
       </div>
       <div class="tools">
         <span class="streak" id="streak" hidden></span>
@@ -511,7 +513,7 @@
 </div>
 
 <script>
-var APP_BUILD = "2026-10-07b";   /* bump on every deploy: open copies of the app use it to update themselves */
+var APP_BUILD = "2026-10-10b";   /* bump on every deploy: open copies of the app use it to update themselves */
 /*__SYNC_MODE__*/
 const PASSAGES = {
   p1: {
@@ -4872,6 +4874,69 @@ DECKS.push(
     {f:"photosynthesis", b:"plants take in CO₂ and release O₂"},{f:"respiration", b:"living things release CO₂ back to the air"}]}
 );
 
+/* ---------- more pure substances & mixtures (Oct 10: she worked through this whole topic in one sitting) ---------- */
+function mt9(id, fam, code, q, choices, why){ mc8(id, "science", "matter", code, fam, q, choices, why); }
+mt9("mt9-01","particle-theory","C2.1","In which state are particles packed closest together and only vibrating in place?",
+  ["Solid","Liquid","Gas","They are the same in every state"],
+  "Solid particles are tightly packed and vibrate in place. Liquid particles slide past each other; gas particles spread far apart.");
+mt9("mt9-02","particle-theory","C2.1","Why can a gas be squeezed into a smaller space, but a solid can't?",
+  ["Gas particles have lots of empty space between them","Gas particles are smaller","Solid particles are moving faster","Gases have no particles"],
+  "There is a lot of space between gas particles, so pushing them closer is easy. Solid particles are already packed tight.");
+mt9("mt9-03","particle-theory","C2.1","When water freezes into ice, its particles:",
+  ["Slow down and lock into fixed positions","Speed up and spread apart","Disappear","Turn into a different substance"],
+  "Cooling takes energy away, so particles slow down. It's still water (H₂O) — just in a different state.");
+mt9("mt9-04","pure-vs-mixture","C2.2","Which of these is a pure substance?",
+  ["Baking soda","Orange juice with pulp","Concrete","Salad"],
+  "Baking soda (sodium bicarbonate) is one kind of particle. The others are all mixtures.");
+mt9("mt9-05","pure-vs-mixture","C2.2","Tap water is actually a mixture because:",
+  ["It contains dissolved minerals and gases as well as water","It is clear","It comes from a lake","It can freeze"],
+  "Tap water carries dissolved minerals (like calcium) and gases. Only distilled water is close to a pure substance.");
+mt9("mt9-06","homo-hetero","C2.3","Which is a SOLUTION (a homogeneous mixture)?",
+  ["Sugar fully dissolved in tea","Sand in water","Cereal and milk","Oil and vinegar"],
+  "In a solution one substance dissolves completely, so it looks the same everywhere.");
+mt9("mt9-07","homo-hetero","C2.3","A suspension, like muddy water, is a mixture where:",
+  ["Particles are spread out at first but settle to the bottom over time","Everything dissolves completely","There is only one substance","Nothing ever settles"],
+  "Suspensions are heterogeneous — the solid bits eventually sink if you leave them still.");
+mt9("mt9-08","dissolving-rate","C2.4","In a solution of sugar water, the WATER is the:",
+  ["Solvent","Solute","Precipitate","Suspension"],
+  "The solvent does the dissolving (water); the solute is what gets dissolved (sugar).");
+mt9("mt9-09","dissolving-rate","C2.4","Which would dissolve fastest in a glass of water?",
+  ["Powdered sugar in warm water, stirred","A sugar cube in cold water, not stirred","A sugar cube in warm water, not stirred","Powdered sugar in cold water, not stirred"],
+  "Small pieces, heat and stirring all speed up dissolving — this choice has all three.");
+mt9("mt9-10","saturation","C2.5","A solution that can still dissolve more solute at that temperature is:",
+  ["Unsaturated","Saturated","Pure","A suspension"],
+  "Unsaturated = room for more. Saturated = full; extra solute sinks to the bottom.");
+mt9("mt9-11","saturation","C2.5","How can you usually get MORE sugar to dissolve in a saturated solution?",
+  ["Heat the water","Cool the water","Add more sugar","Wait longer"],
+  "Most solids dissolve better in warmer water, so heating raises the saturation point.");
+mt9("mt9-12","universal-solvent","C2.6","Which of these does NOT dissolve in water?",
+  ["Cooking oil","Salt","Sugar","Drink crystals"],
+  "Oil doesn't dissolve in water — it floats in a separate layer. That's why oil spills are hard to clean.");
+mt9("mt9-13","separation","C2.7","Which method separates tea leaves from tea?",
+  ["Filtration (a strainer)","Evaporation","A magnet","Chromatography"],
+  "The leaves are solid and undissolved, so a filter or strainer catches them.");
+mt9("mt9-14","separation","C2.7","How do recycling plants pull steel cans out of mixed recycling?",
+  ["Large magnets","Filtration","Evaporation","Chromatography"],
+  "Steel is magnetic; aluminum, paper and plastic aren't, so a magnet separates it.");
+mt9("mt9-15","separation","C2.7","Which method separates a mixture of rocks and sand?",
+  ["Sifting through a screen","Evaporation","Distillation","A magnet"],
+  "Sifting separates by particle SIZE — sand falls through, rocks stay on top.");
+mt9("mt9-16","separation","C2.7","Gold panners swirl river gravel in water. Why does the gold stay in the pan?",
+  ["Gold is much denser (heavier for its size) than sand and gravel","Gold is magnetic","Gold dissolves the sand","Gold floats"],
+  "Separating by density: heavy gold sinks and stays while lighter material washes away.");
+mt9("mt9-17","element-compound","C2.8","Water (H₂O) is a compound because it is made of:",
+  ["Two different elements chemically joined — hydrogen and oxygen","Only one kind of atom","A mixture of air and ice","Three different compounds"],
+  "A compound has two or more DIFFERENT elements chemically combined.");
+mt9("mt9-18","element-compound","C2.8","Where would you find every known element listed?",
+  ["The periodic table","A food web","A world map","A dictionary of compounds"],
+  "The periodic table organizes all the elements, from hydrogen (H) to the heaviest ones.");
+mt9("mt9-19","assess-impact","C1.1","A town wants to reduce plastic waste. Which action has the BIGGEST effect?",
+  ["Using refillable bottles and containers instead of single-use ones","Buying bigger plastic bags","Burning plastic in backyards","Throwing plastic in the lake"],
+  "Reducing comes before recycling: avoiding single-use plastic stops the waste from being made at all.");
+mt9("mt9-20","assess-impact","C1.1","Why is dumping used motor oil down a storm drain harmful?",
+  ["Storm drains lead straight to rivers and lakes, and oil doesn't dissolve — it coats and poisons wildlife","It cleans the pipes","It turns into water","Oil evaporates harmlessly"],
+  "Storm drains are not treated. Oil spreads over water, blocks oxygen and harms fish and birds.");
+
 BANK.push.apply(BANK, BANK2);
 BANK.push.apply(BANK, BANK3);
 BANK.push.apply(BANK, BANK4);
@@ -5039,7 +5104,10 @@ function topicTally(v){
 }
 function logAnswer(q, given, result){
   if(!store.answerLog) store.answerLog = [];
-  store.answerLog.push({i:q.id, g:String(given == null ? "" : given).slice(0, q.type === "write" ? 300 : 80), r:result, t:Date.now(), v:APP_BUILD});
+  const secs = (quiz && quiz.shownAt && quiz.qs && quiz.qs[quiz.i] && quiz.qs[quiz.i].id === q.id) ? Math.min(300, Math.max(0, Math.round((Date.now() - quiz.shownAt) / 1000))) : null;
+  const entry = {i:q.id, g:String(given == null ? "" : given).slice(0, q.type === "write" ? 300 : 80), r:result, t:Date.now(), v:APP_BUILD};
+  if(secs !== null) entry.s = secs;
+  store.answerLog.push(entry);
   if(store.answerLog.length > 6000) store.answerLog.splice(0, store.answerLog.length - 6000);
 }
 function logWrong(q, given, rating){
@@ -5124,19 +5192,22 @@ function prepare(q){
 }
 /* how many times she has answered each question (all devices, from the merged log) */
 function seenCounts(){ const c = {}; (store.answerLog || []).forEach(function(a){ c[a.i] = (c[a.i] || 0) + 1; }); return c; }
-function pickQuestions(filterFn, n){
+function pickQuestions(filterFn, n, allowRepeats){
   const seen = seenCounts();
-  const scored = BANK.filter(filterFn).map(function(q){
+  let pool = BANK.filter(filterFn);
+  /* questions she has already answered twice are retired until there is nothing fresher (only Fix-my-mistakes repeats them) */
+  if(!allowRepeats) pool = pool.filter(function(q){ return (seen[q.id] || 0) < 2; });
+  const scored = pool.map(function(q){
     const s = statFor(q.code, q.subj);
     const acc = s.seen ? s.correct / s.seen : 0.5;
     const k = seen[q.id] || 0;
-    /* never-answered questions first, then ones seen once; anything done twice or more only comes back when nothing fresher is left */
     const fresh = k === 0 ? 4 : k === 1 ? 2 : 0;
     return {q:q, w:fresh - Math.min(k, 10) * 0.05 + (1 - acc) * 0.5 + Math.random() * 0.55};
   });
   scored.sort(function(a, b){ return b.w - a.w; });
   return shuffle(scored.slice(0, n).map(function(x){ return x.q; })).map(prepare);
 }
+function freshCount(filterFn){ const seen = seenCounts(); return BANK.filter(function(q){ return filterFn(q) && (seen[q.id] || 0) < 2; }).length; }
 function poolFor(o){
   if(o.mode === "topic") return function(q){ return q.topic === o.topic; };
   if(o.mode === "subject") return function(q){ return q.subj === o.subj; };
@@ -5156,9 +5227,9 @@ let view = {screen:"home", subj:null};
 
 function startQuiz(opts){
   const meta = metaFor(opts), filter = poolFor(opts);
-  let qs = pickQuestions(filter, meta.n);
+  let qs = pickQuestions(filter, meta.n, opts.mode === "retry");
   if(!qs.length && opts.mode === "retry"){ view.screen = "daily"; render(); return; }
-  if(!qs.length) qs = pickQuestions(function(){ return true; }, meta.n);
+  if(!qs.length){ view.screen = "topicdone"; view.doneTitle = meta.title; render(); window.scrollTo({top:0, behavior:"instant"}); return; }
   quiz = {opts:opts, filter:filter, title:meta.title, tone:meta.tone, qs:qs, i:0, answered:[], locked:false, retired:{}};
   view.screen = "quiz";
   render();
@@ -5175,6 +5246,7 @@ function swapCurrent(){
   if(!pool.length) return;
   const sc = seenCounts(), tier = function(q){ return Math.min(sc[q.id] || 0, 2); };
   const best = Math.min.apply(null, pool.map(tier));
+  if(best >= 2 && quiz.opts.mode !== "retry") return;
   pool = pool.filter(function(q){ return tier(q) === best; });
   quiz.qs[quiz.i] = prepare(pool[Math.floor(Math.random() * pool.length)]);
   render();
@@ -5208,6 +5280,7 @@ function render(){
   if(view.screen === "learn") return renderLearn();
   if(view.screen === "fctest") return renderFcTest();
   if(view.screen === "fcdone") return renderFcDone();
+  if(view.screen === "topicdone") return renderTopicDone();
 }
 
 function renderHome(){
@@ -5291,7 +5364,7 @@ function renderSubject(){
     const n = BANK.filter(function(q){ return q.topic === t; }).length;
     html += '<button class="topic" data-topic="' + t + '" style="--tone:' + s.tone + '">' +
       '<span style="min-width:0"><span class="tn">' + m.name + '</span><br>' +
-      '<span class="tc">' + m.codes + ' · ' + n + ' questions</span></span>' +
+      '<span class="tc">' + m.codes + ' · ' + n + ' questions · ' + freshCount(function(q){ return q.topic === t; }) + ' new to you</span></span>' +
       '<span class="tp">' + (st.pct === null ? "–" : st.pct + "%") + '</span></button>';
   });
   html += '</div></div>';
@@ -5304,6 +5377,7 @@ function renderSubject(){
 
 function renderQuiz(){
   const q = quiz.qs[quiz.i], tone = quiz.tone;
+  if(!quiz.locked && quiz.shownFor !== quiz.i + ":" + q.id){ quiz.shownFor = quiz.i + ":" + q.id; quiz.shownAt = Date.now(); }
   let html = '<div class="stack" style="--tone:' + tone.tone + ';--tonesoft:' + tone.soft + '">';
   html += '<div>' +
     '<div class="qtop"><h2>' + esc(quiz.title) + '</h2>' +
@@ -5746,6 +5820,7 @@ function renderDaily(){
     html += '<p class="muted">Nothing logged yet. Days appear here once the app is used.</p>';
   } else {
     html += '<div class="stack" style="gap:10px">';
+    const daySpd = secsByDay(((imported && imported.data) || store).answerLog);
     keys.slice(0, 30).forEach(function(k){
       const d = daily[k];
       const acc = d.answered ? Math.round(d.correct / d.answered * 100) : null;
@@ -5757,6 +5832,7 @@ function renderDaily(){
           (d.visits ? d.visits + (d.visits === 1 ? ' visit' : ' visits') : 'opened') +
           ' · ' + (d.answered || 0) + ' question' + (d.answered === 1 ? '' : 's') +
           (acc === null ? '' : ' · ' + acc + '% right') +
+          (daySpd[k] && daySpd[k].n ? ' · ' + avgSecsHtml(daySpd[k]) + ' per question' : '') +
           (d.hints ? ' · help ×' + d.hints : '') +
 
         '</div>';
@@ -6638,6 +6714,12 @@ function paintSync(){
 }
 function daySummaryRows(){
   const keys = Object.keys(store.daily || {}).sort().slice(-3);
+  const spdRows = secsByDay(store.answerLog);
+  const seenNow = seenCounts();
+  const freshLeft = Object.keys(TOPICS).map(function(t){
+    const all = BANK.filter(function(q){ return q.topic === t; });
+    return t + ":" + all.filter(function(q){ return (seenNow[q.id] || 0) < 2; }).length + "/" + all.length;
+  }).join(" ");
   return keys.map(function(k){
     const d = store.daily[k];
     const tops = Object.keys(d.topics || {}).map(function(x){
@@ -6645,8 +6727,9 @@ function daySummaryRows(){
       return (TOPICS[x] ? TOPICS[x].name : x) + (tt.c === null ? "" : " " + tt.c + "/" + tt.n);
     }).join(", ");
     const sets = (d.sets || []).map(function(s){ return s.title + " " + s.score + "/" + s.outOf; }).join("; ");
+    const sp = spdRows[k];
     return [k, Math.round((d.secs || 0) / 60), d.visits || 0, d.answered || 0, d.correct || 0,
-      d.answered ? Math.round(d.correct / d.answered * 100) : "", tops, sets];
+      d.answered ? Math.round(d.correct / d.answered * 100) : "", tops, sets, sp && sp.n ? Math.round(sp.sum / sp.n) : "", freshLeft];
   });
 }
 function pushSoon(){
@@ -6801,8 +6884,84 @@ window.addEventListener("pagehide", function(){ if(syncTimer){ clearTimeout(sync
 document.addEventListener("visibilitychange", function(){ if(document.hidden && syncTimer){ clearTimeout(syncTimer); syncTimer = null; pushNow(); } });
 if(ONLINE) syncLoad();
 
+/* ---------- daily question feed: new questions written to the Sheet's _bank tab each morning ---------- */
+let feedAdded = 0;
+function applyFeed(text){
+  if(!text) return 0;
+  let added = 0;
+  String(text).split("\n").forEach(function(line){
+    line = line.trim(); if(!line) return;
+    let o; try{ o = JSON.parse(line); }catch(e){ return; }
+    if(!o || typeof o !== "object") return;
+    if(o.kind === "topic"){ if(o.id && !TOPICS[o.id] && SUBJECTS[o.subj]) TOPICS[o.id] = {subj:o.subj, name:String(o.name), codes:String(o.codes || "")}; return; }
+    if(o.kind === "help"){ if(o.fam && o.help && Array.isArray(o.help.steps)){ HELP[o.fam] = o.help; if(o.ask) ASK[o.fam] = String(o.ask); } return; }
+    if(o.kind === "deck"){ if(o.deck && o.deck.id && Array.isArray(o.deck.cards) && !DECKS.some(function(d){ return d.id === o.deck.id; })) DECKS.push(o.deck); return; }
+    const q = o;
+    if(!q.id || !q.q || !TOPICS[q.topic] || !SUBJECTS[q.subj] || BANK.some(function(x){ return x.id === q.id; })) return;
+    if(q.type === "mc" && !(Array.isArray(q.choices) && q.choices.length >= 3 && q.a >= 0 && q.a < q.choices.length)) return;
+    if(q.type === "num" && typeof q.a !== "number") return;
+    if(q.type === "write" && !(q.model && Array.isArray(q.points))) return;
+    if(["mc","num","write"].indexOf(q.type) < 0) return;
+    const item = {id:q.id, subj:q.subj, topic:q.topic, code:q.code || "Practice", type:q.type, q:q.q, a:q.a, why:q.why || ""};
+    if(q.choices) item.choices = q.choices; if(q.model) item.model = q.model; if(q.points) item.points = q.points;
+    BANK.push(item);
+    if(q.fam) FAM[q.id] = q.fam;
+    if(q.sol) SOL[q.id] = q.sol;
+    added++;
+  });
+  return added;
+}
+(function(){
+  try{ feedAdded += applyFeed(localStorage.getItem("plFeed") || ""); }catch(e){}
+  if(!ONLINE) return;
+  cloud("bank").then(function(res){
+    if(!res || !res.ok || typeof res.bank !== "string") return;
+    try{ localStorage.setItem("plFeed", res.bank); }catch(e){}
+    const n = applyFeed(res.bank);
+    feedAdded += n;
+    if(n && ["home", "subject", "daily", "cards", "topicdone"].indexOf(view.screen) >= 0) render();
+  }).catch(function(){});
+})();
+
 /* ================= TODAY TRACKER ================= */
 function dayBlank(){ return {visits:0, secs:0, answered:0, correct:0, hints:0, partial:0, topics:{}, sets:[], missed:[]}; }
+/* seconds spent per question: measured from v2026-10-10 on; older answers estimated from the gap since the previous answer */
+function secsByDay(log){
+  const out = {}; let prevT = 0;
+  (log || []).slice().sort(function(a, b){ return a.t - b.t; }).forEach(function(a){
+    let s = typeof a.s === "number" ? a.s : null;
+    if(s === null && prevT && a.t - prevT <= 180000) s = Math.round((a.t - prevT) / 1000);
+    prevT = a.t;
+    if(s === null || String(a.i).indexOf("fc:") === 0) return;
+    const k = dayKey(new Date(a.t));
+    const o = out[k] || (out[k] = {sum:0, n:0, fast:0});
+    o.sum += Math.min(s, 180); o.n += 1; if(s < 5) o.fast += 1;
+  });
+  return out;
+}
+function avgSecsHtml(o){ if(!o || !o.n) return "–"; return Math.round(o.sum / o.n) + "s"; }
+function paceNote(o){
+  if(!o || o.n < 5) return "";
+  const avg = o.sum / o.n, fastPct = Math.round(o.fast / o.n * 100);
+  if(avg < 8) return '<span class="pace low">Very fast — ' + fastPct + '% answered in under 5 s. Likely guessing or remembering answers.</span>';
+  if(avg < 15) return '<span class="pace mid">Quick pace' + (fastPct >= 30 ? ' · ' + fastPct + '% under 5 s' : '') + '.</span>';
+  return '<span class="pace good">Taking time to think.</span>';
+}
+function renderTopicDone(){
+  const seen = seenCounts();
+  const sugg = Object.keys(TOPICS).map(function(t){ return {t:t, n:BANK.filter(function(q){ return q.topic === t && (seen[q.id] || 0) < 2; }).length}; })
+    .filter(function(x){ return x.n >= 6; }).sort(function(a, b){ return b.n - a.n; }).slice(0, 5);
+  const openN = openMistakeIds(store).length;
+  let html = '<div class="stack"><div class="card pad stack"><h2>You’ve finished ' + esc(view.doneTitle || "this topic") + '</h2>' +
+    '<p class="muted">You’ve answered every question here at least twice, so they’re resting. New ones arrive as your class work is added. Pick another topic:</p>' +
+    '<div class="row">' + sugg.map(function(x){ return '<button class="soft" data-topic="' + x.t + '">' + esc(TOPICS[x.t].name) + ' · ' + x.n + ' new</button>'; }).join("") + '</div>' +
+    (openN ? '<div class="row"><button class="primary" data-go="retry">Fix my mistakes · ' + openN + '</button></div>' : '') +
+    '<div class="row"><button class="hbtn" data-go="home">Home</button></div></div></div>';
+  viewEl.innerHTML = html;
+  viewEl.querySelectorAll("[data-topic]").forEach(function(b){ b.addEventListener("click", function(){ startQuiz({mode:"topic", topic:b.dataset.topic}); }); });
+  viewEl.querySelectorAll('[data-go="retry"]').forEach(function(b){ b.addEventListener("click", function(){ startQuiz({mode:"retry"}); }); });
+  viewEl.querySelectorAll('[data-go="home"]').forEach(function(b){ b.addEventListener("click", function(){ goScreen("home"); }); });
+}
 function todayCardHtml(daily){
   const week = lastNDays(7);
   const k = week[week.length - 1];
@@ -6822,6 +6981,9 @@ function todayCardHtml(daily){
   }).join(" ");
   const done = (d.sets || []).slice().reverse();
   const lastDay = Object.keys(daily).filter(function(x){ return x < k && daily[x] && (daily[x].answered || daily[x].secs); }).sort().pop();
+  const spd = secsByDay(((imported && imported.data) || store).answerLog);
+  const prevSpd = week.slice(0, 6).map(function(x){ return spd[x]; }).filter(function(x){ return x && x.n; });
+  const usualSecs = prevSpd.length ? Math.round(prevSpd.reduce(function(a, x){ return a + x.sum; }, 0) / prevSpd.reduce(function(a, x){ return a + x.n; }, 0)) : null;
 
   let html = '<div class="card pad stack todaycard">' +
     '<div class="todayhead"><div><h2>Today</h2><p class="muted">' +
@@ -6837,8 +6999,9 @@ function todayCardHtml(daily){
       '<div class="stat"><div class="n">' + (d.answered || 0) + '</div><div class="l">questions' + (avgQ !== null ? ' · usual ' + avgQ : '') + '</div></div>' +
       '<div class="stat"><div class="n">' + (pct === null ? "–" : pct + "%") + '</div><div class="l">' + (d.correct || 0) + ' right' + (d.partial ? ' · ' + d.partial + ' partly' : '') + '</div></div>' +
       '<div class="stat"><div class="n">' + mins + '</div><div class="l">minutes' + (avgMin !== null ? ' · usual ' + avgMin : '') + '</div></div>' +
+      '<div class="stat"><div class="n">' + avgSecsHtml(spd[k]) + '</div><div class="l">avg time per question' + (usualSecs ? ' · usual ' + usualSecs + 's' : '') + '</div></div>' +
       '<div class="stat"><div class="n">' + (d.visits || 1) + '</div><div class="l">' + ((d.visits || 1) === 1 ? "visit" : "visits") + '</div></div>' +
-      '</div>';
+      '</div>' + (paceNote(spd[k]) ? '<p>' + paceNote(spd[k]) + '</p>' : '');
     if(tops) html += '<div><p class="muted" style="margin-bottom:6px">What ' + (imported ? "she" : "you") + ' worked on</p><div class="chips">' + tops + '</div></div>';
     if(done.length){
       html += '<div><p class="muted" style="margin-bottom:6px">Sets finished today</p>' + done.map(function(st){
@@ -6916,6 +7079,8 @@ function lifeCardHtml(src, daily){
   const correct = Math.max(t.correct || 0, log.filter(function(a){ return a.r === 1; }).length);
   const pct = answered ? Math.round(correct / answered * 100) : null;
   const hrs = Math.floor(secs / 3600), mins = Math.round((secs % 3600) / 60);
+  const spdAll = secsByDay(log), lifeSpd = {sum:0, n:0, fast:0};
+  Object.keys(spdAll).forEach(function(k){ lifeSpd.sum += spdAll[k].sum; lifeSpd.n += spdAll[k].n; lifeSpd.fast += spdAll[k].fast; });
   let html = '<div class="card pad stack"><div><h2>Life to date</h2><p class="muted">' +
     (first ? 'Since ' + esc(fmtDay(first)) : 'Nothing logged yet') + '</p></div>' +
     '<div class="statgrid">' +
@@ -6923,6 +7088,8 @@ function lifeCardHtml(src, daily){
       '<div class="stat"><div class="n">' + (pct === null ? "–" : pct + "%") + '</div><div class="l">' + correct + ' right</div></div>' +
       '<div class="stat"><div class="n">' + (hrs ? hrs + 'h ' + mins + 'm' : mins + 'm') + '</div><div class="l">time practising</div></div>' +
       '<div class="stat"><div class="n">' + days.length + '</div><div class="l">' + (days.length === 1 ? 'day' : 'days') + ' practised · ' + sets + (sets === 1 ? ' set' : ' sets') + '</div></div>' +
+      '<div class="stat"><div class="n">' + avgSecsHtml(lifeSpd) + '</div><div class="l">avg time per question</div></div>' +
+      '<div class="stat"><div class="n">' + (lifeSpd.n ? Math.round(lifeSpd.fast / lifeSpd.n * 100) + '%' : '–') + '</div><div class="l">answered in under 5 s</div></div>' +
     '</div>';
   const subs = Object.keys(SUBJECTS).filter(function(k){ return bySubj[k]; });
   if(subs.length){
