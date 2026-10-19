@@ -469,6 +469,7 @@
   .word{font-family:"Baloo 2",sans-serif;font-weight:700;font-size:1.7rem;line-height:1.25;color:var(--ink);overflow-wrap:anywhere}
   .word.fr{color:var(--tone)}
   .flip .hint{font-size:.78rem;color:var(--muted);font-weight:700}
+  .qhelp{font-size:.8rem;font-weight:700;color:#b45309;margin:2px 0 4px}
   .flip .ex{font-size:.86rem;color:var(--ink2);max-width:32ch}
   .rate2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .tword{font-family:"Baloo 2",sans-serif;font-weight:700;font-size:1.5rem;margin:6px 0 4px;color:var(--ink)}
@@ -513,7 +514,7 @@
 </div>
 
 <script>
-var APP_BUILD = "2026-10-10b";   /* bump on every deploy: open copies of the app use it to update themselves */
+var APP_BUILD = "2026-10-19a";   /* bump on every deploy: open copies of the app use it to update themselves */
 /*__SYNC_MODE__*/
 const PASSAGES = {
   p1: {
@@ -5107,6 +5108,7 @@ function logAnswer(q, given, result){
   const secs = (quiz && quiz.shownAt && quiz.qs && quiz.qs[quiz.i] && quiz.qs[quiz.i].id === q.id) ? Math.min(300, Math.max(0, Math.round((Date.now() - quiz.shownAt) / 1000))) : null;
   const entry = {i:q.id, g:String(given == null ? "" : given).slice(0, q.type === "write" ? 300 : 80), r:result, t:Date.now(), v:APP_BUILD};
   if(secs !== null) entry.s = secs;
+  if(quiz && quiz.help && quiz.help[q.id]) entry.h = quiz.help[q.id];
   store.answerLog.push(entry);
   if(store.answerLog.length > 6000) store.answerLog.splice(0, store.answerLog.length - 6000);
 }
@@ -5470,6 +5472,8 @@ function togglePanel(kind, q){
         '<p class="muted" style="margin-top:10px">' + (q.subj === "math" ? 'Different numbers on purpose — now try yours the same way.' : 'A different example on purpose — now try yours the same way.') + '</p></div>';
     }
     panel.dataset.filled = "1";
+    /* remember which help buttons she used on THIS question, so it shows on Dad's page and in the Answers sheet */
+    if(quiz){ if(!quiz.help) quiz.help = {}; const prev = quiz.help[q.id] || ""; if(prev.split("+").indexOf(kind) < 0) quiz.help[q.id] = prev ? prev + "+" + kind : kind; }
     const key = q.subj + ":" + q.code;
     store.hints[key] = (store.hints[key] || 0) + 1;
     dayRec().hints += 1;
@@ -5857,12 +5861,14 @@ function renderDaily(){
       const dayQs = answerRows(src, k);
       if(dayQs.length){
         const nRight = dayQs.filter(function(x){ return x.r === 1; }).length;
-        html += '<details class="dayqs"><summary>Every question this day · ' + nRight + ' right of ' + dayQs.length + '</summary><ol>' +
+        const nHelp = dayQs.filter(function(x){ return x.h; }).length;
+        html += '<details class="dayqs"><summary>Every question this day · ' + nRight + ' right of ' + dayQs.length + (nHelp ? ' · help used on ' + nHelp : '') + '</summary><ol>' +
           dayQs.map(function(x){
             const meta = TOPICS[x.topic];
             return '<li class="' + (x.r === 1 ? 'qok' : x.r === 0.5 ? 'qpart' : 'qno') + '">' +
               '<div class="qhead"><span class="qres">' + resultLabel(x.r) + '</span>' +
               '<span class="qwhen">' + esc(x.time) + ' · ' + esc(meta ? meta.name : x.topic) + ' · ' + esc(x.code) + '</span></div>' +
+              (x.h ? '<div class="qhelp">Used help: ' + esc(helpLabel(x.h)) + '</div>' : '') +
               '<div class="qq">' + esc(x.question) + '</div>' +
               '<div class="qa"><span class="wl">' + (imported ? 'Her answer' : 'Your answer') + '</span><span>' + (x.given ? esc(x.given) : '<em>blank</em>') + '</span></div>' +
               (x.r === 1 && x.type !== "write" ? '' :
@@ -5962,10 +5968,11 @@ function answerRows(src, dayFilter){
     else correct = q.model;
     return {day:day, time:d.toLocaleTimeString(undefined, {hour:"numeric", minute:"2-digit"}), t:a.t,
       subj:q.subj, topic:q.topic, code:q.code, type:q.type,
-      question:clean(q.q), given:clean(a.g || ""), correct:clean(correct), r:a.r};
+      question:clean(q.q), given:clean(a.g || ""), correct:clean(correct), r:a.r, h:a.h || ""};
   }).filter(Boolean);
 }
 function resultLabel(r){ return r === 1 ? "Right" : r === 0.5 ? "Partly" : "Not yet"; }
+function helpLabel(h){ return String(h || "").split("+").filter(Boolean).map(function(k){ return k === "ask" ? "What\u2019s this asking?" : "Show me how"; }).join(" + "); }
 
 let wrongFilter = "all";
 let wrongStatus = "open";
@@ -6712,6 +6719,9 @@ function paintSync(){
   bar.hidden = !(syncErr && failCount >= 2);
   bar.textContent = "Your answers aren't reaching the cloud yet. Keep going — they're safe on this phone and will upload once the connection works. If this stays, tell Dad.";
 }
+function helpOnDay(k){
+  return answerRows(store, k).filter(function(r){ return r.h; }).map(function(r){ return r.question.slice(0, 70) + " [" + helpLabel(r.h) + "]"; }).join(" | ");
+}
 function daySummaryRows(){
   const keys = Object.keys(store.daily || {}).sort().slice(-3);
   const spdRows = secsByDay(store.answerLog);
@@ -6729,7 +6739,8 @@ function daySummaryRows(){
     const sets = (d.sets || []).map(function(s){ return s.title + " " + s.score + "/" + s.outOf; }).join("; ");
     const sp = spdRows[k];
     return [k, Math.round((d.secs || 0) / 60), d.visits || 0, d.answered || 0, d.correct || 0,
-      d.answered ? Math.round(d.correct / d.answered * 100) : "", tops, sets, sp && sp.n ? Math.round(sp.sum / sp.n) : "", freshLeft];
+      d.answered ? Math.round(d.correct / d.answered * 100) : "", tops, sets, sp && sp.n ? Math.round(sp.sum / sp.n) : "", freshLeft,
+      d.hints || 0, helpOnDay(k)];
   });
 }
 function pushSoon(){
@@ -6749,7 +6760,7 @@ function pushNow(){
   const fresh = answerRows(store).filter(function(r){ return r.t > since; });
   const rows = fresh.map(function(r){
     return [r.day, r.time, SUBJECTS[r.subj] ? SUBJECTS[r.subj].name : r.subj, TOPICS[r.topic] ? TOPICS[r.topic].name : r.topic,
-      r.code, r.question, r.given, r.correct, resultLabel(r.r)];
+      r.code, r.question, r.given, r.correct, resultLabel(r.r) + (r.h ? " \u00b7 used help: " + helpLabel(r.h) : "")];
   });
   const newT = fresh.reduce(function(m, r){ return Math.max(m, r.t); }, since);
   const snapshot = JSON.parse(JSON.stringify(store));
