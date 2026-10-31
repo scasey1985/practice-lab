@@ -469,6 +469,10 @@
   .word{font-family:"Baloo 2",sans-serif;font-weight:700;font-size:1.7rem;line-height:1.25;color:var(--ink);overflow-wrap:anywhere}
   .word.fr{color:var(--tone)}
   .flip .hint{font-size:.78rem;color:var(--muted);font-weight:700}
+  .guidecard{display:flex;flex-direction:column;align-items:flex-start;cursor:default}
+  .guidelist{margin:0;padding-left:20px;display:grid;gap:6px;line-height:1.45}
+  .guidesec h3{margin:0}
+  .guidetip{margin:4px 0 0;padding:8px 10px;border-radius:10px;background:var(--brandsoft);font-size:.92rem}
   .qhelp{font-size:.8rem;font-weight:700;color:#b45309;margin:2px 0 4px}
   .flip .ex{font-size:.86rem;color:var(--ink2);max-width:32ch}
   .rate2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -514,7 +518,7 @@
 </div>
 
 <script>
-var APP_BUILD = "2026-10-19a";   /* bump on every deploy: open copies of the app use it to update themselves */
+var APP_BUILD = "2026-10-31a";   /* bump on every deploy: open copies of the app use it to update themselves */
 /*__SYNC_MODE__*/
 const PASSAGES = {
   p1: {
@@ -5283,12 +5287,70 @@ function render(){
   if(view.screen === "fctest") return renderFcTest();
   if(view.screen === "fcdone") return renderFcDone();
   if(view.screen === "topicdone") return renderTopicDone();
+  if(view.screen === "guide") return renderGuide();
 }
 
+function activeGuides(){
+  const today = dayKey(new Date());
+  return GUIDES.filter(function(g){ return !g.test || g.test >= today; });
+}
+function guideWhen(test){
+  if(!test) return "Test coming up";
+  const today = dayKey(new Date());
+  const t = new Date(test + "T12:00:00"), n = new Date(today + "T12:00:00");
+  const days = Math.round((t - n) / 86400000);
+  const nice = t.toLocaleDateString(undefined, {weekday:"long", month:"short", day:"numeric"});
+  return days <= 0 ? "Test TODAY · " + nice : days === 1 ? "Test TOMORROW · " + nice : "Test in " + days + " days · " + nice;
+}
+function wireGuideButtons(){
+  viewEl.querySelectorAll("[data-guide]").forEach(function(b){
+    b.addEventListener("click", function(){ view.guide = b.dataset.guide; goScreen("guide"); });
+  });
+  viewEl.querySelectorAll("[data-gdeck]").forEach(function(b){
+    b.addEventListener("click", function(){ if(DECK_BY_ID[b.dataset.gdeck]){ view.deck = b.dataset.gdeck; goScreen("deck"); } });
+  });
+  viewEl.querySelectorAll("[data-gquiz]").forEach(function(b){
+    b.addEventListener("click", function(){ startQuiz({mode:"topic", topic:b.dataset.gquiz}); });
+  });
+}
+function renderGuide(){
+  const g = GUIDES.find(function(x){ return x.id === view.guide; });
+  if(!g){ view.screen = "home"; return render(); }
+  const n = BANK.filter(function(q){ return q.topic === g.topic; }).length;
+  let html = '<div class="stack"><div class="card pad stack">' +
+    '<span class="nowlab" style="color:var(--brand)">' + esc(guideWhen(g.test)) + '</span>' +
+    '<h2 style="margin-top:2px">' + esc(g.title) + '</h2>' +
+    (g.intro ? '<p class="muted">' + rich(g.intro) + '</p>' : '') +
+    '<div class="row">' + (n ? '<button class="primary" data-gquiz="' + esc(g.topic) + '">Quiz me · ' + n + ' questions</button>' : '') +
+    (g.deck ? '<button class="soft" data-gdeck="' + esc(g.deck) + '">Flashcards</button>' : '') + '</div></div>';
+  g.sections.forEach(function(sec){
+    html += '<div class="card pad stack guidesec"><h3>' + esc(sec.h) + '</h3><ul class="guidelist">' +
+      (sec.pts || []).map(function(pt){ return '<li>' + rich(pt) + '</li>'; }).join("") + '</ul>' +
+      (sec.tip ? '<p class="guidetip">💡 ' + rich(sec.tip) + '</p>' : '') + '</div>';
+  });
+  html += '<div class="card pad"><div class="row">' + (n ? '<button class="primary" data-gquiz="' + esc(g.topic) + '">Quiz me now</button>' : '') +
+    '<button class="soft" id="guideHome">Back home</button></div></div></div>';
+  viewEl.innerHTML = html;
+  wireGuideButtons();
+  document.getElementById("guideHome").addEventListener("click", function(){ goScreen("home"); });
+}
 function renderHome(){
   const total = store.totals.answered;
   const acc = total ? Math.round(store.totals.correct / total * 100) : null;
   let html = '<div class="stack">' + moveOutHtml() + moveCardHtml();
+  activeGuides().forEach(function(g){
+    const n = BANK.filter(function(q){ return q.topic === g.topic; }).length;
+    const sj = TOPICS[g.topic] ? SUBJECTS[TOPICS[g.topic].subj] : SUBJECTS.geography;
+    html += '<div class="nowcard guidecard" style="--tone:' + sj.tone + ';--tonesoft:' + sj.soft + '">' +
+      '<span class="nowlab">' + esc(guideWhen(g.test)) + '</span>' +
+      '<span class="nowname">' + esc(g.title) + '</span>' +
+      '<span class="nowmeta">Study guide + ' + n + ' practice questions</span>' +
+      '<span class="row" style="margin-top:10px">' +
+        '<button class="primary" data-guide="' + esc(g.id) + '">Open study guide</button>' +
+        (n ? '<button class="soft" data-gquiz="' + esc(g.topic) + '">Quiz me</button>' : '') +
+        (g.deck ? '<button class="soft" data-gdeck="' + esc(g.deck) + '">Flashcards</button>' : '') +
+      '</span></div>';
+  });
   if(CURRENT_UNIT && TOPICS[CURRENT_UNIT]){
     const cu = TOPICS[CURRENT_UNIT], cs = SUBJECTS[cu.subj], cst = topicStats(CURRENT_UNIT);
     const cn = BANK.filter(function(q){ return q.topic === CURRENT_UNIT; }).length;
@@ -5342,6 +5404,7 @@ function renderHome(){
       else { view.screen = "cards"; view.clsOnly = true; render(); window.scrollTo({top:0,behavior:"instant"}); }
     });
   });
+  wireGuideButtons();
   const nowBtn = viewEl.querySelector('[data-now]');
   if(nowBtn) nowBtn.addEventListener("click", function(){ startQuiz({mode:"topic", topic:CURRENT_UNIT}); });
   viewEl.querySelector('[data-go="mixed"]').addEventListener("click", function(){ startQuiz({mode:"mixed"}); });
@@ -6897,6 +6960,8 @@ if(ONLINE) syncLoad();
 
 /* ---------- daily question feed: new questions written to the Sheet's _bank tab each morning ---------- */
 let feedAdded = 0;
+/* test study guides arrive through the feed: {kind:"guide", id, title, topic, test:"YYYY-MM-DD", deck?, intro?, sections:[{h, pts:[...], tip?}]} */
+const GUIDES = [];
 function applyFeed(text){
   if(!text) return 0;
   let added = 0;
@@ -6906,7 +6971,8 @@ function applyFeed(text){
     if(!o || typeof o !== "object") return;
     if(o.kind === "topic"){ if(o.id && !TOPICS[o.id] && SUBJECTS[o.subj]) TOPICS[o.id] = {subj:o.subj, name:String(o.name), codes:String(o.codes || "")}; return; }
     if(o.kind === "help"){ if(o.fam && o.help && Array.isArray(o.help.steps)){ HELP[o.fam] = o.help; if(o.ask) ASK[o.fam] = String(o.ask); } return; }
-    if(o.kind === "deck"){ if(o.deck && o.deck.id && Array.isArray(o.deck.cards) && !DECKS.some(function(d){ return d.id === o.deck.id; })) DECKS.push(o.deck); return; }
+    if(o.kind === "guide"){ if(o.id && Array.isArray(o.sections) && !GUIDES.some(function(g){ return g.id === o.id; })){ GUIDES.push(o); added++; } return; }
+    if(o.kind === "deck"){ if(o.deck && o.deck.id && Array.isArray(o.deck.cards) && !DECKS.some(function(d){ return d.id === o.deck.id; })){ DECKS.push(o.deck); DECK_BY_ID[o.deck.id] = o.deck; added++; } return; }
     const q = o;
     if(!q.id || !q.q || !TOPICS[q.topic] || !SUBJECTS[q.subj] || BANK.some(function(x){ return x.id === q.id; })) return;
     if(q.type === "mc" && !(Array.isArray(q.choices) && q.choices.length >= 3 && q.a >= 0 && q.a < q.choices.length)) return;
