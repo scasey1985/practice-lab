@@ -280,6 +280,18 @@
     margin-top:13px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;
   }
   .solbox .wlabel{margin-bottom:9px}
+  .coachbox{margin-top:12px;border-radius:14px;padding:14px 16px;background:var(--brandsoft)}
+  .coachbox .wlabel{margin-bottom:6px;display:block}
+  .coachmeter{height:8px;border-radius:99px;background:rgba(0,0,0,.08);overflow:hidden;margin:6px 0 12px}
+  .coachmeter span{display:block;height:100%;border-radius:99px;background:var(--brand)}
+  .coachlist{margin:0 0 12px;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;font-size:.95rem;color:var(--ink2)}
+  .coachlist li{padding-left:1.6em;text-indent:-1.6em}
+  .coachlist .hint{display:block;text-indent:0;color:var(--ink3, var(--ink2));font-size:.88rem;opacity:.85}
+  details.howto{margin-top:10px;font-size:.93rem;color:var(--ink2)}
+  details.howto summary{cursor:pointer;font-weight:700;color:var(--brand)}
+  details.howto ol{margin:8px 0 0;padding-left:1.3em;display:flex;flex-direction:column;gap:5px}
+  .revcard{border-left:4px solid var(--brand)}
+  .revans{white-space:pre-wrap;background:rgba(0,0,0,.04);border-radius:10px;padding:10px 12px;font-size:.93rem}
   .solline{font-size:.95rem;line-height:1.75;color:var(--ink)}
   .solline .em{font-weight:700}
   @media (prefers-reduced-motion: no-preference){
@@ -518,7 +530,7 @@
 </div>
 
 <script>
-var APP_BUILD = "2026-10-31a";   /* bump on every deploy: open copies of the app use it to update themselves */
+var APP_BUILD = "2026-11-18a";   /* bump on every deploy: open copies of the app use it to update themselves */
 /*__SYNC_MODE__*/
 const PASSAGES = {
   p1: {
@@ -5110,7 +5122,8 @@ function topicTally(v){
 function logAnswer(q, given, result){
   if(!store.answerLog) store.answerLog = [];
   const secs = (quiz && quiz.shownAt && quiz.qs && quiz.qs[quiz.i] && quiz.qs[quiz.i].id === q.id) ? Math.min(300, Math.max(0, Math.round((Date.now() - quiz.shownAt) / 1000))) : null;
-  const entry = {i:q.id, g:String(given == null ? "" : given).slice(0, q.type === "write" ? 300 : 80), r:result, t:Date.now(), v:APP_BUILD};
+  const entry = {i:q.id, g:String(given == null ? "" : given).slice(0, q.type === "write" ? 1500 : 80), r:result, t:Date.now(), v:APP_BUILD};
+  if(quiz && quiz.coachNote && quiz.coachFor === q.id) entry.c = quiz.coachNote;
   if(secs !== null) entry.s = secs;
   if(quiz && quiz.help && quiz.help[q.id]) entry.h = quiz.help[q.id];
   store.answerLog.push(entry);
@@ -5213,12 +5226,28 @@ function pickQuestions(filterFn, n, allowRepeats){
   scored.sort(function(a, b){ return b.w - a.w; });
   return shuffle(scored.slice(0, n).map(function(x){ return x.q; })).map(prepare);
 }
+/* every practice set gets at least one or two written (long) answers when that subject/topic has them */
+function sprinkleWrites(qs, filterFn, want){
+  const have = qs.filter(function(q){ return q.type === "write"; }).length;
+  if(have >= want || qs.length < 4) return qs;
+  const used = qs.map(function(q){ return q.id; });
+  const sc = seenCounts();
+  let pool = BANK.filter(function(q){ return q.type === "write" && filterFn(q) && used.indexOf(q.id) < 0; });
+  if(!pool.length) return qs;
+  pool = shuffle(pool).sort(function(a, b){ return Math.min(sc[a.id] || 0, 2) - Math.min(sc[b.id] || 0, 2); });
+  const slots = [];
+  qs.forEach(function(q, i){ if(i > 1 && q.type !== "write") slots.push(i); });
+  const spots = shuffle(slots).slice(0, want - have);
+  spots.forEach(function(i, k){ if(pool[k]) qs[i] = prepare(pool[k]); });
+  return qs;
+}
 function freshCount(filterFn){ const seen = seenCounts(); return BANK.filter(function(q){ return filterFn(q) && (seen[q.id] || 0) < 2; }).length; }
 function poolFor(o){
   if(o.mode === "topic") return function(q){ return q.topic === o.topic; };
   if(o.mode === "subject") return function(q){ return q.subj === o.subj; };
   if(o.mode === "weak") return function(q){ const s = statFor(q.code, q.subj); return s.seen === 0 || s.correct / s.seen < 0.75; };
   if(o.mode === "retry"){ const ids = openMistakeIds(store); return function(q){ return ids.indexOf(q.id) >= 0; }; }
+  if(o.mode === "ids") return function(q){ return (o.ids || []).indexOf(q.id) >= 0; };
   return function(){ return true; };
 }
 function metaFor(o){
@@ -5226,6 +5255,7 @@ function metaFor(o){
   if(o.mode === "subject") return {title:SUBJECTS[o.subj].name + " mix", tone:SUBJECTS[o.subj], n:12};
   if(o.mode === "weak") return {title:"Trouble spots", tone:{tone:"var(--brand)", soft:"var(--brandsoft)"}, n:12};
   if(o.mode === "retry") return {title:"Fix my mistakes", tone:{tone:"var(--brand)", soft:"var(--brandsoft)"}, n:12};
+  if(o.mode === "ids") return {title:o.title || "Try it again", tone:{tone:"var(--brand)", soft:"var(--brandsoft)"}, n:(o.ids || []).length || 1};
   return {title:"Mixed practice", tone:{tone:"var(--brand)", soft:"var(--brandsoft)"}, n:12};
 }
 let quiz = null;
@@ -5233,7 +5263,8 @@ let view = {screen:"home", subj:null};
 
 function startQuiz(opts){
   const meta = metaFor(opts), filter = poolFor(opts);
-  let qs = pickQuestions(filter, meta.n, opts.mode === "retry");
+  let qs = pickQuestions(filter, meta.n, opts.mode === "retry" || opts.mode === "ids");
+  if(opts.mode !== "retry" && opts.mode !== "ids") qs = sprinkleWrites(qs, filter, meta.n >= 10 ? 2 : 1);
   if(!qs.length && opts.mode === "retry"){ view.screen = "daily"; render(); return; }
   if(!qs.length){ view.screen = "topicdone"; view.doneTitle = meta.title; render(); window.scrollTo({top:0, behavior:"instant"}); return; }
   quiz = {opts:opts, filter:filter, title:meta.title, tone:meta.tone, qs:qs, i:0, answered:[], locked:false, retired:{}};
@@ -5288,6 +5319,7 @@ function render(){
   if(view.screen === "fcdone") return renderFcDone();
   if(view.screen === "topicdone") return renderTopicDone();
   if(view.screen === "guide") return renderGuide();
+  if(view.screen === "reviews") return renderReviews();
 }
 
 function activeGuides(){
@@ -5303,6 +5335,7 @@ function guideWhen(test){
   return days <= 0 ? "Test TODAY · " + nice : days === 1 ? "Test TOMORROW · " + nice : "Test in " + days + " days · " + nice;
 }
 function wireGuideButtons(){
+  viewEl.querySelectorAll("[data-reviews]").forEach(function(b){ b.addEventListener("click", function(){ goScreen("reviews"); }); });
   viewEl.querySelectorAll("[data-guide]").forEach(function(b){
     b.addEventListener("click", function(){ view.guide = b.dataset.guide; goScreen("guide"); });
   });
@@ -5312,6 +5345,30 @@ function wireGuideButtons(){
   viewEl.querySelectorAll("[data-gquiz]").forEach(function(b){
     b.addEventListener("click", function(){ startQuiz({mode:"topic", topic:b.dataset.gquiz}); });
   });
+}
+function renderReviews(){
+  const seenR = revSeen();
+  const list = REVIEWS.slice().sort(function(a, b){ return (b.t || 0) - (a.t || 0); });
+  const lv = ["Not there yet", "Getting there", "Strong"];
+  let html = '<div class="stack"><div class="card pad stack"><h2>Coach notes</h2><p class="muted">Notes on your written answers. Read what to add, compare with the stronger version, then try the question again.</p></div>';
+  list.forEach(function(r){
+    const q = qById(r.qid);
+    if(!q) return;
+    const mine = (store.answerLog || []).filter(function(a){ return a.i === r.qid && (!r.t || Math.abs(a.t - r.t) < 120000); }).pop();
+    html += '<div class="card pad stack revcard">' +
+      '<span class="tag">' + esc(SUBJECTS[q.subj].name) + (seenR[r.id] ? '' : ' \u00b7 new') + (r.level != null ? ' \u00b7 ' + lv[r.level] : '') + '</span>' +
+      '<p class="qtext" style="margin:4px 0">' + rich(q.q) + '</p>' +
+      (mine && mine.g ? '<span class="wlabel">You wrote</span><div class="revans">' + esc(mine.g) + '</div>' : '') +
+      ((r.good || []).length ? '<span class="wlabel">What worked</span><ul class="coachlist">' + r.good.map(function(x){ return '<li>\u2705 ' + rich(esc(x)) + '</li>'; }).join("") + '</ul>' : '') +
+      ((r.fix || []).length ? '<span class="wlabel">To make it stronger</span><ul class="coachlist">' + r.fix.map(function(x){ return '<li>\u270d\ufe0f ' + rich(esc(x)) + '</li>'; }).join("") + '</ul>' : '') +
+      (r.better ? '<span class="wlabel">A stronger version</span><div class="revans">' + esc(r.better) + '</div>' : '') +
+      '<div class="row"><button class="primary" data-retry="' + esc(r.qid) + '">Try this one again</button></div></div>';
+  });
+  html += '<div class="card pad"><button class="soft" id="revHome">Back home</button></div></div>';
+  viewEl.innerHTML = html;
+  markRevSeen();
+  viewEl.querySelectorAll("[data-retry]").forEach(function(b){ b.addEventListener("click", function(){ startQuiz({mode:"ids", ids:[b.dataset.retry], title:"Try it again"}); }); });
+  document.getElementById("revHome").addEventListener("click", function(){ goScreen("home"); });
 }
 function renderGuide(){
   const g = GUIDES.find(function(x){ return x.id === view.guide; });
@@ -5351,6 +5408,14 @@ function renderHome(){
         (g.deck ? '<button class="soft" data-gdeck="' + esc(g.deck) + '">Flashcards</button>' : '') +
       '</span></div>';
   });
+  if(MODE === "student" && REVIEWS.length){
+    const seenR = revSeen(), newR = REVIEWS.filter(function(r){ return !seenR[r.id]; }).length;
+    html += '<div class="nowcard guidecard" style="--tone:var(--brand);--tonesoft:var(--brandsoft)">' +
+      '<span class="nowlab">' + (newR ? newR + ' new' : 'Coach notes') + '</span>' +
+      '<span class="nowname">Notes on your written answers</span>' +
+      '<span class="nowmeta">What worked, what to add, and a stronger version to compare</span>' +
+      '<span class="row" style="margin-top:10px"><button class="primary" data-reviews="1">Read my coach notes</button></span></div>';
+  }
   if(CURRENT_UNIT && TOPICS[CURRENT_UNIT]){
     const cu = TOPICS[CURRENT_UNIT], cs = SUBJECTS[cu.subj], cst = topicStats(CURRENT_UNIT);
     const cn = BANK.filter(function(q){ return q.topic === CURRENT_UNIT; }).length;
@@ -5476,6 +5541,12 @@ function renderQuiz(){
       html += '<button class="choice" data-i="' + i + '"><span class="k">' + "ABCD"[i] + '</span><span>' + rich(c) + '</span></button>';
     });
     html += '</div>';
+  } else if(q.type === "write" && coachable(q)){
+    html += '<div class="writewrap">' +
+      '<textarea id="writein" rows="7" placeholder="' + (q.subj === "french" ? "Écris ta réponse en phrases complètes…" : "Write your answer in full sentences…") + '"></textarea>' +
+      '<div class="row" style="margin-top:10px"><button class="primary" id="coachBtn">Check my answer</button>' +
+      '<button class="soft" id="revealBtn">I\u2019m stuck \u2014 show a strong answer</button></div>' +
+      howToHtml(q) + '</div>';
   } else if(q.type === "write"){
     html += '<div class="writewrap">' +
       '<textarea id="writein" rows="5" placeholder="Write your answer in full sentences…"></textarea>' +
@@ -5499,6 +5570,9 @@ function renderQuiz(){
     viewEl.querySelectorAll(".choice").forEach(function(b){
       b.addEventListener("click", function(){ answer(parseInt(b.dataset.i, 10)); });
     });
+  } else if(q.type === "write" && coachable(q)){
+    document.getElementById("coachBtn").addEventListener("click", function(){ coachRun(q); });
+    document.getElementById("revealBtn").addEventListener("click", function(){ coachFinish(q); });
   } else if(q.type === "write"){
     document.getElementById("revealBtn").addEventListener("click", function(){ revealWrite(q); });
   } else {
@@ -5547,6 +5621,177 @@ function togglePanel(kind, q){
   btn.textContent = kind === "ask" ? "Hide" : "Hide the example";
 }
 
+/* ---------- written-answer coach ----------
+   Checks a long answer the moment she taps "Check my answer":
+   - which key points she covered (q.look = keyword groups per point; without it, the main words of each point)
+   - facts to double-check (q.traps = [{m:"phrase|phrase", say:"…"}])
+   - how to make it stronger: length, full sentences, "because…", examples, comparing words, numbers in math
+   She can improve and re-check as many times as she likes; the last check is what gets logged.
+   Claude also reads her written answers each morning and posts deeper "coach notes" (feed kind "review"). */
+const COACH_STOP = " the and for with that this from they them their there have has had are was were will would could should into onto about what when where which while your you its not but all any can one two use uses used using also more most some than then each other such very just only like make makes made show shows answer answers explain explains give gives name names include includes mention mentions write writes says say how why does did being been each both these those example examples correct correctly ";
+function coachNorm(s){
+  return String(s || "").replace(/<[^>]+>/g, " ").toLowerCase()
+    .replace(/co₂|co2/g, " carbon dioxide ").replace(/\bo₂|\bo2\b/g, " oxygen ").replace(/h₂o|h2o/g, " water ")
+    .replace(/œ/g, "oe").replace(/æ/g, "ae").normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[’'`]/g, "").replace(/(^|[\s(=])[-−–]\s*(?=\d)/g, "$1 neg ")
+    .replace(/(\d),(\d{3})/g, "$1$2").replace(/(\d)\s(\d{3})\b/g, "$1$2")
+    .replace(/[^a-z0-9%]+/g, " ").trim();
+}
+function coachAlts(s){ s = String(s); const i = s.indexOf("re:"); if(i < 0) return s.split("|"); const head = s.slice(0, i).split("|").filter(Boolean); head.push(s.slice(i)); return head; }
+function coachToks(s){ const n = coachNorm(s); return n ? n.split(" ") : []; }
+function coachHas(toks, raw, alt){
+  alt = String(alt);
+  if(alt.indexOf("re:") === 0){ try{ return new RegExp(alt.slice(3), "i").test(raw); }catch(e){ return false; } }
+  const a = coachToks(alt); if(!a.length) return false;
+  const m = function(t, w){ return w.length >= 4 ? t.indexOf(w) === 0 : t === w; };
+  for(let i = 0; i + a.length <= toks.length; i++){
+    let ok = true;
+    for(let j = 0; j < a.length; j++){ if(!m(toks[i + j], a[j])){ ok = false; break; } }
+    if(ok) return true;
+  }
+  return false;
+}
+function coachGroups(q, i){
+  if(q.look && q.look[i]) return q.look[i].map(coachAlts);
+  /* no rubric written for this one: use the words the point shares with the model answer (skips "names", "explains"…) */
+  const mt = coachToks(q.model), seen = {};
+  return coachToks(q.points[i]).filter(function(w){
+    if(w.length < 4 || COACH_STOP.indexOf(" " + w + " ") >= 0 || seen[w]) return false;
+    seen[w] = 1;
+    const st = w.slice(0, Math.min(w.length, 5));
+    return mt.some(function(t){ return t.indexOf(st) === 0; });
+  }).map(function(w){ return [w.length > 6 ? w.slice(0, Math.max(5, w.length - 3)) : w]; });
+}
+/* key words of the model answer (for questions without a written rubric) */
+function coachModelKeys(q){
+  const qt = coachToks(q.q), seen = {}, out = [];
+  String(q.model || "").replace(/<[^>]+>/g, " ").split(/[^A-Za-zÀ-ÿ0-9%’'-]+/).forEach(function(word){
+    const t = coachToks(word)[0]; if(!t || t.length < 5 || COACH_STOP.indexOf(" " + t + " ") >= 0) return;
+    const st = t.slice(0, Math.min(t.length, 6));
+    if(seen[st] || qt.some(function(x){ return x.indexOf(st) === 0; })) return;
+    seen[st] = 1; out.push({st:st, word:word.replace(/[’']s$/, "")});
+  });
+  return out;
+}
+function coachable(q){ return !!(q.points && q.points.length) && !(q.subj === "french" && !q.look); }
+function coachCheck(q, text){
+  const raw = String(text || "").trim(), toks = coachToks(raw), nraw = " " + coachNorm(raw) + " ";
+  const words = raw ? raw.split(/\s+/).filter(Boolean).length : 0;
+  const res = {words:words, pts:[], tips:[], flags:[], got:0};
+  q.points.forEach(function(p, i){
+    const gs = coachGroups(q, i);
+    const hit = gs.filter(function(g){ return g.some(function(alt){ return coachHas(toks, raw, alt); }); }).length;
+    const need = q.look ? gs.length : Math.max(1, Math.ceil(gs.length * 0.5));
+    const st = !gs.length ? null : hit >= need ? 1 : hit > 0 ? 0.5 : 0;
+    if(st !== null){ res.got += st; res.scored = (res.scored || 0) + 1; }
+    res.pts.push({p:p, st:st, hint:(q.hints && q.hints[i]) || ""});
+  });
+  if(!q.look){
+    const keys = coachModelKeys(q);
+    const hitK = keys.filter(function(k){ return toks.some(function(t){ return t.indexOf(k.st) === 0; }); });
+    res.ratio = keys.length ? hitK.length / keys.length : 1;
+    res.missingWords = keys.filter(function(k){ return hitK.indexOf(k) < 0; }).slice(0, 6).map(function(k){ return k.word; });
+  }
+  (q.traps || []).forEach(function(t){
+    if(coachAlts(t.m).some(function(a){ return coachHas(toks, raw, a); })) res.flags.push(t.say);
+  });
+  const qt = " " + coachNorm(q.q) + " ", fr = q.subj === "french";
+  const target = q.min || Math.max(20, q.points.length * 12);
+  const has = function(re){ return re.test(nraw); };
+  if(words < target * 0.6) res.tips.push(fr ? "C’est court — aim for about " + target + " words. Add another sentence with a detail." : "It’s short — aim for about " + target + " words. Add a detail or an example for each point.");
+  else if(words < target) res.tips.push("Good length so far — one more detail (about " + target + " words total) would make it complete.");
+  if(raw && (!/[.!?»"”)'’]\s*$/.test(raw) || /^[a-zà-ÿ]/.test(raw))) res.tips.push(fr ? "Écris des phrases complètes: start with a capital letter and end with a period." : "Write in full sentences: start with a capital letter and end with a period.");
+  const weak = q.look ? res.got < (q.need || q.points.length * 0.85) - 0.001 : true;
+  if(!fr && weak && /\s(explain|why|how)\s/.test(qt) && !has(/\s(because|so|since|therefore|this means|which means|as a result|that means|this is why|thats why|causes?|leads? to|due to)\s/))
+    res.tips.push("Show your thinking: connect your ideas with “because…”, “so…” or “this means…”.");
+  if(/\sexamples?\s/.test(qt) && !has(/\s(example|examples|such as|like|e g|for instance|par exemple)\s/))
+    res.tips.push("The question asks for an example — add one that starts with “For example, …”.");
+  if(!fr && weak && /\s(difference|differences|compare|contrast|versus|vs)\s/.test(qt) && !has(/\s(but|while|whereas|however|unlike|instead|on the other hand|both|different)\s/))
+    res.tips.push("It’s a compare question — use a comparing word like “while”, “but” or “whereas” so the difference is clear.");
+  if(q.subj === "math" && !/\d/.test(raw)) res.tips.push("Math explanations need the actual numbers — show each step you calculated.");
+  if(!fr && words >= 25 && raw.split(/[.!?]+/).filter(function(s){ return s.trim(); }).length < 2) res.tips.push("Break it into a few sentences — one idea per sentence is easier to follow.");
+  const n = q.points.length || 1, need = q.need || Math.max(1, n * 0.85);
+  if(q.look){
+    res.level = !toks.length ? 0 : (res.got >= need - 0.001 && !res.flags.length && words >= target * 0.6) ? 2 : (res.got >= Math.min(need, n * 0.45) - 0.001) ? 1 : 0;
+  } else {
+    const f = res.scored ? res.got / res.scored : null, ov = Math.min(1, res.ratio / 0.45);
+    const sc = f === null ? ov : 0.6 * f + 0.4 * ov;
+    res.score = sc;
+    res.level = !toks.length ? 0 : (sc >= 0.72 && !res.flags.length && words >= target * 0.6) ? 2 : sc >= 0.38 ? 1 : 0;
+  }
+  return res;
+}
+function howToHtml(q){
+  const fr = q.subj === "french";
+  return '<details class="howto"><summary>How to write a strong answer</summary><ol>' +
+    (fr ? '<li><b>Réponds</b> à chaque partie de la question — one sentence each.</li><li>Use <b>full sentences</b> with a verb: Je suis…, J’ai…, J’aime…, C’est…</li><li>Add a <b>detail</b>: quand, où, avec qui, et <b>parce que</b>…</li><li>Check <b>le / la</b>, adjective endings and verb endings.</li>'
+        : '<li><b>Restate</b> the question in your first sentence.</li><li><b>Answer</b> every part of the question (watch for “and”, “two”, “three”).</li><li><b>Explain</b> with “because…” or “this means…” — use the unit’s key words.</li><li>Give an <b>example</b> or numbers as proof.</li><li><b>Close</b> with a sentence that sums it up.</li>') +
+    '</ol></details>';
+}
+function coachReset(q){ if(quiz.coachFor !== q.id){ quiz.coachFor = q.id; quiz.coachTries = 0; quiz.coachRes = null; quiz.coachText = null; quiz.coachNote = null; } }
+function coachNoteFor(q, r, tries){ return (q.look ? String(r.got).replace(/^0\.5$/, "½").replace(/\.5$/, "½") + "/" + q.points.length + " key points" : Math.round((r.score || 0) * 100) + "% of a strong answer") + (tries > 1 ? ", " + tries + " tries" : ""); }
+function coachRun(q){
+  if(quiz.locked) return;
+  const ta = document.getElementById("writein");
+  const text = (ta.value || "").trim();
+  const slot = document.getElementById("fbslot");
+  if(!text){ slot.innerHTML = '<div class="fb"><p class="muted">Write your answer first — even a rough try. Then the coach will tell you what to add.</p></div>'; ta.focus(); return; }
+  coachReset(q);
+  quiz.coachTries += 1;
+  const r = coachCheck(q, text);
+  quiz.coachRes = r; quiz.coachText = text;
+  quiz.coachNote = coachNoteFor(q, r, quiz.coachTries);
+  const heads = ["Not there yet — let’s build it up", "Getting there — a few things to add", "Strong answer!"];
+  const cols = ["var(--no)", "var(--brand)", "var(--ok)"];
+  const pct = Math.round(Math.min(1, q.look ? r.got / (q.points.length || 1) : (r.score || 0)) * 100);
+  const nailed = r.pts.filter(function(x){ return x.st === 1; });
+  const missing = r.pts.filter(function(x){ return x.st !== null && x.st < 1; });
+  const selfcheck = r.pts.filter(function(x){ return x.st === null; });
+  let h = '<div class="fb" role="status" aria-live="polite"><div class="verdict" style="color:' + cols[r.level] + '">' + heads[r.level] + '</div>' +
+    '<div class="muted" style="font-size:.9rem">You covered ' + coachNoteFor(q, r, 1) + (quiz.coachTries > 1 ? ' · try ' + quiz.coachTries : '') + '</div>' +
+    '<div class="coachmeter"><span style="width:' + pct + '%;background:' + cols[r.level] + '"></span></div>';
+  if(nailed.length) h += '<span class="wlabel">What you nailed</span><ul class="coachlist">' + nailed.map(function(x){ return '<li>✅ ' + rich(x.p) + '</li>'; }).join("") + '</ul>';
+  if(missing.length) h += '<span class="wlabel">Add this to make it complete</span><ul class="coachlist">' + missing.map(function(x){
+    return '<li>' + (x.st ? '🟡 Say more about: ' : '➕ ') + rich(x.p) + (x.hint ? '<span class="hint">Hint: ' + rich(x.hint) + '</span>' : '') + '</li>'; }).join("") + '</ul>';
+  if(selfcheck.length) h += '<span class="wlabel">Check that yours also does this</span><ul class="coachlist">' + selfcheck.map(function(x){ return '<li>\u2610 ' + rich(x.p) + '</li>'; }).join("") + '</ul>';
+  if(r.missingWords && r.missingWords.length && r.level < 2) h += '<span class="wlabel">Key words a strong answer uses</span><p style="margin:0 0 12px;font-size:.95rem;color:var(--ink2)">' + r.missingWords.map(esc).join(" \u00b7 ") + ' <span class="muted">\u2014 can you work some of these ideas in?</span></p>';
+  if(r.flags.length) h += '<span class="wlabel">Check your facts</span><ul class="coachlist">' + r.flags.map(function(f){ return '<li>⚠️ ' + rich(f) + '</li>'; }).join("") + '</ul>';
+  if(r.tips.length) h += '<span class="wlabel">Make it stronger</span><ul class="coachlist">' + r.tips.map(function(t){ return '<li>✍️ ' + rich(t) + '</li>'; }).join("") + '</ul>';
+  h += '<div class="row" style="margin-top:6px">' +
+    (r.level < 2 ? '<button class="primary" id="improveBtn">Improve my answer</button><button class="soft" id="doneBtn">I’m done — show a strong answer</button>'
+                 : '<button class="primary" id="doneBtn">See a model answer &amp; continue</button><button class="soft" id="improveBtn">Polish it more</button>') +
+    '</div></div>';
+  slot.innerHTML = h;
+  document.getElementById("improveBtn").addEventListener("click", function(){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); ta.scrollIntoView({block:"center", behavior:"smooth"}); });
+  document.getElementById("doneBtn").addEventListener("click", function(){ coachFinish(q); });
+  document.getElementById("coachBtn").textContent = "Check it again";
+}
+function coachFinish(q){
+  if(quiz.locked) return;
+  const ta = document.getElementById("writein");
+  const text = (ta.value || "").trim();
+  coachReset(q);
+  let r = quiz.coachRes;
+  /* re-check if she edited after the last check (or never checked) */
+  if(text && (!r || quiz.coachText !== text)){ quiz.coachTries += 1; r = coachCheck(q, text); quiz.coachRes = r; quiz.coachText = text; quiz.coachNote = coachNoteFor(q, r, quiz.coachTries); }
+  if(!text){ r = null; quiz.coachNote = "nothing written"; }
+  quiz.locked = true;
+  ta.disabled = true;
+  ["coachBtn", "revealBtn"].forEach(function(id){ const b = document.getElementById(id); if(b) b.disabled = true; });
+  const score = r ? r.level : 0;
+  const slot = document.getElementById("fbslot");
+  const old = slot.querySelector(".row"); if(old) old.remove();
+  let fb = slot.querySelector(".fb");
+  if(!fb){ slot.innerHTML = '<div class="fb" role="status" aria-live="polite"></div>'; fb = slot.querySelector(".fb"); }
+  const box = document.createElement("div");
+  box.className = "coachbox";
+  box.innerHTML = '<span class="wlabel">A strong answer looks like this</span><div class="why">' + rich(q.model) + '</div>' +
+    '<span class="wlabel" style="margin-top:10px">Key points</span><ul class="pointlist">' + q.points.map(function(p){ return '<li>' + rich(p) + '</li>'; }).join("") + '</ul>' +
+    (text ? '' : '<p class="muted" style="margin-top:10px">Next time, write a try first — even rough. The coach can only help with what’s on the page.</p>');
+  fb.appendChild(box);
+  rateWrite(q, score, true);
+}
+
 /* written answers: she writes, compares against a strong answer, then rates herself */
 function revealWrite(q){
   if(quiz.locked) return;
@@ -5572,7 +5817,7 @@ function revealWrite(q){
   });
 }
 
-function rateWrite(q, score){
+function rateWrite(q, score, byCoach){
   const right = (score === 2);
   const wiEl = document.getElementById("writein");
   const written = wiEl ? wiEl.value.trim() : "";
@@ -5590,7 +5835,8 @@ function rateWrite(q, score){
   const slot = document.getElementById("fbslot");
   slot.querySelectorAll(".rate").forEach(function(b){ b.disabled = true; b.style.opacity = ".45"; });
   const last = (quiz.i === quiz.qs.length - 1);
-  const note = score === 2 ? "Logged as a win." : score === 1 ? "Logged as partly there — this one will come back." : "Logged — this one will come back soon.";
+  const note = byCoach ? (score === 2 ? "Logged as a strong answer. \ud83c\udf1f" : score === 1 ? "Logged as partly there \u2014 compare yours with the model above. This one will come back." : "Logged \u2014 read the model above, then this one will come back so you can nail it.")
+    : score === 2 ? "Logged as a win." : score === 1 ? "Logged as partly there — this one will come back." : "Logged — this one will come back soon.";
   const row = document.createElement("div");
   row.innerHTML = '<p class="muted" style="margin-top:12px">' + note + '</p>' +
     '<div class="row" style="margin-top:10px"><button class="primary" id="nextBtn">' + (last ? "See how you did" : "Next question") + '</button></div>';
@@ -6029,9 +6275,9 @@ function answerRows(src, dayFilter){
     if(q.type === "mc") correct = q.choices[q.a];
     else if(q.type === "num") correct = String(q.a);
     else correct = q.model;
-    return {day:day, time:d.toLocaleTimeString(undefined, {hour:"numeric", minute:"2-digit"}), t:a.t,
+    return {day:day, time:d.toLocaleTimeString(undefined, {hour:"numeric", minute:"2-digit"}), t:a.t, id:a.i,
       subj:q.subj, topic:q.topic, code:q.code, type:q.type,
-      question:clean(q.q), given:clean(a.g || ""), correct:clean(correct), r:a.r, h:a.h || ""};
+      question:clean(q.q), given:clean(a.g || ""), correct:clean(correct), r:a.r, h:a.h || "", c:a.c || ""};
   }).filter(Boolean);
 }
 function resultLabel(r){ return r === 1 ? "Right" : r === 0.5 ? "Partly" : "Not yet"; }
@@ -6274,6 +6520,8 @@ const DECK_BY_ID = {};
 DECKS.forEach(function(d){ DECK_BY_ID[d.id] = d; });
 const BANK_BY_ID = {};
 BANK.forEach(function(q){ BANK_BY_ID[q.id] = q; });
+/* built-in question ids (feed questions get added later) */
+const BUILTIN_IDS = Object.assign({}, BANK_BY_ID);
 
 function cleanSide(t){ return String(t).replace(/\s*\((m|f)\.\)\s*/g, " ").replace(/\s+/g, " ").trim(); }
 function dirLabel(deck, dir){
@@ -6820,10 +7068,13 @@ function pushNow(){
     "|" + JSON.stringify(store.cards || {}).length + "|" + (store.wrongLog || []).filter(function(w){ return w.fixed; }).length;
   if(sig === lastSig && Date.now() - lastPushMs < 60000){ paintSync(); return; }
   const since = store.syncT || 0;
-  const fresh = answerRows(store).filter(function(r){ return r.t > since; });
+  /* one-time catch-up: answers to daily-feed questions before build 2026-11-18a never synced */
+  let backfill = false;
+  try{ backfill = !localStorage.getItem("plFeedBackfill") && feedAdded > 0; }catch(e){}
+  const fresh = answerRows(store).filter(function(r){ return r.t > since || (backfill && !BUILTIN_IDS[r.id]); });
   const rows = fresh.map(function(r){
     return [r.day, r.time, SUBJECTS[r.subj] ? SUBJECTS[r.subj].name : r.subj, TOPICS[r.topic] ? TOPICS[r.topic].name : r.topic,
-      r.code, r.question, r.given, r.correct, resultLabel(r.r) + (r.h ? " \u00b7 used help: " + helpLabel(r.h) : "")];
+      r.code, r.question, r.given, r.correct, resultLabel(r.r) + (r.c ? " \u00b7 coach: " + r.c : "") + (r.h ? " \u00b7 used help: " + helpLabel(r.h) : "")];
   });
   const newT = fresh.reduce(function(m, r){ return Math.max(m, r.t); }, since);
   const snapshot = JSON.parse(JSON.stringify(store));
@@ -6832,6 +7083,7 @@ function pushNow(){
   cloud("save", {json:JSON.stringify(snapshot), rows:rows, days:daySummaryRows()})
     .then(function(res){
       syncBusy = false; syncErr = null; failCount = 0;
+      if(res && res.ok && backfill){ try{ localStorage.setItem("plFeedBackfill", "1"); }catch(e){} }
       if(res && res.ok){ lastSig = sig; lastPushMs = Date.now(); store.syncT = Math.max(store.syncT || 0, newT); lastSyncAt = new Date(); try{ localStorage.setItem(LS_KEY, JSON.stringify(store)); }catch(e){} }
       if(syncAgain){ syncAgain = false; pushNow(); }
       paintSync();
@@ -6962,6 +7214,11 @@ if(ONLINE) syncLoad();
 let feedAdded = 0;
 /* test study guides arrive through the feed: {kind:"guide", id, title, topic, test:"YYYY-MM-DD", deck?, intro?, sections:[{h, pts:[...], tip?}]} */
 const GUIDES = [];
+/* coach notes Claude writes about her written answers: {kind:"review", id, qid, t (answer time, ms), level 0-2, good:[...], fix:[...], better:"..."} */
+const REVIEWS = [];
+const REV_KEY = "plRevSeen";
+function revSeen(){ try{ return JSON.parse(localStorage.getItem(REV_KEY) || "{}"); }catch(e){ return {}; } }
+function markRevSeen(){ const s = revSeen(); REVIEWS.forEach(function(r){ s[r.id] = 1; }); try{ localStorage.setItem(REV_KEY, JSON.stringify(s)); }catch(e){} }
 function applyFeed(text){
   if(!text) return 0;
   let added = 0;
@@ -6972,6 +7229,9 @@ function applyFeed(text){
     if(o.kind === "topic"){ if(o.id && !TOPICS[o.id] && SUBJECTS[o.subj]) TOPICS[o.id] = {subj:o.subj, name:String(o.name), codes:String(o.codes || "")}; return; }
     if(o.kind === "help"){ if(o.fam && o.help && Array.isArray(o.help.steps)){ HELP[o.fam] = o.help; if(o.ask) ASK[o.fam] = String(o.ask); } return; }
     if(o.kind === "guide"){ if(o.id && Array.isArray(o.sections) && !GUIDES.some(function(g){ return g.id === o.id; })){ GUIDES.push(o); added++; } return; }
+    /* adds or improves the rubric of an existing written question: {kind:"rubric", id, look, hints?, traps?, min?, need?} */
+    if(o.kind === "rubric"){ const tq = BANK.find(function(x){ return x.id === o.id; }); if(tq && tq.type === "write" && Array.isArray(o.look) && o.look.length === (tq.points || []).length){ ["look", "hints", "traps", "min", "need"].forEach(function(k){ if(o[k] != null) tq[k] = o[k]; }); } return; }
+    if(o.kind === "review"){ if(o.id && o.qid && !REVIEWS.some(function(r){ return r.id === o.id; })){ REVIEWS.push(o); added++; } return; }
     if(o.kind === "deck"){ if(o.deck && o.deck.id && Array.isArray(o.deck.cards) && !DECKS.some(function(d){ return d.id === o.deck.id; })){ DECKS.push(o.deck); DECK_BY_ID[o.deck.id] = o.deck; added++; } return; }
     const q = o;
     if(!q.id || !q.q || !TOPICS[q.topic] || !SUBJECTS[q.subj] || BANK.some(function(x){ return x.id === q.id; })) return;
@@ -6981,7 +7241,9 @@ function applyFeed(text){
     if(["mc","num","write"].indexOf(q.type) < 0) return;
     const item = {id:q.id, subj:q.subj, topic:q.topic, code:q.code || "Practice", type:q.type, q:q.q, a:q.a, why:q.why || ""};
     if(q.choices) item.choices = q.choices; if(q.model) item.model = q.model; if(q.points) item.points = q.points;
+    ["look", "hints", "traps", "min", "need"].forEach(function(k){ if(q[k] != null) item[k] = q[k]; });
     BANK.push(item);
+    BANK_BY_ID[item.id] = item;
     if(q.fam) FAM[q.id] = q.fam;
     if(q.sol) SOL[q.id] = q.sol;
     added++;
